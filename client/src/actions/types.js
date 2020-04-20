@@ -1,0 +1,9 @@
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+export const REGISTER_FAIL = 'REGISTER_FAIL';
+export const USER_LOADED = 'USER_LOADED';
+export const LOGIN_SUCESS = 'LOGIN_SUCESS';
+export const AUTH_ERROR = 'AUTH_ERROR';
+export const LOGIN_FAIL = 'LOGIN_FAIL';
+export const LOGOUT = 'LOGOUT';
+export const GET_COURSES = 'GET_COURSES';
+export const GET_ONE_COURSE = 'GET_ONE_COURSE';
