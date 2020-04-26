@@ -1,21 +1,26 @@
 import React from 'react';
+import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
+
 import './Header.css';
 
 const Header = () => {
-  return (
-    <div>
-      <nav>
-        <h2>Telmo Academy</h2>
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/courses">Courses</Link></li>
-          <li><Link to="/login">Login</Link></li>
-          <li><Link to="/register">Register</Link></li>
-        </ul>
-      </nav>
-    </div>
-  )
+	return (
+		<header>
+			<Navbar classProp="light-nav"/>
+			<div className="heroTitle">
+				<div className="container">
+					<div className="row">
+						<div className="col-sm-12">
+							<h3>LEARN TO CODE</h3>
+							<h1>GET YOUR DREAM JOB</h1>
+							<Link to="/courses" className="actionButton">VIEW COURSES</Link>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+	);
 }
 
 export default Header;

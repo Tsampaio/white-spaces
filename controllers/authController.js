@@ -22,10 +22,10 @@ const createSendToken = (user, statusCode, res) => {
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
   console.log(token);
-  console.log(cookieOptions);
+  // console.log(cookieOptions);
   
-  // res.cookie('jwt', token, cookieOptions);
-  res.cookie('name', 'Telmo');
+  res.cookie('jwt', token, cookieOptions);
+  // res.cookie('name', 'Telmo', cookieOptions);
   console.log('Cookie Set');
   // Remove password from output
   user.password = undefined;
@@ -34,13 +34,11 @@ const createSendToken = (user, statusCode, res) => {
     status: 'success',
     message: 'You are Registered',
     token,
-    data: {
-      user
-    }
+    user: user
   });
 };
 
-exports.register = async (req, res, next) => {
+exports.register = async (req, res) => {
   try {
     // console.log(req.body);
     const { name, email, password, passwordConfirm } = req.body;
@@ -82,7 +80,8 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
-
+  console.log("Inside Login Controller");
+  
   // 1) Check if email and password exist
   if (!email || !password) {
     return res.status(400).json({
@@ -92,7 +91,7 @@ exports.login = async (req, res, next) => {
   }
   // 2) Check if user exists && password is correct
   const user = await User.findOne({ email }).select('+password');
-
+  console.log(user);
   if (!user || !(await user.correctPassword(password, user.password))) {
     return res.status(401).json({
       status: 'fail',
@@ -106,7 +105,7 @@ exports.login = async (req, res, next) => {
 
 exports.logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() + 10 * 1000),
+    expires: new Date(Date.now() + 5 * 1000),
     httpOnly: true
   });
   res.status(200).json({ 
@@ -126,16 +125,7 @@ exports.protect = async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
-  }
-
-  if(res.userStatus) {
-    return res.status(201).json({
-      status: 'success',
-      message: 'You are a Guest!!'
-    });
-  }
-  // console.log(token);
-  if (!token) {
+  } else {
     return res.status(401).json({
       status: 'fail',
       message: 'You are not logged in! Please log in to get access.'
@@ -143,8 +133,9 @@ exports.protect = async (req, res, next) => {
   }
 
   // 2) Verification token
-  const decoded = await promisify(jwt.verify)(token, config.get("JWT_SECRET"));
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   //console.log(decoded);
+
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
   //console.log(currentUser);
@@ -157,21 +148,6 @@ exports.protect = async (req, res, next) => {
     );
   }
 
-  // 4) Check if user changed password after the token was issued
-  // if (currentUser.changedPasswordAfter(decoded.iat)) {
-  //   return next(
-  //     res.status(401).json({
-  //       status: 'fail',
-  //       message: 'User recently changed password! Please log in again.'
-  //     })
-  //   );
-  // }
-
-  // GRANT ACCESS TO PROTECTED ROUTE
-  // req.user = currentUser;
-  // res.locals.user = currentUser;
-  // next();
-
   res.status(200).json({
     status: 'success',
     message: 'your are authenticated',
@@ -179,17 +155,16 @@ exports.protect = async (req, res, next) => {
     user: currentUser
   });
 
-  next();
 };
 
-// Only for rendered pages, no errors!
+//Only for rendered pages, no errors!
 // exports.isLoggedIn = async (req, res, next) => {
 //   if (req.cookies.jwt) {
 //     try {
 //       // 1) verify token
 //       const decoded = await promisify(jwt.verify)(
 //         req.cookies.jwt,
-//         config.get("JWT_SECRET")
+//         process.env.JWT_SECRET
 //       );
 
 //       // 2) Check if user still exists
@@ -199,12 +174,12 @@ exports.protect = async (req, res, next) => {
 //       }
 
 //       // 3) Check if user changed password after the token was issued
-//       if (currentUser.changedPasswordAfter(decoded.iat)) {
-//         return next();
-//       }
+//       // if (currentUser.changedPasswordAfter(decoded.iat)) {
+//       //   return next();
+//       // }
 
 //       // THERE IS A LOGGED IN USER
-//       res.locals.user = currentUser;
+//       res.user = currentUser;
 //       return next();
 //     } catch (err) {
 //       return next();
@@ -213,17 +188,12 @@ exports.protect = async (req, res, next) => {
 //   next();
 // };
 
-exports.isGuest = async (req, res, next) => {
-  if (!req.cookies.jwt) {
-    
-      // return res.status(200).json({
-      //   status: 'Success',
-      //   message: 'You are a guest'
-      // })
-      res.userStatus = "guest";
-  }
-  next();
-};
+// exports.isGuest = async (req, res, next) => {
+//   if (!req.cookies.jwt) {
+//       res.userStatus = "guest";
+//   }
+//   next();
+// };
 
 // exports.restrictTo = (...roles) => {
 //   return (req, res, next) => {

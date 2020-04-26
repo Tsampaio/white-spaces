@@ -1,6 +1,10 @@
 import {
   REGISTER_SUCCESS,
-  REGISTER_FAIL
+  LOGIN_SUCCESS,
+  REGISTER_FAIL,
+  USER_LOADED,
+  LOGOUT,
+  LOGOUT_FAIL
 } from '../actions/types';
 
 const initialState = {
@@ -15,33 +19,47 @@ export default function( state = initialState, action ) {
   const { type, payload } = action;
 
   switch(type) {
-      // case USER_LOADED:
-      //     return {
-      //         ...state,
-      //         isAuthenticated: true,
-      //         loading: false,
-      //         data: payload
-      //     }
+      case USER_LOADED:
+          return {
+              ...state,
+              isAuthenticated: true,
+              loading: false,
+              user: payload.user,
+              token: payload.token
+          }
       case REGISTER_SUCCESS:
     //   case LOGIN_SUCCESS:
-				// localStorage.setItem('token', payload.token);
+        // localStorage.setItem('token', payload.token);
+        console.log("Register Success");
 				return {
 						...state,
-						...payload,
 						isAuthenticated: true,
-						loading: false
-				}
+            loading: false,
+            token: payload.token,
+            message: payload.message,
+            user: payload.data.user
+        }
+      case LOGIN_SUCCESS:
+        return {
+          ...state,
+          isAuthenticated: true,
+          loading: false,
+          token: payload.token,
+          message: payload.message,
+          user: payload.user
+        }
       // case REGISTER_FAIL:
       // case AUTH_ERROR:
-      // case LOGIN_FAIL:
-      // case LOGOUT:
-          // localStorage.removeItem('token');
-          // return {
-          //     ...state,
-          //     token: null,
-          //     isAuthenticated: false,
-          //     loading: false
-          // }
+      case LOGOUT_FAIL:
+      case LOGOUT:
+        
+        return {
+            ...state,
+            token: null,
+            isAuthenticated: false,
+            loading: false,
+            user: null
+        }
       default:
           return state;
   }

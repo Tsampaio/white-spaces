@@ -1,6 +1,5 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -8,7 +7,6 @@ const app = express();
 //init middleware
 app.use(express.urlencoded());
 app.use(express.json({ extended: false }));
-app.use(cors());
 app.use(cookieParser());
 
 dotenv.config({ path: './.env' });

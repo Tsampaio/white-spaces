@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { API } from '../config.js';
 import {
     GET_ONE_COURSE,
 		GET_COURSES,
@@ -12,7 +11,7 @@ export const getCourses = () => async dispatch => {
   
   try {
     console.log("inside actions");
-      const res = await axios(`${API}/getCourses`,{
+      const res = await axios(`/api/getCourses`,{
         method: "POST",
         headers: {
           Accept: 'application/json',
