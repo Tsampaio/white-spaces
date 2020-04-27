@@ -8,7 +8,7 @@ router.post('/login', authController.login);
 router.post('/loadUser', authController.protect);
 router.get('/logout', authController.logout);
 
-// Protect all routes after this middleware
-// router.use(authController.protect);
+router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
 
 module.exports = router;

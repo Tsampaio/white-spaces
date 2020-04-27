@@ -3,7 +3,7 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
-// const Email = require('../utils/email');
+const Email = require('../utils/email');
 
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -60,10 +60,10 @@ exports.register = async (req, res) => {
       passwordConfirm: passwordConfirm
     });
 
-    // const url = `${req.protocol}://${req.get('host')}/dashboard`;
-    // Or http://localhost:3002/dashboard   for HOST
-    // console.log(url);
-    // await new Email(newUser, url).sendWelcome();
+    const url = `${req.protocol}://${req.get('host')}/profile`;
+    //Or http://localhost:3000/dashboard   for HOST
+    console.log(url);
+    await new Email(newUser, url).sendWelcome();
 
     // res.status(200).json({
     //   status: 'success',
@@ -157,57 +157,6 @@ exports.protect = async (req, res, next) => {
 
 };
 
-//Only for rendered pages, no errors!
-// exports.isLoggedIn = async (req, res, next) => {
-//   if (req.cookies.jwt) {
-//     try {
-//       // 1) verify token
-//       const decoded = await promisify(jwt.verify)(
-//         req.cookies.jwt,
-//         process.env.JWT_SECRET
-//       );
-
-//       // 2) Check if user still exists
-//       const currentUser = await User.findById(decoded.id);
-//       if (!currentUser) {
-//         return next();
-//       }
-
-//       // 3) Check if user changed password after the token was issued
-//       // if (currentUser.changedPasswordAfter(decoded.iat)) {
-//       //   return next();
-//       // }
-
-//       // THERE IS A LOGGED IN USER
-//       res.user = currentUser;
-//       return next();
-//     } catch (err) {
-//       return next();
-//     }
-//   }
-//   next();
-// };
-
-// exports.isGuest = async (req, res, next) => {
-//   if (!req.cookies.jwt) {
-//       res.userStatus = "guest";
-//   }
-//   next();
-// };
-
-// exports.restrictTo = (...roles) => {
-//   return (req, res, next) => {
-//     // roles ['admin', 'lead-guide']. role='user'
-//     if (!roles.includes(req.user.role)) {
-//       return next(
-//         new AppError('You do not have permission to perform this action', 403)
-//       );
-//     }
-
-//     next();
-//   };
-// };
-
 exports.forgotPassword = async (req, res, next) => {
   console.log("inside forgot password");
   //1) Get user based on POSTed email
@@ -294,7 +243,6 @@ exports.resetPassword = async (req, res, next) => {
 
   // 2) If token has not expired, and there is user, set the new password
   if (!user) {
-   
     return next(
       res.status(400).json({
         status: 'fail',
