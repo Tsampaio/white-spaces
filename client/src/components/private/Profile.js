@@ -1,21 +1,28 @@
-import React, { Fragment } from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-function Profile({ auth }) {
+function Profile({ auth, active }) {
+    const [state, setState] = useState({
+        name: ''
+    })
 
-    let name ='';
-    console.log(auth);
-    if( auth.user) {
-        name = auth.user.name;
-        // console.log(auth.user.name);
-    } else {
-      return <Redirect to="/login" /> 
-    }
+    useEffect( () => {
+        console.log(auth);
+        if( auth.user) {
+            setState({ name: auth.user.name });
+            // console.log(auth.user.name);
+        } else if(active == 'notActive') {
+          return <Redirect to="/login" /> 
+        }
+        console.log("Last");
+    }, [auth]);
+
+    console.log("First");
     return ( 
         <Fragment>
-          <h1> Welcome {name}</h1>
+          <h1> Welcome {state.name}</h1>
         </Fragment>
     );
 };
@@ -27,7 +34,8 @@ Profile.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    auth: state.auth,
+    active: state.auth.active
     // profile: state.profile
 });
 

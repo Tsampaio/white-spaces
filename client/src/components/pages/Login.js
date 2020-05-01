@@ -5,7 +5,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { login } from '../../actions/auth';
 import PropTypes from 'prop-types';
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated, active }) => {
 	const [formData, setFormData] = useState({
 			email: '',
 			password: ''
@@ -20,7 +20,9 @@ const Login = ({ login, isAuthenticated }) => {
 	}
 
 	//Redirect if logged in
-	if( isAuthenticated ) {
+	if( isAuthenticated && active === "notActive" ) {
+		return <Redirect to="/activate" /> 
+	} else if( isAuthenticated ) {
 			return <Redirect to="/" /> 
 	}
 
@@ -47,6 +49,7 @@ const Login = ({ login, isAuthenticated }) => {
         </div>
 				<input type="submit" className="btn btn-primary" value="Login" />
 			</form>
+			<h3><Link to="/forgotPassword">Forgot your password?</Link></h3>
 		</Fragment>
 	);
 }

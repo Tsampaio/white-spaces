@@ -1,6 +1,7 @@
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const USER_LOADED = 'USER_LOADED';
+export const USER_GUEST = 'USER_GUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const AUTH_ERROR = 'AUTH_ERROR';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
@@ -8,3 +9,7 @@ export const LOGOUT = 'LOGOUT';
 export const LOGOUT_FAIL = 'LOGOUT_FAIL';
 export const GET_COURSES = 'GET_COURSES';
 export const GET_ONE_COURSE = 'GET_ONE_COURSE';
+export const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
+export const RESET_PASSWORD = 'RESET_PASSWORD';
+export const EMAIL_ACTIVATION = 'EMAIL_ACTIVATION';
+export const ACCOUNT_ACTIVATION = 'ACCOUNT_ACTIVATION';

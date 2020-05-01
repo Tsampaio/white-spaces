@@ -38,6 +38,17 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
+const generateActivationToken = async (req, user) => {
+  const activationToken = user.activationResetToken();
+  user.activationToken = activationToken;
+  await user.save({ validateBeforeSave: false });
+
+  const url = `${req.protocol}://localhost:3000/activate/${activationToken}`;
+  //Or http://localhost:3000/dashboard   for HOST
+  console.log(url);
+  await new Email(user, url).sendWelcome();
+}
+
 exports.register = async (req, res) => {
   try {
     // console.log(req.body);
@@ -60,10 +71,16 @@ exports.register = async (req, res) => {
       passwordConfirm: passwordConfirm
     });
 
-    const url = `${req.protocol}://${req.get('host')}/profile`;
-    //Or http://localhost:3000/dashboard   for HOST
-    console.log(url);
-    await new Email(newUser, url).sendWelcome();
+    // 2) Generate the random reset token
+    generateActivationToken(req, newUser);
+    // const activationToken = newUser.activationResetToken();
+    // newUser.activationToken = activationToken;
+    // await newUser.save({ validateBeforeSave: false });
+
+    // const url = `${req.protocol}://${req.get('host')}/activate/${activationToken}`;
+    // //Or http://localhost:3000/dashboard   for HOST
+    // console.log(url);
+    // await new Email(newUser, url).sendWelcome();
 
     // res.status(200).json({
     //   status: 'success',
@@ -71,12 +88,45 @@ exports.register = async (req, res) => {
     //   data: newUser
     // });
 
-    createSendToken(newUser, 201, res);
+    res.status(201).json({
+      status: 'success',
+      message: 'You are Registered',
+    });
   } catch(error) {
     console.log(error);
   }
 
 };
+
+exports.activate = async (req, res, next) => {
+  // 1) Get user based on the token
+
+  console.log('inside account Activation');
+  console.log(req.params.token);
+  const user = await User.findOne({activationToken: req.params.token})
+  
+  console.log(user);
+
+  // 2) If token has not expired, and there is user, set the new password
+  if (!user) {
+    return next(
+      res.status(400).json({
+        status: 'fail',
+        message: 'Token is invalid or has expired'
+      })
+    );
+  }
+
+  user.active = "active";
+  user.activationToken = undefined;
+  await user.save({ validateBeforeSave: false });
+
+  
+  res.status(200).json({
+    status: 'success',
+    message: 'You are Activated',
+  });
+}
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -126,9 +176,9 @@ exports.protect = async (req, res, next) => {
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   } else {
-    return res.status(401).json({
-      status: 'fail',
-      message: 'You are not logged in! Please log in to get access.'
+    return res.status(200).json({
+      status: 'guest',
+      message: 'You are not logged in! You are a guest'
     });
   }
 
@@ -152,7 +202,8 @@ exports.protect = async (req, res, next) => {
     status: 'success',
     message: 'your are authenticated',
     token,
-    user: currentUser
+    user: currentUser,
+    active: currentUser.active
   });
 
 };
@@ -160,9 +211,9 @@ exports.protect = async (req, res, next) => {
 exports.forgotPassword = async (req, res, next) => {
   console.log("inside forgot password");
   //1) Get user based on POSTed email
+  console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    
     return next(
       res.status(404).json({
         status: 'Fail',
@@ -183,9 +234,11 @@ exports.forgotPassword = async (req, res, next) => {
     //   message
     // });
 
-    const resetURL = `${req.protocol}://${req.get(
-    'host'
-    )}/api/users/resetPassword/${resetToken}`;
+    // const resetURL = `${req.protocol}://${req.get(
+    // 'host'
+    // )}/api/users/resetPassword/${resetToken}`;
+
+    const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
 
     await new Email(user, resetURL).sendPasswordReset();
 
@@ -284,3 +337,21 @@ exports.updatePassword = async (req, res, next) => {
   // 4) Log user in, send JWT
   createSendToken(user, 200, res);
 };
+
+exports.emailActivation = async (req, res) => {
+  try {
+    console.log('inside emailActivation');
+    console.log(req.params.email);
+    const user = await User.findOne({email: req.params.email})
+    console.log(user);
+    generateActivationToken(req, user);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'The activation Email has been sent'
+    })
+
+  } catch (error) {
+    console.log(error);
+  }
+}
