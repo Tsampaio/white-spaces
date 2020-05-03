@@ -1,0 +1,72 @@
+.cardBorder {
+  border: 1px solid rgb(229, 229, 229);
+}
+
+.courseThumbnail {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.courseFeatured1 {
+  height: 160px;
+  background-image: url('../../images/javascript-shopping.jpg');
+  background-size: cover;
+  background-position: center;
+  
+}
+
+.courseTitleCtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 22px;
+  padding-bottom: 22px;
+  height: 70px;
+}
+
+.courseTitle {
+  font-family: 'Roboto Slab';
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: 700;
+  display: block;
+}
+
+.courseTitle:hover {
+  text-decoration: none;
+}
+
+.separator {
+  border-bottom: 2px solid rgb(229, 229, 229);
+  width: 80%;
+  height: 1px;
+  margin: 0 auto;
+}
+
+.priceCtn {
+  padding: 14px 20px 10px 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.priceCtn .fa-users {
+  color: #999;
+  margin-right: 5px;
+}
+
+.studentNumbers {
+    font-size: 14px;
+    display: inline-block;
+    color: #999;
+    line-height: 30px;
+    font-weight: 400;
+}
+
+.price {
+    font-size: 13px;
+    font-weight: 700;
+    color: #f24c0a;
+}

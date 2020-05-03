@@ -1,5 +1,6 @@
 import React, { useEffect, Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
+import SecondHeader from '../partials/SecondHeader';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -21,9 +22,10 @@ function Profile({ auth, active }) {
 
     console.log("First");
     return ( 
-        <Fragment>
-          <h1> Welcome {state.name}</h1>
-        </Fragment>
+      <Fragment>
+        <SecondHeader />
+      	<h1> Welcome {state.name}</h1>
+      </Fragment>
     );
 };
 

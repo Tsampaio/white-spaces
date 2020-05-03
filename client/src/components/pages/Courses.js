@@ -3,7 +3,7 @@ import store from '../../store';
 import { getCourses } from '../../actions/courses';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Header from '../partials/Header';
+import SecondHeader from '../partials/SecondHeader';
 
 const Courses = ({ courses }) => {
   useEffect( () => {
@@ -31,7 +31,7 @@ const Courses = ({ courses }) => {
   })
   return (
     <Fragment>
-      <Header />
+      <SecondHeader />
       <div className="courses main-container container">
         <div className="row">
           <h1>Hello</h1>

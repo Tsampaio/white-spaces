@@ -5,6 +5,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { loadUser } from './actions/auth';
 import store from './store';
+import './fontawesome/css/all.min.css';
 import Home from './components/pages/Home';
 import Courses from './components/pages/Courses';
 import Register from './components/pages/Register';

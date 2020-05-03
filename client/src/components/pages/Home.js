@@ -1,14 +1,29 @@
 import React, { Fragment } from 'react';
 import Header from '../partials/Header';
+import CourseCard from './CourseCard';
+import './Home.css';
 
 const Home = (props) => {
     return (
         <Fragment>
           <Header />
-          <h1>Home</h1>
-          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus eius adipisci quia iste sed ab vero explicabo porro? Corrupti est vitae voluptates consectetur! Aliquam ab fugit necessitatibus, eos assumenda error.</p>
-          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus eius adipisci quia iste sed ab vero explicabo porro? Corrupti est vitae voluptates consectetur! Aliquam ab fugit necessitatibus, eos assumenda error.</p>
-          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus eius adipisci quia iste sed ab vero explicabo porro? Corrupti est vitae voluptates consectetur! Aliquam ab fugit necessitatibus, eos assumenda error.</p>
+          <div className="container">
+            <div className="row">
+              
+                <h3 className="popularCourses">Popular Courses</h3>
+            </div>
+                <div className="popularCoursesCtn">
+                  <div className="row">
+                    <CourseCard />
+                    <CourseCard />
+                    <CourseCard />
+                    <CourseCard />
+                  </div>
+                  
+                </div>
+              
+            </div>
+          
         </Fragment>
     )
 }

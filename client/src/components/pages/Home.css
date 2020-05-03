@@ -1,0 +1,14 @@
+.popularCourses {
+  padding-top: 42px;
+  padding-bottom: 30px;
+  color: #333;
+  font-family: 'Roboto Slab';
+  font-size: 30px;
+  line-height: 40px;
+  font-weight: 700;
+}
+
+.popularCoursesCtn {
+  padding-top: 30px;
+}
+
