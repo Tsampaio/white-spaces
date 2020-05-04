@@ -3,12 +3,10 @@
 }
 
 .courseThumbnail {
-  margin-left: -15px;
-  margin-right: -15px;
+  height: 200px;
 }
 
 .courseFeatured1 {
-  height: 160px;
   background-image: url('../../images/javascript-shopping.jpg');
   background-size: cover;
   background-position: center;

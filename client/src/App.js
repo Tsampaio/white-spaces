@@ -7,6 +7,7 @@ import { loadUser } from './actions/auth';
 import store from './store';
 import './fontawesome/css/all.min.css';
 import Home from './components/pages/Home';
+import Footer from './components/pages/Footer';
 import Courses from './components/pages/Courses';
 import Register from './components/pages/Register';
 import Login from './components/pages/Login';
@@ -39,6 +40,7 @@ function App() {
           <Route path="/resetPassword/:token" component={RST_PASSWORD} />
           <PrivateRoute exact path="/profile" component={Profile} />
         </Switch>
+          <Footer />
       </BrowserRouter>
     </Provider>
   );

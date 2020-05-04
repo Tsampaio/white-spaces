@@ -10,5 +10,39 @@
 
 .popularCoursesCtn {
   padding-top: 30px;
+  padding-bottom: 140px;
 }
 
+.homeCounter {
+  padding: 170px 0;
+  background-image: url('../../images/homeCounter.jpg');
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  position: relative;
+}
+
+.homeCounter .col-3 {
+  border-right: 1px solid #fff;
+}
+
+.homeCounter .overlay {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.homeCounterTitle {
+  color: #ffb606;
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 60px;
+  font-family: 'Roboto';
+}
+
+.homeCounterSubTitle { 
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 30px;
+  font-family: 'Roboto';
+  text-transform: uppercase;
+}
