@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import jsCart from '../../images/javascript-shopping.jpg';
 import './CourseCard.css';
 
 const CourseCard = () => {
@@ -6,10 +7,12 @@ const CourseCard = () => {
     <div className="col-3">
       <div className="cardBorder">
         <div className="courseThumbnail courseFeatured1">
-          <a href="/courses"></a>
+          <a href="/courses/js">
+            <img src={jsCart} alt="javascript" />
+          </a>
         </div>
         <div className="courseTitleCtn">
-          <a href="/courses" className="courseTitle">Responsive Website</a>
+          <a href="/courses/js" className="courseTitle">Responsive Website</a>
         </div>
         <div className="separator"></div>
         <div className="priceCtn">

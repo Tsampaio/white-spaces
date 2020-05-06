@@ -1,0 +1,65 @@
+.courseCtn {
+  padding-top: 60px;
+}
+
+.instructorPhoto {
+  border-radius: 50%;
+  width: 40px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.courseTitle {
+  color: #333;
+  font-family: "Roboto Slab";
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 40px;
+  margin-bottom: 35px;
+}
+
+.courseInstructorCtn {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  
+}
+
+.courseInstructor {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  border-right: 1px solid rgb(238, 238, 238);
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.courseInstructor h5 {
+    font-size: 12px;
+    font-weight: 700;
+    color: #ccc;
+    margin-bottom: 0;
+    font-weight: 700;
+    line-height: 20px;
+    flex: 1 100%;
+}
+
+.courseInstructor h6 {
+  color: #7a7a7a;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.reviews {
+  color: #7a7a7a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.reviews i {
+  color:#ffb606;
+  font-size: 13px;
+
+}

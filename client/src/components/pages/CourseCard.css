@@ -2,15 +2,8 @@
   border: 1px solid rgb(229, 229, 229);
 }
 
-.courseThumbnail {
-  height: 200px;
-}
-
-.courseFeatured1 {
-  background-image: url('../../images/javascript-shopping.jpg');
-  background-size: cover;
-  background-position: center;
-  
+.courseThumbnail img {
+  width: 100%;
 }
 
 .courseTitleCtn {

@@ -8,6 +8,7 @@ import store from './store';
 import './fontawesome/css/all.min.css';
 import Home from './components/pages/Home';
 import Footer from './components/pages/Footer';
+import Course from './components/pages/Course';
 import Courses from './components/pages/Courses';
 import Register from './components/pages/Register';
 import Login from './components/pages/Login';
@@ -31,6 +32,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/courses" component={Courses} />
+          <Route exact path="/courses/:course" component={Course} />
           <Route path="/register" component={Register} />
           <Route exact path="/activate" component={Activate} />
           <Route exact path="/activate/:token" component={ActivateEmail} />
