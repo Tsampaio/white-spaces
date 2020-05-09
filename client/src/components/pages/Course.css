@@ -1,5 +1,9 @@
-.courseCtn {
+.courseCtnHeader {
   padding-top: 60px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 45px;
 }
 
 .instructorPhoto {
@@ -9,13 +13,14 @@
   margin-right: 10px;
 }
 
-.courseTitle {
+.coursePageTitle {
   color: #333;
   font-family: "Roboto Slab";
   font-size: 30px;
   font-weight: 700;
   line-height: 40px;
   margin-bottom: 35px;
+  width: 100%;
 }
 
 .courseInstructorCtn {
@@ -25,17 +30,21 @@
   
 }
 
-.courseInstructor {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
+.courseInstructorCtn > div {
   border-right: 1px solid rgb(238, 238, 238);
   padding-left: 15px;
   padding-right: 15px;
 }
 
-.courseInstructor h5 {
+.courseInstructor {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  
+}
+
+.courseInstructorCtn h5 {
     font-size: 12px;
     font-weight: 700;
     color: #ccc;
@@ -45,7 +54,7 @@
     flex: 1 100%;
 }
 
-.courseInstructor h6 {
+.courseInstructorCtn h6 {
   color: #7a7a7a;
   font-size: 12px;
   font-weight: 700;
@@ -61,5 +70,116 @@
 .reviews i {
   color:#ffb606;
   font-size: 13px;
-
 }
+
+.buyCtn {
+  display: flex;
+  align-items: center;
+}
+
+.coursePagePrice {
+  color: #f24c0a;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 40px;
+  margin-right: 20px;
+} 
+
+.coursePageBuy {
+  background-color: #f24c0a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 40px;
+  padding-left: 25px;
+  padding-right: 25px;
+  height: 40px;
+  display: inline-block;
+  transition: all 0.3s ease-in-out;
+}
+
+.coursePageBuy:hover {
+  background-color: #b94213;
+  text-decoration: none;
+  color: #fff;
+}
+
+.courseCtnBody {
+  text-align: center;
+}
+
+.courseIntro {
+  border: 1px solid rgb(255, 182, 6);
+  margin-bottom: 45px;
+}
+
+.courseOverview {
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 30px;
+  color: rgb(51, 51, 51);
+  font-family: "Roboto Slab";
+  text-align: left;
+}
+
+.courseDescription {
+  text-align: left;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+}
+
+.courseDescription ul {
+  margin-left: 30px
+}
+
+.courseClassItems {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  border-top: 1px solid rgb(209, 209, 209);
+  padding: 12px 0;
+}
+
+.courseClassLecture {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 30px;
+  color: #666;
+  text-align: left;
+  margin-right: 50px;
+  
+}
+
+.courseClassLecture i {
+  color: #ffb606;
+  font-size: 15px;
+  margin-right: 10px;
+  display: inline-block;
+  
+}
+
+.courseClassTitle {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.courseClassTitle a {
+  color: #333;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.courseClassTitle span {
+  font-size: 14px;
+  font-weight: 400;
+  display: inline-block;
+  line-height: 30px;
+  color: #999;
+}
+
