@@ -13,6 +13,9 @@ import Courses from './components/pages/Courses';
 import Register from './components/pages/Register';
 import Login from './components/pages/Login';
 import Logout from './components/pages/Logout';
+import Membership from './components/pages/Membership';
+import Subscription from './components/pages/Subscription';
+import CheckoutSuccess from './components/pages/CheckoutSuccess';
 import FGT_PASSWORD from './components/pages/ForgotPassword';
 import RST_PASSWORD from './components/pages/ResetPassword';
 import Profile from './components/private/Profile';
@@ -34,6 +37,9 @@ function App() {
           <Route exact path="/courses" component={Courses} />
           <Route exact path="/courses/:course" component={Course} />
           <Route path="/register" component={Register} />
+          <Route exact path="/cart/checkout" component={Membership} />
+          <Route exact path="/cart/checkout/success" component={CheckoutSuccess} />
+          <Route exact path="/subscription" component={Subscription} />
           <Route exact path="/activate" component={Activate} />
           <Route exact path="/activate/:token" component={ActivateEmail} />
           <Route path="/login" component={Login} />

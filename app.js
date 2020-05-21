@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
 
 //Define Routes
 app.use('/api', require('./routes/pagesRoutes'));
+app.use('/api', require('./routes/braintree'));
 app.use('/api/users', require('./routes/userRoutes'));
 
 

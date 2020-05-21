@@ -38,7 +38,7 @@ const Course = () => {
             </div>
 
             <div className="buyCtn">
-              <a href="/checkout" className="coursePageBuy">ACCESS NOW</a>
+              <a href="/cart/checkout" className="coursePageBuy">ACCESS NOW</a>
             </div>
           </div>
 
