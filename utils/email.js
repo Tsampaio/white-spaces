@@ -50,6 +50,11 @@ module.exports = class Email {
       text: htmlToText.fromString(html)
     };
 
+    console.log("mailOptions");
+    console.log("from", mailOptions.from);
+    console.log("to", mailOptions.to);
+    console.log("subject", mailOptions.subject);
+
     // 3) Create a transport and send email
     await this.newTransport().sendMail(mailOptions);
     console.log("Email Sent...");
@@ -57,6 +62,10 @@ module.exports = class Email {
 
   async sendWelcome() {
     await this.send('welcome', 'Welcome to Telmo Academy Family!');
+  }
+
+  async sendThankYou() {
+    await this.send('thankYou', 'The JavaScript Course Receipt');
   }
 
   async sendPasswordReset() {

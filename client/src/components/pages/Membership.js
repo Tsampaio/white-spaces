@@ -31,7 +31,7 @@ const Membership = ({payAction, payment, processPayment, auth}) => {
 
       // processPayment(userId, token, paymentData)
       // processPayment('131asdasd', 'adasdadad', paymentData)
-      processPayment(auth.user._id, auth.token, paymentData)
+      processPayment(auth.user, auth.token, paymentData)
     })
     .catch(error => {
       console.log('dropin error: ', error)

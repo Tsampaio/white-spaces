@@ -30,7 +30,7 @@ export const payAction = (userId, token) => async dispatch => {
   }
 }
 
-export const processPayment = (userId, token, paymentData) => async dispatch => {
+export const processPayment = (user, token, paymentData) => async dispatch => {
   console.log("processPayment action");
   console.log(paymentData);
   try {
@@ -44,14 +44,23 @@ export const processPayment = (userId, token, paymentData) => async dispatch => 
     }
     
     const body = JSON.stringify(paymentData);
+    
+    const res = await axios.post(`/api/braintree/payment/${user._id}`, body, config);
+      
+    console.log(res.data);
 
-      const res = await axios.post(`/api/braintree/payment/${userId}`,body, config);
-        
-      console.log(res.data);
-      dispatch({
-          type: PAY_COURSE,
-          payload: res.data
-      });
+    if(res.data.success) {
+      const body2 = {
+        email: user.email
+      }
+      const res2 = await axios.post(`/api/braintree/checkout/success`, body2, config);
+      console.log("email response");
+      console.log(res2.data.message);
+    }
+    dispatch({
+        type: PAY_COURSE,
+        payload: res.data
+    });
      
   } catch (err) {
       // const errors = err.response.data.message;

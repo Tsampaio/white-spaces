@@ -1,6 +1,7 @@
 const Course = require('./../models/courseModel');
 const User = require('./../models/userModel');
 const braintree = require('braintree');
+const Email = require('../utils/email');
 require('dotenv').config();
 
 const gateway = braintree.connect({
@@ -89,6 +90,29 @@ exports.subscriptionPayment = (req, res) => {
     //     res.status(200).json(result);
     //   }
     // })
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.emailThankYou = async (req, res) => {
+  try {
+    console.log('inside emailThankyou');
+    console.log(req.body.email);
+    const user = await User.findOne({email: req.body.email})
+    console.log(user);
+    // generateActivationToken(req, user);
+
+    const url = `${req.protocol}://localhost:3000/courses/javascript-shopping-cart`;
+    //Or http://localhost:3000/dashboard   for HOST
+    console.log(url);
+    await new Email(user, url).sendThankYou();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'You bought the course'
+    })
 
   } catch (error) {
     console.log(error);
