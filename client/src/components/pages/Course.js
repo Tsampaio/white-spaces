@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import SecondHeader from '../partials/SecondHeader';
 import profilePic from '../../images/telmo-pic.jpg';
 import './Course.css';
@@ -12,7 +13,7 @@ const Course = () => {
           <div className="courseCtnHeader">
             <h1 className="coursePageTitle">HTML/CSS/JavaScript – Website</h1>
           
-            <div className="courseInstructorCtn">
+            {/* <div className="courseInstructorCtn">
               
                 <div className="courseInstructor">
                   <img src={profilePic} alt="profile" className="instructorPhoto"/>
@@ -35,11 +36,11 @@ const Course = () => {
                   (4 REVIEWS)
                 </div>
               
-            </div>
+            </div> */}
 
-            <div className="buyCtn">
-              <a href="/cart/checkout" className="coursePageBuy">ACCESS NOW</a>
-            </div>
+            {/* <div className="buyCtn">
+              <a href="/cart/checkout" className="coursePageBuy">Buy Course</a>
+            </div> */}
           </div>
 
           <div className="courseCtnBody">
@@ -68,31 +69,51 @@ const Course = () => {
                     <li>and much more…</li>
                   </ul>
                 </div>
-                <h4 className="courseOverview">Curriculum</h4>
-                <div className="courseClassItems">
-                  <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
-                  <div className="courseClassTitle">
-                    <a href="/">MySQL Connection with PDO</a>
-                    <span>26 min</span>
+                <div className="curriculumCtn">
+                  <h4 className="courseOverview">Curriculum</h4>
+                  <div className="courseClassItems">
+                    <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
+                    <div className="courseClassTitle">
+                      <a href="/">MySQL Connection with PDO</a>
+                      <span>26 min</span>
+                    </div>
                   </div>
-                </div>
-                <div className="courseClassItems">
-                  <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
-                  <div className="courseClassTitle">
-                    <a href="/">MySQL Connection with PDO</a>
-                    <span>26 min</span>
+                  <div className="courseClassItems">
+                    <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
+                    <div className="courseClassTitle">
+                      <a href="/">MySQL Connection with PDO</a>
+                      <span>26 min</span>
+                    </div>
                   </div>
-                </div>
-                <div className="courseClassItems">
-                  <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
-                  <div className="courseClassTitle">
-                    <a href="/">MySQL Connection with PDO</a>
-                    <span>26 min</span>
+                  <div className="courseClassItems">
+                    <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
+                    <div className="courseClassTitle">
+                      <a href="/">MySQL Connection with PDO</a>
+                      <span>26 min</span>
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="col-4">
-                
+                <div class="card purchaseButtons">
+                  <div class="card-header">
+                    Unlimited access all courses
+                  </div>
+                  <div className="card-body">
+                    <h1>$18/month</h1>
+                    <Link className="membershipButton" to="/checkout"> <span className="buyMembershipPrice">Become Member</span></Link>
+                  </div>
+                </div>
+
+                <div class="card purchaseButtons">
+                  <div class="card-header">
+                    Buy Lifetime Access:
+                  </div>
+                  <div className="card-body">
+                    <h1>$35 USD</h1>
+                    <Link className="buyButton" to="/checkout"> <span className="buyCoursePrice">Buy Course</span></Link>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

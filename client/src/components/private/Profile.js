@@ -14,10 +14,10 @@ function Profile({ auth, active }) {
         if( auth.user) {
             setState({ name: auth.user.name });
             // console.log(auth.user.name);
-        } else if(active == 'notActive') {
-          return <Redirect to="/login" /> 
+        } else if(active == 'notActive' && !auth.loading) {
+          return <Redirect to="/activate" /> 
         }
-        console.log("Last");
+        // console.log("Last");
     }, [auth]);
 
     console.log("First");
@@ -25,6 +25,8 @@ function Profile({ auth, active }) {
       <Fragment>
         <SecondHeader />
       	<h1> Welcome {state.name}</h1>
+        <h5>Courses Owned</h5>
+
       </Fragment>
     );
 };

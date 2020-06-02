@@ -39,7 +39,8 @@ export default function( state = initialState, action ) {
           ...state,
           token: null,
           isAuthenticated: null,
-          user: null
+          user: null,
+          loading: false
         }
       case REGISTER_SUCCESS:
     //   case LOGIN_SUCCESS:
@@ -54,7 +55,8 @@ export default function( state = initialState, action ) {
           isAuthenticated: true,
           token: payload.token,
           message: payload.message,
-          user: payload.user
+          user: payload.user,
+          active: payload.user.active
         }
       // case REGISTER_FAIL:
       // case AUTH_ERROR:
