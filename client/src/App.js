@@ -10,6 +10,7 @@ import Home from './components/pages/Home';
 import Footer from './components/pages/Footer';
 import Course from './components/pages/Course';
 import Courses from './components/pages/Courses';
+import CourseLessons from './components/pages/CourseLessons';
 import Register from './components/pages/Register';
 import Login from './components/pages/Login';
 import Logout from './components/pages/Logout';
@@ -36,6 +37,8 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/courses" component={Courses} />
           <Route exact path="/courses/:course" component={Course} />
+          <Route exact path="/courses/:course/lessons/:lesson" component={CourseLessons} />
+          /courses/javascript-shopping-cart
           <Route path="/register" component={Register} />
           <Route exact path="/cart/checkout" component={Membership} />
           <Route exact path="/cart/checkout/success" component={CheckoutSuccess} />

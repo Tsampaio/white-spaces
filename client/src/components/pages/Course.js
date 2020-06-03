@@ -74,21 +74,21 @@ const Course = () => {
                   <div className="courseClassItems">
                     <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
                     <div className="courseClassTitle">
-                      <a href="/">MySQL Connection with PDO</a>
+                      <a href="/courses/javascript-shopping-cart/lessons/first">MySQL Connection with PDO</a>
                       <span>26 min</span>
                     </div>
                   </div>
                   <div className="courseClassItems">
                     <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
                     <div className="courseClassTitle">
-                      <a href="/">MySQL Connection with PDO</a>
+                      <a href="/courses/javascript-shopping-cart/lessons/first">MySQL Connection with PDO</a>
                       <span>26 min</span>
                     </div>
                   </div>
                   <div className="courseClassItems">
                     <div class="courseClassLecture"><i class="far fa-file"></i>Lecture 1.1</div>
                     <div className="courseClassTitle">
-                      <a href="/">MySQL Connection with PDO</a>
+                      <a href="/courses/javascript-shopping-cart/lessons/first">MySQL Connection with PDO</a>
                       <span>26 min</span>
                     </div>
                   </div>

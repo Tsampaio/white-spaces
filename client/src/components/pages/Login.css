@@ -1,0 +1,26 @@
+.loginCtn {
+    background-color: #f5f6f7;
+}
+
+.loginTitle {
+    text-align: center;
+    color: #515a5f;
+    padding-bottom: 22px;
+    font-size: 20px;
+    text-align: center;
+    font-weight: 700;
+    line-height: 28px;
+}
+
+.loginCtn i {
+    margin-right: 10px;
+}
+
+.loginCtn .card {
+    margin-top: 70px;
+    padding: 30px 45px;
+}
+
+.loginCtn input {
+    width: 100%;
+}
