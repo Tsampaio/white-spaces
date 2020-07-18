@@ -5,15 +5,27 @@ const courseSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  intro: {
+    type: String
+  },
   tag: {
     type: String,
     unique: true,
   },
+  description: {
+    type: String,
+  },
   price: {
     type: String,
   },
+  sold: {
+    type: Number
+  },
   classes: [
     {
+      lecture: {
+        type: Number
+      },
       title: {
         type: String
       },

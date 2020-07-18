@@ -36,8 +36,8 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/courses" component={Courses} />
-          <Route exact path="/courses/:course" component={Course} />
-          <Route exact path="/courses/:course/lessons/:lesson" component={CourseLessons} />
+          <Route exact path="/courses/:courseTag" component={Course} />
+          <Route exact path="/courses/:courseTag/lessons/:lesson" component={CourseLessons} />
           /courses/javascript-shopping-cart
           <Route path="/register" component={Register} />
           <Route exact path="/cart/checkout" component={Membership} />

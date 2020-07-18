@@ -29,3 +29,33 @@ export const getCourses = () => async dispatch => {
       console.log(err);
   }
 }
+
+export const getCourse = (courseTag) => async dispatch => {
+  // if(localStorage.token) {
+  //     setAuthToken(localStorage.token);
+  // }
+  
+  try {
+      console.log("inside getCourse");
+
+      const body = JSON.stringify({ courseTag });
+      console.log(body);
+      const res = await axios.post(`/api/getCourse`, body, {
+        headers: {
+          Accept: 'application/json',
+          "Content-Type": "application/json"
+        }
+      });
+
+      console.log(res.data)
+
+      dispatch({
+          type: GET_ONE_COURSE,
+          payload: res.data
+      });
+     
+  } catch (err) {
+      // const errors = err.response.data.message;
+      console.log(err);
+  }
+}

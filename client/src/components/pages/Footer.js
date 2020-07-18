@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="row">
           <div className="footerSocialCtn">
             <img src={footerLogo} alt="Telmo Academy Logo"/>
-            <span className="footerEmail"><i className="fas fa-envelope"></i>support[at]telmoacademy.com</span>
+            <span className="footerEmail"><i className="fas fa-envelope"></i>support@telmoacademy.com</span>
             <span className="footerSocial">
               <a href="#"><i className="fab fa-youtube"></i></a>
               <a href="#"><i className="fab fa-twitter"></i></a>

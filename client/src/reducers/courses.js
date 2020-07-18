@@ -12,6 +12,7 @@ export default function( state = initialState, action ) {
 
   switch(type) {
     case GET_ONE_COURSE:
+      console.log("inside reducer get one course");
       return {
           ...state,
           data: payload.course

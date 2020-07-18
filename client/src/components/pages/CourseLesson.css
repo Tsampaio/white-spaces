@@ -1,0 +1,106 @@
+.courseLesson {
+    height: calc(100vh - 168px);
+}
+
+.courseLesson .row {
+   height: 100%;
+}
+
+.courseLesson h1 {
+    font-size: 20px;
+    background-color: rgb(33, 35, 56);
+    color: rgb(232, 232, 232);
+    padding: 10px 20px;
+    margin: 0;
+}
+
+.courseLesson .col-8 h1 {
+    background-color: orange;
+    text-align: center;
+    color: rgb(33, 35, 56);
+}
+
+.courseLesson .col-4 {
+    display: flex;
+    flex-direction: column;
+}
+
+.courseLesson .col-4,
+.courseLesson .col-8 {
+    padding: 0;
+}
+
+.courseCurriculum {
+    background-color: rgb(232, 232, 232);
+    margin: 0;
+    padding: 10px 20px;
+}
+
+.lessonsCtn {
+    background: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.lesson {
+    background: #f0f0f0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 20px;
+}
+
+.lessonLink {
+    text-decoration: none;
+    color: rgb(33, 37, 41);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 20px;
+}
+
+.lessonActive p {
+    font-weight: bold;
+}
+
+.lesson p {
+    margin: 0; 
+}
+
+.lesson i {
+    margin-right: 15px;
+}
+
+.lessonComplete {
+    width: 20px;
+    height: 20px;
+    border: 2px solid orange;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.currentLessonTitle {
+    padding: 30px 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.currentLessonTitle i {
+    margin-right: 10px;
+}
+
+.currentLessonTitle p {
+    margin: 0;
+}
+
+.videoIframe {
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 20px;
+}
+
+iframe {
+    width: 100%;
+}

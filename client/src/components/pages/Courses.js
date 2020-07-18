@@ -4,6 +4,7 @@ import { getCourses } from '../../actions/courses';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import SecondHeader from '../partials/SecondHeader';
+import jsCart from '../../images/javascript-shopping.jpg';
 
 const Courses = ({ courses }) => {
   useEffect( () => {
@@ -15,18 +16,23 @@ const Courses = ({ courses }) => {
   const allCourses = courses.all && courses.all.map( (course, index) => {
     
     return (
-      <div className="courseContainer col-sm-3" key={index}>
-        <Link to="/courses/javascript-shopping-cart">
-          <div className={`courseImage ${course.tag}`}></div>
-        </Link>
-        <div className="courseDetails">
-          <Link to="/courses/javascript-shopping-cart">
-            <h1>{course.name}</h1>
-          </Link>
-          <h5><i className="fas fa-users"></i>{course.users.length}</h5>
-          <p>${course.price}</p>
+      <div className="col-3">
+        <div className="cardBorder">
+          <div className="courseThumbnail courseFeatured1">
+            <Link to="/courses/javascript-shopping-cart">
+              <img src={jsCart} alt="javascript" />
+            </Link>
+          </div>
+          <div className="courseTitleCtn">
+            <Link to="/courses/javascript-shopping-cart">{course.name}</Link>
+          </div>
+          <div className="separator"></div>
+          <div className="priceCtn">
+            <span className="studentNumbers"><i className="fas fa-users"></i>860</span><span className="price">$32.90</span>
+          </div>
         </div>
       </div>
+
     )
   })
   return (
@@ -34,7 +40,6 @@ const Courses = ({ courses }) => {
       <SecondHeader />
       <div className="courses main-container container">
         <div className="row">
-          <h1>Hello</h1>
           {allCourses}
         </div>
       </div>

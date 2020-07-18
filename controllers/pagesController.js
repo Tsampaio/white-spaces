@@ -19,11 +19,79 @@ exports.getCourses = async (req, res, next) => {
 
 exports.getCourse = async (req, res, next) => {
   try {
+    console.log("inside getCourse Controller");
+    const { courseTag } = req.body;
+    console.log("this is courseTag ", courseTag);
+    const course = await Course.findOne({ tag: courseTag });
+    console.log("this is course ", course);
 
-    const { tag } = req.body;
-    //console.log(tag);
+    res.status(200).json({
+      status: 'success',
+      course: course
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+
+exports.createCourse = async (req, res, next) => {
+  try {
+    console.log("inside getCourse Controller");
+    const { courseTag } = req.body;
+    console.log("this is courseTag ", courseTag);
+    const course = await Course.findOne({ tag: courseTag });
+    console.log("this is course ", course);
+
+    res.status(200).json({
+      status: 'success',
+      course: course
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+
+exports.updateCourse = async (req, res, next) => {
+  try {
+    
+    const { tag }  = req.body;
+    
     const course = await Course.findOne({ tag });
-    //console.log(course);
+    
+    course.description = `<p>In this course you are going to learn how to create a Shopping Cart for an E commerce Website using JavaScript and the Local Storage.</p>`;
+    course.description += `<p><strong>IMPORTANT</strong>:&nbsp;This is a Front-End Project only, no Back-End is involved!</p>`;
+    course.description += `<p>By taking this course you will learn the following skills:</p>`;
+    course.description += `<p><strong>LEARNING OUTCOMES</strong></p>`;
+    course.description += `<ul>`;
+    course.description += `<li>Creating a Shopping Cart using HTML, CSS &amp; Vanilla JavaScript</li>`;
+    course.description += `<li>Learn how to use the Browser Local storage</li>`;
+    course.description += `<li>How to create Modular Functions</li>`;
+    course.description += `</ul>`;
+    course.description += `<p>And don’t worry, I will cover everything at a very slow pace, and explain each step of the process, if you have any questions, post them down and we will be happy to help you 🙂.</p>`;
+
+    course.intro = "https://player.vimeo.com/video/388672056";
+
+    course.classes = [
+      {
+        lecture: 1,
+        title: "Building the Frontend Interface",
+        url: "https://player.vimeo.com/video/388671124",
+        duration: 14
+      },
+      {
+        lecture: 2,
+        title: "Adding Numbers to the Cart",
+        url: "https://player.vimeo.com/video/388671204",
+        duration: 19
+      },
+
+    ]
+  
+    await course.save({ validateBeforeSave: false });
 
     res.status(200).json({
       status: 'success',
