@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import parse from 'html-react-parser';
+import SecondHeader from '../partials/SecondHeader';
 import './CourseLesson.css';
 import store from '../../store';
 import { useParams, Link } from 'react-router-dom';
@@ -12,14 +12,19 @@ const CourseLessons = ({ course }) => {
 		
 	}, []);
 
-	const { courseTag, lesson } = useParams();
+	let { courseTag, lesson } = useParams();
+
+	lesson = parseInt(lesson);
+
+	const totalLessons = course && course.data && course.data.classes.length;
+	console.log(totalLessons);
 
 	console.log(course);
 	console.log(lesson)
 
 	let classes = course && course.data && course.data.classes.map( (theClass, i) => {
 		return (
-			<div className="lesson">
+			<div className="lesson" key={i}>
 				<div className="lessonComplete"></div>
 				<Link className={lesson == (i+1) ? "lessonLink lessonActive" : "lessonLink"} to={`/courses/${course.data.tag}/lessons/${theClass.lecture}`}>	
 					<i className="fas fa-play-circle"></i>
@@ -28,13 +33,25 @@ const CourseLessons = ({ course }) => {
       </div>
 		);
 	});
-    
+	
+	const lessonContinue = () => {
+		if( (lesson + 1) > totalLessons  ) {
+			console.log( lesson );
+			console.log("inside of if");
+			return <h1>Last Lesson of the Course!</h1>
+		} else {
+			console.log("inside of else");
+			return <Link to={`/courses/${course && course.data && course.data.tag}/lessons/${lesson + 1}`}><h1>Next Lesson <i className="fas fa-arrow-right"></i></h1></Link>
+		}
+	}
 
 	return (
+		<Fragment>
+		<SecondHeader />
 		<div className="container-fluid courseLesson">
 			<div className="row">
 				<div className="col-4">
-					<h1>JavaScript - Shopping Cart</h1>
+					<h1>{course && course.data && course.data.name}</h1>
 
 					<h5 className="courseCurriculum">Curriculum</h5>
 					<div className="lessonsCtn">
@@ -64,7 +81,7 @@ const CourseLessons = ({ course }) => {
 					</div>
 				</div>
 				<div className="col-8">
-					<h1>Complete and Continue <i className="fas fa-arrow-right"></i></h1>
+					{ lessonContinue() }
 					<div className="currentLessonTitle">
 						<i className="fas fa-play-circle"></i>
 						<p>{course && course.data && course.data.classes[lesson-1].title}</p>
@@ -76,6 +93,7 @@ const CourseLessons = ({ course }) => {
 				</div>
 			</div>
 		</div>
+		</Fragment>
 	)
 }
 

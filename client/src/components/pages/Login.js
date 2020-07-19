@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
-import { connect} from 'react-redux';
+import SecondHeader from '../partials/SecondHeader';
+import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 // import { setAlert } from '../../actions/alert';
 import './Login.css'
@@ -8,8 +9,8 @@ import PropTypes from 'prop-types';
 
 const Login = ({ login, isAuthenticated, active }) => {
 	const [formData, setFormData] = useState({
-			email: '',
-			password: ''
+		email: '',
+		password: ''
 	});
 
 	const { email, password } = formData;
@@ -21,13 +22,15 @@ const Login = ({ login, isAuthenticated, active }) => {
 	}
 
 	//Redirect if logged in
-	if( isAuthenticated && active === "notActive" ) {
-		return <Redirect to="/activate" /> 
-	} else if( isAuthenticated ) {
-			return <Redirect to="/" /> 
+	if (isAuthenticated && active === "notActive") {
+		return <Redirect to="/activate" />
+	} else if (isAuthenticated) {
+		return <Redirect to="/" />
 	}
 
 	return (
+		<Fragment>
+		<SecondHeader />
 		<div className="loginCtn">
 			<div className="container">
 				<div className="row">
@@ -54,37 +57,38 @@ const Login = ({ login, isAuthenticated, active }) => {
 								</div>
 								<input type="submit" className="btn btn-primary" value="Login" />
 							</form>
-							
+
 						</div>
 					</div>
 					<div className="col-4 offset-2">
 						<div className="card">
-							
-								<h3><Link to="/forgotPassword">Forgot your password?</Link></h3>
-							
-							
+
+							<h3><Link to="/forgotPassword">Forgot your password?</Link></h3>
+
+
 						</div>
-						
+
 					</div>
 					<div className="col-4">
-					<div className="card">
-						<h3><Link to="/forgotPassword">Create an Account</Link></h3>
+						<div className="card">
+							<h3><Link to="/forgotPassword">Create an Account</Link></h3>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		</Fragment>
 	);
 }
 
 Login.propTypes = {
-    // setAlert: PropTypes.func.isRequired,
-    login: PropTypes.func.isRequired,
-    isAuthenticated: PropTypes.bool
+	// setAlert: PropTypes.func.isRequired,
+	login: PropTypes.func.isRequired,
+	isAuthenticated: PropTypes.bool
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+	isAuthenticated: state.auth.isAuthenticated
 })
 
 export default connect(mapStateToProps, { login })(Login);

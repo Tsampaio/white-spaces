@@ -1,9 +1,15 @@
 .courseLesson {
-    height: calc(100vh - 168px);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1;
 }
 
-.courseLesson .row {
-   height: 100%;
+.courseLesson > .row {
+    flex: 1 1;
+}
+
+.vp-center {
+    align-items: flex-start !important;
 }
 
 .courseLesson h1 {
