@@ -5,16 +5,17 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import SecondHeader from '../partials/SecondHeader';
 import jsCart from '../../images/javascript-shopping.jpg';
+import './Courses.css';
 
 const Courses = ({ courses }) => {
-  useEffect( () => {
+  useEffect(() => {
     store.dispatch(getCourses());
   }, []);
 
   console.log(courses);
 
-  const allCourses = courses.all && courses.all.map( (course, index) => {
-    
+  const allCourses = courses.all && courses.all.map((course, index) => {
+
     return (
       <div className="col-3">
         <div className="cardBorder">
@@ -28,7 +29,7 @@ const Courses = ({ courses }) => {
           </div>
           <div className="separator"></div>
           <div className="priceCtn">
-            <span className="studentNumbers"><i className="fas fa-users"></i>860</span><span className="price">$32.90</span>
+            <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">$32.90</span>
           </div>
         </div>
       </div>
@@ -38,9 +39,11 @@ const Courses = ({ courses }) => {
   return (
     <Fragment>
       <SecondHeader />
-      <div className="courses main-container container">
-        <div className="row">
-          {allCourses}
+      <div className="main-container">
+        <div className="courses container">
+          <div className="row">
+            {allCourses}
+          </div>
         </div>
       </div>
     </Fragment>

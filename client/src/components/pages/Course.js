@@ -81,7 +81,7 @@ const Course = ({ course }) => {
                   </div>
                   <div className="card-body">
                     <h1>${course && course.data && course.data.price} USD</h1>
-                    <Link className="buyButton" to="/checkout"> <span className="buyCoursePrice">Buy Course</span></Link>
+                    <Link className="buyButton" to="/cart/checkout"><span className="buyCoursePrice">Buy Course</span></Link>
                   </div>
                 </div>
               </div>

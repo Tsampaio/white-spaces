@@ -5,6 +5,7 @@ import { Link, Redirect } from 'react-router-dom';
 // import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import PropTypes from 'prop-types';
+import './Register.css';
 
 const Register = ({ register, isAuthenticated }) => {
 	const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ const Register = ({ register, isAuthenticated }) => {
 			console.log("Result", result);
 			console.log(randNumber1 === result);
 			console.log(randNumber1 !== result);
-			setFormData({ ...formData, message: "Wrong Result for Form Activation" });
+			setFormData({ ...formData, message: "You are a robot!" });
 
 
 		} else {
@@ -65,10 +66,11 @@ const Register = ({ register, isAuthenticated }) => {
 	return (
 		<Fragment>
 			<SecondHeader />
+			<div className="registerCtn">
 			<div className="container">
 				<div className="row">
-					<div className="col-8 offset-2">
-						<h1 className="large text-primary">Sign Up</h1>
+					<div className="col-6 offset-3">
+						<div className="card registerCard">
 						<p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
 						<form className="form" onSubmit={e => onSubmit(e)}>
 							<div className="form-group">
@@ -103,28 +105,33 @@ const Register = ({ register, isAuthenticated }) => {
 									onChange={e => onChange(e)}
 								/>
 							</div>
-							<input type="submit" className="btn btn-primary" value="Register" />
-						</form>
 
-						{randNumber1 && (
+							{randNumber1 && (
 							<div id="anti-bot">
+								<h3>I'm not a Robot</h3>
 								<span>{randNumber1}</span>
 								<span>+</span>
 								<span>{randNumber2}</span>
+								<span>=</span>
 								<input type="number" onChange={checkResult} />
 							</div>
 						)}
 
-						<p className="my-1">
-							Already have an account? <Link to="/login">Sign In</Link>
-						</p>
+							<input type="submit" className="btn btn-primary" value="Register" />
+						</form>
+
 						{message && (
-							<div>
+							<div class="registerError">
 								<h1>{message}</h1>
 							</div>
 						)}
+						</div>
+						<p className="goLogin">
+							Already have an account? <Link to="/login">Log In</Link>
+						</p>
 					</div>
 				</div>
+			</div>
 			</div>
 		</Fragment>
 	);

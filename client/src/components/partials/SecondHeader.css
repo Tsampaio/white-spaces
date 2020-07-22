@@ -1,6 +1,7 @@
 .secondHeader {
-  background-color: #1A3C72;
+  background-color: #fff;
   padding: 35px 0;
+  border-bottom: 1px solid #000;
 }
 
 .secondHeader ul {
@@ -14,7 +15,7 @@
 
 .secondHeader ul a {
   text-decoration: none;
-  color: #fff;
+  color: #000;
   padding: 12px 29px;
   font-size: 14px;
   font-weight: 600;

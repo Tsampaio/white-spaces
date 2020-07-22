@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from './Navbar';
+import SecondHeader from './SecondHeader';
 import { Link } from 'react-router-dom';
 
 import './Header.css';
@@ -7,7 +8,7 @@ import './Header.css';
 const Header = () => {
 	return (
 		<header>
-			<Navbar classProp="light-nav"/>
+			<SecondHeader />
 			<div className="heroTitle">
 				<div className="container">
 					<div className="row">

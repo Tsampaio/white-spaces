@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import './SecondHeader.css';
-import logo from '../../images/telmoacademy-logo2.png';
+import logo from '../../images/telmoacademy-logo3.png';
 import { connect } from 'react-redux';
 
 const SecondHeader = ({ isAuthenticated }) => {
@@ -16,7 +16,7 @@ const SecondHeader = ({ isAuthenticated }) => {
             <ul>
               <li><Link to='/'>HOME</Link></li>
               <li><Link to='/courses'>COURSES</Link></li>
-              <li><Link to='/membership'>MEMBERSHIP</Link></li>
+              {/* <li><Link to='/membership'>MEMBERSHIP</Link></li> */}
               {isAuthenticated ? (
                 <Fragment>
                   <li><Link to='/profile'>Profile</Link></li>

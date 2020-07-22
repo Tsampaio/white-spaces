@@ -28,7 +28,7 @@ const CourseLessons = ({ course }) => {
 				<div className="lessonComplete"></div>
 				<Link className={lesson == (i+1) ? "lessonLink lessonActive" : "lessonLink"} to={`/courses/${course.data.tag}/lessons/${theClass.lecture}`}>	
 					<i className="fas fa-play-circle"></i>
-					<p>{theClass.title} <span className="lessonTime">({theClass.duration})</span></p>
+					<p>{theClass.title} <span className="lessonTime"> - ({theClass.duration} mins)</span></p>
 				</Link>
       </div>
 		);

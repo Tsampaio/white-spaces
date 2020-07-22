@@ -1,5 +1,9 @@
 .cardBorder {
   border: 1px solid rgb(229, 229, 229);
+  background-color: #fff;
+  -webkit-box-shadow: 0px 19px 30px -12px rgba(0,0,0,0.49);
+  -moz-box-shadow: 0px 19px 30px -12px rgba(0,0,0,0.49);
+  box-shadow: 0px 19px 30px -12px rgba(0,0,0,0.49);
 }
 
 .courseThumbnail img {
@@ -13,6 +17,15 @@
   padding-top: 22px;
   padding-bottom: 22px;
   height: 70px;
+}
+
+.courseTitleCtn a {
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+}
+.courseTitleCtn a:hover {
+  text-decoration: none;
 }
 
 .courseTitle {
@@ -41,6 +54,7 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
+  background-color: #fff;
 }
 
 .priceCtn .fa-users {
