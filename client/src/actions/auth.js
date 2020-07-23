@@ -1,25 +1,27 @@
 import axios from 'axios';
 import {
-    REGISTER_SUCCESS,
-    REGISTER_FAIL,
-    LOGIN_SUCCESS,
-    USER_LOADED,
-    USER_GUEST,
-    AUTH_ERROR,
-    LOGOUT,
-    LOGOUT_FAIL,
-    FORGOT_PASSWORD,
-    RESET_PASSWORD,
-    EMAIL_ACTIVATION,
-    ACCOUNT_ACTIVATION
+  RESET_MESSAGE,
+  REGISTER_SUCCESS,
+  REGISTER_FAIL,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  USER_LOADED,
+  USER_GUEST,
+  AUTH_ERROR,
+  LOGOUT,
+  LOGOUT_FAIL,
+  FORGOT_PASSWORD,
+  RESET_PASSWORD,
+  EMAIL_ACTIVATION,
+  ACCOUNT_ACTIVATION
 } from './types';
 
 //Register User
 export const register = ({ name, email, password, passwordConfirm }) => async dispatch => {
-	const config = {
-		headers: {
-				'Content-Type': 'application/json'
-		}
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
   }
 
   const body = JSON.stringify({ name, email, password, passwordConfirm });
@@ -36,19 +38,19 @@ export const register = ({ name, email, password, passwordConfirm }) => async di
   } catch (err) {
     const errors = err.response.data.errors;
     console.log(errors);
-    
+
     dispatch({
-        type: REGISTER_FAIL
+      type: REGISTER_FAIL
     });
   }
 }
 
 //Login User
 export const login = ({ email, password }) => async dispatch => {
-	const config = {
-		headers: {
-				'Content-Type': 'application/json'
-		}
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
   }
 
   const body = JSON.stringify({ email, password });
@@ -64,10 +66,11 @@ export const login = ({ email, password }) => async dispatch => {
 
   } catch (error) {
     // const errors = err.response.data.errors;
-    console.log(error);
-    
+    console.log(error.response.data.message);
+
     dispatch({
-        type: REGISTER_FAIL
+      type: LOGIN_FAIL,
+      payload: error.response.data
     });
   }
 }
@@ -75,26 +78,26 @@ export const login = ({ email, password }) => async dispatch => {
 //Load User
 export const loadUser = () => async dispatch => {
   try {
-      const res = await axios.post('/api/users/loadUser');
-      console.log(res.data);
+    const res = await axios.post('/api/users/loadUser');
+    console.log(res.data);
 
-      if( res.data.token ) {
-        dispatch({
-            type: USER_LOADED,
-            payload: res.data
-        });
-      } else if(res.data.status == 'guest') {
-        dispatch({
-          type: USER_GUEST
-        });
-      }
-  } catch (err) {
+    if (res.data.token) {
       dispatch({
-          type: AUTH_ERROR
+        type: USER_LOADED,
+        payload: res.data
       });
+    } else if (res.data.status == 'guest') {
+      dispatch({
+        type: USER_GUEST
+      });
+    }
+  } catch (err) {
+    dispatch({
+      type: AUTH_ERROR
+    });
 
-      //const errors = err.response.data.message;
-      console.log(err);
+    //const errors = err.response.data.message;
+    console.log(err);
   }
 }
 
@@ -104,23 +107,26 @@ export const logout = () => async dispatch => {
   // dispatch({ type: CLEAR_PROFILE });
 
   try {
-      const res = await axios.get('/api/users/logout');
+    const res = await axios.get('/api/users/logout');
 
-      //console.log(res.data);
-      dispatch({ type: LOGOUT });
+    //console.log(res.data);
+    dispatch({ 
+      type: LOGOUT,
+      payload: { message: false } 
+    });
 
-      
-      // dispatch(loadUser());
+
+    // dispatch(loadUser());
   } catch (err) {
-      const errors = err.response.data.errors;
-      console.log(errors);
-      // if(errors) {
-      //     errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-      // }
+    const errors = err.response.data.errors;
+    console.log(errors);
+    // if(errors) {
+    //     errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    // }
 
-      dispatch({
-          type: LOGOUT_FAIL
-      });
+    dispatch({
+      type: LOGOUT_FAIL
+    });
   }
 }
 
@@ -129,7 +135,7 @@ export const fgt_pass = ({ email }) => async dispatch => {
   try {
     const config = {
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json'
       }
     }
     const body = JSON.stringify({ email });
@@ -139,7 +145,7 @@ export const fgt_pass = ({ email }) => async dispatch => {
     //console.log(res.data);
     dispatch({ type: FORGOT_PASSWORD });
 
-    
+
     // dispatch(loadUser());
   } catch (err) {
     const errors = err.response.data.errors;
@@ -159,7 +165,7 @@ export const reset_pass = ({ password, passwordConfirm, token }) => async dispat
   try {
     const config = {
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json'
       }
     }
     const body = JSON.stringify({ password, passwordConfirm });
@@ -169,20 +175,20 @@ export const reset_pass = ({ password, passwordConfirm, token }) => async dispat
     //console.log(res.data);
     dispatch({ type: RESET_PASSWORD });
 
-    
+
     // dispatch(loadUser());
-} catch (err) {
+  } catch (err) {
     const errors = err.response.data.errors;
     console.log(errors);
   }
 }
 
-export const activateEmail = ({email}) => async dispatch => {
+export const activateEmail = ({ email }) => async dispatch => {
   try {
     console.log(email);
     const res = await axios.post(`/api/users/activateAccount/${email}`);
     console.log(res.data);
-    dispatch({ 
+    dispatch({
       type: EMAIL_ACTIVATION,
       payload: res.data
     });
@@ -198,9 +204,22 @@ export const activateEmailAction = (token) => async dispatch => {
     console.log(token);
     const res = await axios.post(`/api/users/activate/${token}`);
     console.log(res.data);
-    dispatch({ 
+    dispatch({
       type: ACCOUNT_ACTIVATION,
       payload: res.data
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const resetMessage = () => async dispatch => {
+  console.log("inside reset message");
+  try {
+    dispatch({
+      type: RESET_MESSAGE,
+      payload: { message: false }
     });
 
   } catch (error) {

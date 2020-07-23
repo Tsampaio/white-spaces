@@ -21,10 +21,14 @@ const Register = ({ register, isAuthenticated }) => {
 	const { name, email, password, passwordConfirm, randNumber1, randNumber2, message, result } = formData;
 
 	useEffect(() => {
-
-
-	}, [result]);
-
+		if( message ) {
+			setTimeout( () => {
+				// resetMessage();
+				console.log("message deleted");
+				setFormData({ ...formData, message: ""});
+			}, 5000);
+		}
+	}, [message])
 
 	const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -67,71 +71,71 @@ const Register = ({ register, isAuthenticated }) => {
 		<Fragment>
 			<SecondHeader />
 			<div className="registerCtn">
-			<div className="container">
-				<div className="row">
-					<div className="col-6 offset-3">
-						<div className="card registerCard">
-						<p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
-						<form className="form" onSubmit={e => onSubmit(e)}>
-							<div className="form-group">
-								<input type="text" placeholder="Name" name="name" required
-									value={name}
-									onChange={e => onChange(e)}
-								/>
-							</div>
-							<div className="form-group">
-								<input type="email" placeholder="Email Address" name="email" required
-									value={email}
-									onChange={e => onChange(e)}
-								/>
-							</div>
-							<div className="form-group">
-								<input
-									type="password"
-									placeholder="Password"
-									name="password"
-									minLength="6"
-									value={password}
-									onChange={e => onChange(e)}
-								/>
-							</div>
-							<div className="form-group">
-								<input
-									type="password"
-									placeholder="Confirm Password"
-									name="passwordConfirm"
-									minLength="6"
-									value={passwordConfirm}
-									onChange={e => onChange(e)}
-								/>
-							</div>
+				<div className="container">
+					<div className="row">
+						<div className="col-6 offset-3">
+							<div className="card registerCard">
+								<p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
+								<form className="form" onSubmit={e => onSubmit(e)}>
+									<div className="form-group">
+										<input type="text" placeholder="Name" name="name" required
+											value={name}
+											onChange={e => onChange(e)}
+										/>
+									</div>
+									<div className="form-group">
+										<input type="email" placeholder="Email Address" name="email" required
+											value={email}
+											onChange={e => onChange(e)}
+										/>
+									</div>
+									<div className="form-group">
+										<input
+											type="password"
+											placeholder="Password"
+											name="password"
+											minLength="6"
+											value={password}
+											onChange={e => onChange(e)}
+										/>
+									</div>
+									<div className="form-group">
+										<input
+											type="password"
+											placeholder="Confirm Password"
+											name="passwordConfirm"
+											minLength="6"
+											value={passwordConfirm}
+											onChange={e => onChange(e)}
+										/>
+									</div>
 
-							{randNumber1 && (
-							<div id="anti-bot">
-								<h3>I'm not a Robot</h3>
-								<span>{randNumber1}</span>
-								<span>+</span>
-								<span>{randNumber2}</span>
-								<span>=</span>
-								<input type="number" onChange={checkResult} />
-							</div>
-						)}
+									{randNumber1 && (
+										<div id="anti-bot">
+											<h3>I'm not a Robot</h3>
+											<span>{randNumber1}</span>
+											<span>+</span>
+											<span>{randNumber2}</span>
+											<span>=</span>
+											<input type="number" onChange={checkResult} />
+										</div>
+									)}
 
-							<input type="submit" className="btn btn-primary" value="Register" />
-						</form>
+									<input type="submit" className="btn btn-primary" value="Register" />
+								</form>
 
-						{message && (
-							<div class="registerError">
-								<h1>{message}</h1>
+								{message && (
+									<div className="registerError">
+										<h1>{message}</h1>
+									</div>
+								)}
 							</div>
-						)}
+							<p className="goLogin">
+								Already have an account? <Link to="/login">Log In</Link>
+							</p>
 						</div>
-						<p className="goLogin">
-							Already have an account? <Link to="/login">Log In</Link>
-						</p>
 					</div>
 				</div>
-			</div>
 			</div>
 		</Fragment>
 	);

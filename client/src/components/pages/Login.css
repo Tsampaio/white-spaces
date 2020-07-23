@@ -36,3 +36,13 @@
 .loginCtn input {
     width: 100%;
 }
+
+.loginError {
+    background-color: #ea8383;
+    padding: 10px 20px;
+    margin-top: 20px;
+}
+
+.loginError h1 {
+    font-size: 20px;
+}

@@ -1,6 +1,8 @@
 import {
+  RESET_MESSAGE,
   REGISTER_SUCCESS,
   LOGIN_SUCCESS,
+  LOGIN_FAIL,
   REGISTER_FAIL,
   USER_LOADED,
   USER_GUEST,
@@ -23,7 +25,9 @@ const initialState = {
 
 export default function( state = initialState, action ) {
   const { type, payload } = action;
-
+  // console.log("inside auth reducers");
+  // console.log( type );
+  // console.log( payload );
   switch(type) {
       case USER_LOADED:
           return {
@@ -43,8 +47,6 @@ export default function( state = initialState, action ) {
           loading: false
         }
       case REGISTER_SUCCESS:
-    //   case LOGIN_SUCCESS:
-        console.log("Register Success");
 				return {
 						...state,
             message: payload.message
@@ -58,6 +60,16 @@ export default function( state = initialState, action ) {
           user: payload.user,
           active: payload.user.active
         }
+      case LOGIN_FAIL:
+        return {
+          ...state,
+          message: payload.message
+        }
+      case RESET_MESSAGE:
+        return {
+          ...state,
+          message: payload.message
+        }
       // case REGISTER_FAIL:
       // case AUTH_ERROR:
       case LOGOUT_FAIL:
@@ -66,7 +78,8 @@ export default function( state = initialState, action ) {
             ...state,
             token: null,
             isAuthenticated: false,
-            user: null
+            user: null,
+            message: payload.message
         }
       case FORGOT_PASSWORD:
         return {

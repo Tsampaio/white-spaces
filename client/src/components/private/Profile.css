@@ -1,0 +1,17 @@
+.profileCtn {
+    flex: 1 1;
+    background-color: #f4f4f4;
+    padding-top: 50px;
+}
+
+.userAvatar {
+    width: 200px;
+}
+
+.userLeftCol {
+    text-align: center;
+}
+
+.userLeftCol h1{
+    font-size: 24px;
+}

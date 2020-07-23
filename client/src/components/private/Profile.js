@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import SecondHeader from '../partials/SecondHeader';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Avatar from '../../images/avatar.png';
+import './Profile.css';
 
 function Profile({ auth, active }) {
     const [state, setState] = useState({
@@ -24,8 +26,18 @@ function Profile({ auth, active }) {
     return ( 
       <Fragment>
         <SecondHeader />
-      	<h1> Welcome {state.name}</h1>
-        <h5>Courses Owned</h5>
+        <div className="profileCtn">
+          <div className="container">
+            <div className="row">
+              <div className="col-4 userLeftCol">
+                <img class="userAvatar" src={Avatar} alt="user avatar"/>
+                <h1>{state.name}</h1>
+                <h5>Courses Owned</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      	
 
       </Fragment>
     );
