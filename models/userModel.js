@@ -43,6 +43,11 @@ const userSchema = new mongoose.Schema({
       ref: 'Course'
     }
   ],
+  checkout: [ ],
+  joined: { 
+    type: Date, 
+    default: Date.now 
+  },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

@@ -64,8 +64,8 @@ module.exports = class Email {
     await this.send('welcome', 'Welcome to Telmo Academy Family!');
   }
 
-  async sendThankYou() {
-    await this.send('thankYou', 'The JavaScript Course Receipt');
+  async sendThankYou(course) {
+    await this.send('thankYou', `Welcome to The ${course} Course`);
   }
 
   async sendPasswordReset() {

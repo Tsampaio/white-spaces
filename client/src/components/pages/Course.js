@@ -1,24 +1,25 @@
 import React, { Fragment, useEffect } from 'react';
 import parse from 'html-react-parser';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Redirect } from 'react-router-dom';
 import store from '../../store';
 import { connect } from 'react-redux';
 import { getCourse } from '../../actions/courses';
+import { addCheckout } from '../../actions/courses';
 
 import SecondHeader from '../partials/SecondHeader';
 import './Course.css';
+import auth from '../../reducers/auth';
 
-const Course = ({ course }) => {
+const Course = ({ course, addCheckout, auth, payment }) => {
 
   useEffect( () => {
     store.dispatch(getCourse(courseTag));
-
   }, []);
 
   const { courseTag } = useParams();
   console.log(courseTag);
   console.log(course);
-
+  console.log(auth);
   const description = () => {
 
     if(course && course.data && course.data.description) {
@@ -26,6 +27,12 @@ const Course = ({ course }) => {
     } else {
       return ""
     }
+  }
+
+  const goCheckout = async () => {
+      const selectedCourse = course && course.data;
+      const userEmail = auth && auth.user && auth.user.email
+      await addCheckout({selectedCourse, userEmail});
   }
 
   let classes = course && course.data && course.data.classes.map( (theClass, i) => {
@@ -40,6 +47,13 @@ const Course = ({ course }) => {
     );
   });
   
+  console.log( payment);
+  
+  if( payment && payment.addingToCheckout ) {
+    console.log( payment.addingToCheckout );
+    return <Redirect to="/cart/checkout" />
+  }
+
   return (
     <Fragment>
       <SecondHeader />
@@ -81,7 +95,8 @@ const Course = ({ course }) => {
                   </div>
                   <div className="card-body">
                     <h1>${course && course.data && course.data.price} USD</h1>
-                    <Link className="buyButton" to="/cart/checkout"><span className="buyCoursePrice">Buy Course</span></Link>
+                    <Link  to="/cart/checkout"></Link>
+                    <button className="buyButton" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
                   </div>
                 </div>
               </div>
@@ -94,8 +109,9 @@ const Course = ({ course }) => {
 }
 
 const mapStateToProps = state => ({
-  course: state.courses
-  // profile: state.profile
+  course: state.courses,
+  auth: state.auth,
+  payment: state.payment
 });
 
-export default connect(mapStateToProps)(Course);
+export default connect(mapStateToProps, {addCheckout} )(Course);

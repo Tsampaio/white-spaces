@@ -12,15 +12,21 @@ function Profile({ auth, active }) {
     })
 
     useEffect( () => {
-        console.log(auth);
-        if( auth.user) {
-            setState({ name: auth.user.name });
-            // console.log(auth.user.name);
-        } else if(active == 'notActive' && !auth.loading) {
-          return <Redirect to="/activate" /> 
+    //     console.log(auth);
+        // console.log(active == 'notActive');
+        // console.log(!auth.loading)
+        if(auth.user) {
+          setState({ name: auth.user.name });
         }
-        // console.log("Last");
+        // console.log(auth.user.name);
+        
+        // console.log(auth);
     }, [auth]);
+
+    if(active == 'notActive' && !auth.loading) {
+      console.log("inside redirect");
+      return <Redirect to="/activate" /> 
+    }
 
     console.log("First");
     return ( 
@@ -30,15 +36,21 @@ function Profile({ auth, active }) {
           <div className="container">
             <div className="row">
               <div className="col-4 userLeftCol">
-                <img class="userAvatar" src={Avatar} alt="user avatar"/>
+                <img className="userAvatar" src={Avatar} alt="user avatar"/>
                 <h1>{state.name}</h1>
-                <h5>Courses Owned</h5>
+                
+              </div>
+              <div className="col-8 userRightCol">
+                <h1>About Me</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptas asperiores omnis? Expedita corrupti, beatae reiciendis possimus ratione autem quos dignissimos provident a ea, veniam hic doloribus, odit atque quia!</p>
+                <h1>My Courses</h1>
+                <div className="myCoursesCtn">
+                  { auth && auth.users && auth.users.courses}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      	
-
       </Fragment>
     );
 };

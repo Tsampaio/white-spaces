@@ -14,4 +14,10 @@
 
 .userLeftCol h1{
     font-size: 24px;
+    margin-top: 20px;
+}
+
+.userRightCol h1 {
+    font-size: 24px;
+    font-weight: bold;
 }

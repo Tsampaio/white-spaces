@@ -2,15 +2,21 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { connect} from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import DropIn from 'braintree-web-drop-in-react';
-import './Membership.css';
+import './Checkout.css';
 import SecondHeader from '../partials/SecondHeader';
 import store from '../../store';
 import { payAction, processPayment } from '../../actions/payments'; 
+import { removeCheckout } from '../../actions/courses'; 
 
-const Membership = ({payAction, payment, processPayment, auth}) => {
+const Membership = ({payAction, payment, processPayment, auth, removeCheckout}) => {
   const [data, setData ] = useState({
     instance: {}
   });
+
+  console.log( auth );
+  const checkout = auth && auth.user && auth.user.checkout && auth.user.checkout[0] && auth.user.checkout[0].price;
+  const courseTag = auth && auth.user && auth.user.checkout && auth.user.checkout[0] && auth.user.checkout[0].tag;
+  console.log( checkout);
 
   useEffect( () => {
     payAction(auth.user && auth.user._id, auth.user && auth.token);
@@ -26,12 +32,13 @@ const Membership = ({payAction, payment, processPayment, auth}) => {
       // console.log('send nonce and total to process ', nonce);
       const paymentData = {
         paymentMethodNonce: nonce,
-        amount: 10
+        amount: checkout
       }
 
       // processPayment(userId, token, paymentData)
       // processPayment('131asdasd', 'adasdadad', paymentData)
-      processPayment(auth.user, auth.token, paymentData)
+      
+      processPayment(auth.user, auth.token, paymentData, courseTag)
     })
     .catch(error => {
       console.log('dropin error: ', error)
@@ -54,8 +61,9 @@ const Membership = ({payAction, payment, processPayment, auth}) => {
   if( payment.result && payment.result.success ) {
     return <Redirect to="/cart/checkout/success" /> 
   }
-
-  console.log(data)
+  console.log(auth.user);
+  console.log( auth.token );
+  console.log(data);
   return (
     <Fragment>
       <SecondHeader />
@@ -67,7 +75,14 @@ const Membership = ({payAction, payment, processPayment, auth}) => {
               {showDropIn()}
             </div>
             <div className="col-6 paper-gray">
-
+              { auth && auth.user && auth.user.checkout.map( (course, i) => {
+                return (
+                  <Fragment key={i}>
+                    <span onClick={() => removeCheckout(course._id, auth.user._id )}>X</span>
+                    <h3>{course.name}</h3>
+                  </Fragment>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -81,4 +96,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 })
 
-export default connect(mapStateToProps, { payAction, processPayment })(Membership);
+export default connect(mapStateToProps, { payAction, processPayment, removeCheckout })(Membership);

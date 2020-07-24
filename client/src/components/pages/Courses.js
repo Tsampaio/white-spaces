@@ -17,7 +17,7 @@ const Courses = ({ courses }) => {
   const allCourses = courses.all && courses.all.map((course, index) => {
 
     return (
-      <div className="col-3">
+      <div className="col-3" key={index}>
         <div className="cardBorder">
           <div className="courseThumbnail courseFeatured1">
             <Link to="/courses/javascript-shopping-cart">

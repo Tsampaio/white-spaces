@@ -14,7 +14,7 @@ import CourseLessons from './components/pages/CourseLessons';
 import Register from './components/pages/Register';
 import Login from './components/pages/Login';
 import Logout from './components/pages/Logout';
-import Membership from './components/pages/Membership';
+import Checkout from './components/pages/Checkout';
 import Subscription from './components/pages/Subscription';
 import CheckoutSuccess from './components/pages/CheckoutSuccess';
 import FGT_PASSWORD from './components/pages/ForgotPassword';
@@ -40,7 +40,7 @@ function App() {
           <Route exact path="/courses/:courseTag/lessons/:lesson" component={CourseLessons} />
           /courses/javascript-shopping-cart
           <Route path="/register" component={Register} />
-          <Route exact path="/cart/checkout" component={Membership} />
+          <Route exact path="/cart/checkout" component={Checkout} />
           <Route exact path="/cart/checkout/success" component={CheckoutSuccess} />
           <Route exact path="/subscription" component={Subscription} />
           <Route exact path="/activate" component={Activate} />

@@ -25,12 +25,12 @@ exports.generateToken = (req, res) => {
 }
 
 exports.processPayment = (req, res) => {
-  console.log("inside processPayment");
+  console.log("inside processPayment Controller");
   console.log(req.body);
+
   try {
     let nonceFromTheClient = req.body.paymentMethodNonce;
     let amountFromTheClient = req.body.amount;
-
 
     gateway.transaction.sale({
       amount: amountFromTheClient,
@@ -100,20 +100,84 @@ exports.emailThankYou = async (req, res) => {
   try {
     console.log('inside emailThankyou');
     console.log(req.body.email);
-    const user = await User.findOne({email: req.body.email})
+
+    const courseTag = req.body.courseTag;
+
+    const user = await User.findOne({email: req.body.email});
     console.log(user);
+
+    const course = await Course.findOne({tag: courseTag});
+    console.log( course );
+    await User.findByIdAndUpdate(user._id, {
+      courses: [...user.courses, course._id ],
+      checkout: []
+    });
     // generateActivationToken(req, user);
 
-    const url = `${req.protocol}://localhost:3000/courses/javascript-shopping-cart`;
+    const url = `${req.protocol}://localhost:3000/courses/${course.tag}`;
     //Or http://localhost:3000/dashboard   for HOST
     console.log(url);
-    await new Email(user, url).sendThankYou();
+    await new Email(user, url).sendThankYou(course.name);
 
     res.status(200).json({
       status: 'success',
       message: 'You bought the course'
     })
 
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.addCheckout = async (req, res) => {
+  try {
+    console.log("inside addCheckout");
+    console.log( req.body );
+
+    const user = await User.findOne({email: req.body.userEmail});
+    console.log( user._id );
+
+    const inCart = user.checkout.filter( (course) => {
+      return course._id == req.body.selectedCourse._id;
+    });
+
+    if( inCart.length < 1 ) {
+      await User.findByIdAndUpdate( user._id, {
+        checkout: [...user.checkout, req.body.selectedCourse]
+        // checkout: []
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Adding to Checkout'
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.removeCheckout = async (req, res) => {
+  try {
+    console.log("inside removeCheckout");
+    console.log( req.body );
+
+    const user = await User.findById(req.body.userId);
+    console.log( user._id );
+
+    const inCart = user.checkout.filter( (course) => {
+      return course._id != req.body.courseId
+    });
+
+    await User.findByIdAndUpdate( user._id, {
+      checkout: [...inCart]
+      // checkout: []
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Removing from Checkout'
+    })
   } catch (error) {
     console.log(error);
   }

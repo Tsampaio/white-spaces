@@ -18,7 +18,9 @@ const createSendToken = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
-    httpOnly: true
+    sameSite: 'none', 
+    // secure: true,
+    httpOnly: true,
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
   console.log(token);
@@ -355,3 +357,4 @@ exports.emailActivation = async (req, res) => {
     console.log(error);
   }
 }
+

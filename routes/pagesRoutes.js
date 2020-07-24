@@ -8,5 +8,4 @@ router.post('/getCourses', pagesController.getCourses);
 router.post('/createCourse', pagesController.createCourse);
 router.post('/updateCourse', pagesController.updateCourse);
 
-
 module.exports = router;

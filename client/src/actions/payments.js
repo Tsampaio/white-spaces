@@ -1,6 +1,8 @@
 import axios from 'axios';
 import {
     PAY_COURSE,
+    PAY_ERROR,
+    GET_PAYMENT_TOKEN,
     PAY_MEMBERSHIP
 } from './types';
 
@@ -10,6 +12,7 @@ export const payAction = (userId, token) => async dispatch => {
   console.log("token", token );
   try {
     console.log("inside actions");
+    console.log(`/api/braintree/getToken/${userId}`);
       const res = await axios(`/api/braintree/getToken/${userId}`,{
         method: "GET",
         headers: {
@@ -20,21 +23,20 @@ export const payAction = (userId, token) => async dispatch => {
       });
       console.log(res.data);
       dispatch({
-          type: PAY_MEMBERSHIP,
+          type: GET_PAYMENT_TOKEN,
           payload: res.data
       });
-     
   } catch (err) {
       // const errors = err.response.data.message;
       console.log(err);
   }
 }
 
-export const processPayment = (user, token, paymentData) => async dispatch => {
+export const processPayment = (user, token, paymentData, courseTag) => async dispatch => {
   console.log("processPayment action");
   console.log(paymentData);
   try {
-    console.log("inside actions");
+    console.log("inside processPayment actions");
     const config = {
       headers: {
         Accept: 'application/json',
@@ -49,18 +51,31 @@ export const processPayment = (user, token, paymentData) => async dispatch => {
       
     console.log(res.data);
 
+    let res2 = "";
+
     if(res.data.success) {
       const body2 = {
-        email: user.email
+        email: user.email,
+        courseTag
       }
-      const res2 = await axios.post(`/api/braintree/checkout/success`, body2, config);
+      res2 = await axios.post(`/api/braintree/checkout/success`, body2, config);
       console.log("email response");
       console.log(res2.data.message);
-    }
-    dispatch({
+
+      dispatch({
         type: PAY_COURSE,
-        payload: res.data
-    });
+        payload: res2.data
+        
+      });
+    } else {
+      dispatch({
+        type: PAY_ERROR,
+        payload: "Error Getting the payment Token"
+      });
+    }
+
+    
+    
      
   } catch (err) {
       // const errors = err.response.data.message;
