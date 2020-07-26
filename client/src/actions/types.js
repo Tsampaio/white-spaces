@@ -18,5 +18,6 @@ export const PAY_COURSE = 'PAY_COURSE';
 export const RESET_MESSAGE = 'RESET_MESSAGE';
 export const ADD_CHECKOUT = 'ADD_CHECKOUT';
 export const REMOVE_CHECKOUT = 'REMOVE_CHECKOUT';
+export const LOAD_CHECKOUT = 'REMOVE_CHECKOUT';
 export const GET_PAYMENT_TOKEN = 'GET_PAYMENT_TOKEN';
 export const PAY_ERROR = 'PAY_ERROR';

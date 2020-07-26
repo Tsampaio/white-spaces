@@ -4,7 +4,8 @@ import {
   PAY_ERROR,
   GET_PAYMENT_TOKEN,
   ADD_CHECKOUT,
-  REMOVE_CHECKOUT
+  REMOVE_CHECKOUT,
+  LOAD_CHECKOUT
 } from '../actions/types';
 
 const initialState = {
@@ -36,13 +37,19 @@ export default function( state = initialState, action ) {
       }
     case ADD_CHECKOUT:
       return {
-      ...state,
-      addingToCheckout: true,
-      checkout: [ ...state.checkout, payload ]
+        ...state,
+        addingToCheckout: true,
+        checkout: payload
       }
     case REMOVE_CHECKOUT:
       return {
-      ...state
+        ...state,
+        checkout: payload
+      }
+    case LOAD_CHECKOUT:
+      return {
+        ...state,
+        checkout: payload
       }
     default:
       return state;

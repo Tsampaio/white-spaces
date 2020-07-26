@@ -3,7 +3,8 @@ import {
   GET_ONE_COURSE,
   GET_COURSES,
   ADD_CHECKOUT,
-  REMOVE_CHECKOUT
+  REMOVE_CHECKOUT,
+  LOAD_CHECKOUT
 } from './types';
 
 export const getCourses = () => async dispatch => {
@@ -78,7 +79,7 @@ export const addCheckout = ({ selectedCourse, userEmail }) => async dispatch => 
     console.log(res.data);
     dispatch({
       type: ADD_CHECKOUT,
-      payload: selectedCourse
+      payload: res.data.checkout
     });
 
     console.log(selectedCourse);
@@ -98,11 +99,33 @@ export const removeCheckout = (courseId, userId) => async dispatch => {
         "Content-Type": "application/json"
       }
     });
-
+    
     console.log(res.data);
     dispatch({
       type: REMOVE_CHECKOUT,
-      payload: courseId
+      payload: res.data.checkout
+    });
+
+  } catch (error) {
+    
+  }
+}
+
+export const loadCheckout = (userId) => async dispatch => {
+  try {
+    console.log("inside loadCheckout action");
+    const body = JSON.stringify({ userId });
+    const res = await axios.post("/api/loadCheckout", body, {
+      headers: {
+        Accept: 'application/json',
+        "Content-Type": "application/json"
+      }
+    });
+    
+    console.log(res.data);
+    dispatch({
+      type: LOAD_CHECKOUT,
+      payload: res.data.checkout
     });
   } catch (error) {
     

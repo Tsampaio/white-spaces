@@ -140,17 +140,26 @@ exports.addCheckout = async (req, res) => {
     const inCart = user.checkout.filter( (course) => {
       return course._id == req.body.selectedCourse._id;
     });
+    console.log("--------------------------" );
+    console.log( inCart );
+    
 
     if( inCart.length < 1 ) {
+      console.log( req.body.selectedCourse );
       await User.findByIdAndUpdate( user._id, {
         checkout: [...user.checkout, req.body.selectedCourse]
         // checkout: []
       });
+
+      console.log("+++++++++++++++++++++++++" );
+      console.log( user.checkout );
     }
 
+    
+    
     res.status(200).json({
       status: 'success',
-      message: 'Adding to Checkout'
+      checkout: user.checkout
     })
   } catch (error) {
     console.log(error);
@@ -176,7 +185,23 @@ exports.removeCheckout = async (req, res) => {
 
     res.status(200).json({
       status: 'success',
-      message: 'Removing from Checkout'
+      checkout: user.checkout
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.loadCheckout = async (req, res) => {
+  try {
+    console.log("inside loadCheckout");
+
+    const user = await User.findById(req.body.userId);
+    console.log( user._id );
+
+    res.status(200).json({
+      status: 'success',
+      checkout: user.checkout
     })
   } catch (error) {
     console.log(error);

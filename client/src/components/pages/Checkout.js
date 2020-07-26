@@ -6,20 +6,21 @@ import './Checkout.css';
 import SecondHeader from '../partials/SecondHeader';
 import store from '../../store';
 import { payAction, processPayment } from '../../actions/payments'; 
-import { removeCheckout } from '../../actions/courses'; 
+import { removeCheckout, loadCheckout } from '../../actions/courses'; 
 
-const Membership = ({payAction, payment, processPayment, auth, removeCheckout}) => {
+const Membership = ({payAction, payment, processPayment, auth, removeCheckout, loadCheckout}) => {
   const [data, setData ] = useState({
     instance: {}
   });
 
-  console.log( auth );
-  const checkout = auth && auth.user && auth.user.checkout && auth.user.checkout[0] && auth.user.checkout[0].price;
-  const courseTag = auth && auth.user && auth.user.checkout && auth.user.checkout[0] && auth.user.checkout[0].tag;
+  console.log( payment );
+  const checkout = payment && payment.checkout[0] && payment.checkout[0].price;
+  const courseTag = payment && payment.checkout[0] && payment.checkout[0].tag;
   console.log( checkout);
 
   useEffect( () => {
     payAction(auth.user && auth.user._id, auth.user && auth.token);
+    loadCheckout(auth.user && auth.user._id);
   }, [auth]);
 
   const buy = () => {
@@ -57,6 +58,20 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout}) 
     </Fragment>
   )
 
+  const checkoutItems = payment && payment.checkout.map( (course, i) => {
+    return (
+      <Fragment key={i}>
+        <span onClick={() => refreshCheckout(course._id, auth.user._id )}>X</span>
+        <h3>{course.name}</h3>
+      </Fragment>
+    );
+  });
+
+  const refreshCheckout = async (courseId, userId) => {
+    await removeCheckout(courseId, userId )
+    loadCheckout(userId);
+  }
+
   //Redirect if payment success
   if( payment.result && payment.result.success ) {
     return <Redirect to="/cart/checkout/success" /> 
@@ -75,14 +90,7 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout}) 
               {showDropIn()}
             </div>
             <div className="col-6 paper-gray">
-              { auth && auth.user && auth.user.checkout.map( (course, i) => {
-                return (
-                  <Fragment key={i}>
-                    <span onClick={() => removeCheckout(course._id, auth.user._id )}>X</span>
-                    <h3>{course.name}</h3>
-                  </Fragment>
-                );
-              })}
+              { checkoutItems.length > 0 ? checkoutItems : <h1>No Products in the checkout</h1> }
             </div>
           </div>
         </div>
@@ -96,4 +104,5 @@ const mapStateToProps = state => ({
   auth: state.auth
 })
 
-export default connect(mapStateToProps, { payAction, processPayment, removeCheckout })(Membership);
+export default connect(mapStateToProps, { 
+  payAction, processPayment, removeCheckout, loadCheckout })(Membership);
