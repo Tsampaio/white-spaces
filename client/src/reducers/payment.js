@@ -12,6 +12,7 @@ const initialState = {
   paymentToken: '',
   result: "",
   checkout: [],
+  checkoutPrice: 0,
   addingToCheckout: false,
 }
 
@@ -49,7 +50,8 @@ export default function( state = initialState, action ) {
     case LOAD_CHECKOUT:
       return {
         ...state,
-        checkout: payload
+        checkout: payload.checkout,
+        checkoutPrice: payload.checkoutPrice
       }
     default:
       return state;

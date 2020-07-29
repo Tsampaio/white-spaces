@@ -14,9 +14,9 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
   });
 
   console.log( payment );
-  const checkout = payment && payment.checkout[0] && payment.checkout[0].price;
+  const checkoutPrice = payment && payment.checkoutPrice;
   const courseTag = payment && payment.checkout[0] && payment.checkout[0].tag;
-  console.log( checkout);
+  console.log( checkoutPrice);
 
   useEffect( () => {
     payAction(auth.user && auth.user._id, auth.user && auth.token);
@@ -33,7 +33,7 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
       // console.log('send nonce and total to process ', nonce);
       const paymentData = {
         paymentMethodNonce: nonce,
-        amount: checkout
+        amount: checkoutPrice
       }
 
       // processPayment(userId, token, paymentData)
@@ -54,16 +54,22 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
           flow: "vault"
         }
       }} onInstance={ instance => (data.instance = instance)} />
-      <button onClick={buy} className="btn btn-success">Proceed to Payment</button>
+      <button onClick={buy} className="btn btn-primary">Proceed to Payment</button>
     </Fragment>
   )
+  
+
 
   const checkoutItems = payment && payment.checkout.map( (course, i) => {
+   
     return (
-      <Fragment key={i}>
-        <span onClick={() => refreshCheckout(course._id, auth.user._id )}>X</span>
-        <h3>{course.name}</h3>
-      </Fragment>
+      <div className="courseInCheckout" key={i}>
+        <div>
+          <span className="courseDelete" onClick={() => refreshCheckout(course._id, auth.user._id )}><i className="fas fa-trash"></i></span>
+          <h3 className="checkoutCourse">{course.name}</h3>
+        </div>
+        <span className="coursePrice">${course.price}</span>
+      </div>
     );
   });
 
@@ -76,21 +82,26 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
   if( payment.result && payment.result.success ) {
     return <Redirect to="/cart/checkout/success" /> 
   }
-  console.log(auth.user);
-  console.log( auth.token );
-  console.log(data);
+  // console.log(auth.user);
+  // console.log( auth.token );
+  // console.log(data);
+  console.log(payment);
   return (
     <Fragment>
       <SecondHeader />
-      <div className="courseCheckout">
+      <div className="checkoutCtn">
         <div className="container">
           <div className="row">
             <div className="col-6">
-              <h1>Confirm your purchase</h1>
-              {showDropIn()}
+              <div className="paymentCtn">
+                <h1>Confirm your purchase</h1>
+                {showDropIn()}
+              </div>
             </div>
             <div className="col-6 paper-gray">
+              <h1 className="basketTitle">Products in Basket:</h1>
               { checkoutItems.length > 0 ? checkoutItems : <h1>No Products in the checkout</h1> }
+              <div className="checkoutPrice">Total: ${payment.checkoutPrice}</div>
             </div>
           </div>
         </div>

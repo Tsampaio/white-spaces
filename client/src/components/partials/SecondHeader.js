@@ -28,7 +28,7 @@ const SecondHeader = ({ isAuthenticated }) => {
                     <li><Link to='/Register'>Register</Link></li>
                   </Fragment>
                 )}
-              <li><Link className="checkoutLink" to="/cart/checkout"><i class="fa fa-shopping-cart"></i><span className="checkoutNumber">1</span></Link></li>
+              <li><Link className="checkoutLink" to="/cart/checkout"><i className="fa fa-shopping-cart"></i><span className="checkoutNumber">1</span></Link></li>
             </ul>
           </div>
         </div>

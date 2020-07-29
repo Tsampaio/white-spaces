@@ -1,7 +1,57 @@
-.courseCheckout {
+.checkoutCtn {
   background-color: #fef1ee;
+  flex: 1 1;
+  padding-top: 50px;
+}
+
+.courseDelete {
+  cursor: pointer;
+}
+
+.paymentCtn {
+  background-color: white;
+  padding: 40px 30px;
+}
+
+.paymentCtn h1 {
+  font-size: 22px;
+}
+
+.checkoutCourse {
+  display: inline-block;
+  font-size: 16px;
+}
+
+.courseInCheckout {
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+}
+
+.courseInCheckout i {
+  margin-right: 20px;
+}
+
+.courseInCheckout > div {
+  display: inline-block;
 }
 
 .paper-gray {
   background-color: #e8e8e8;
+  padding: 40px 30px;
 }
+
+.basketTitle {
+  font-size: 22px;
+  border-bottom: 1px solid lightgray;
+  padding-bottom: 30px;
+}
+
+.checkoutPrice {
+  padding: 15px 0;
+  display: flex;
+  justify-content: flex-end;
+ 
+}
+

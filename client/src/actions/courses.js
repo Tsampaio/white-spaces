@@ -121,11 +121,13 @@ export const loadCheckout = (userId) => async dispatch => {
         "Content-Type": "application/json"
       }
     });
+
+    console.log( res );
     
     console.log(res.data);
     dispatch({
       type: LOAD_CHECKOUT,
-      payload: res.data.checkout
+      payload: res.data
     });
   } catch (error) {
     

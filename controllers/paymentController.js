@@ -199,9 +199,32 @@ exports.loadCheckout = async (req, res) => {
     const user = await User.findById(req.body.userId);
     console.log( user._id );
 
+
+    // const checkoutPrice = user.checkout.map( (course) => {
+    //   return parseInt(total.price) + parseInt(course.price);
+    // });
+    let checkoutPrice = 0;
+
+    for(let i=0; i < user.checkout.length; i++) {
+      checkoutPrice+= parseInt(user.checkout[i].price)
+    }
+
+    // const newArray = [ { price: 25 }, { price: 25}];
+
+    // const checkoutPrice = newArray.reduce( (total, course) => {
+    //   return total.price + course.price;
+    // })
+
+    console.log(checkoutPrice);
+
+    // console.log(user.checkout);
+    console.log("**************" +  checkoutPrice + "**************");
+    console.log(checkoutPrice);
+
     res.status(200).json({
       status: 'success',
-      checkout: user.checkout
+      checkout: user.checkout,
+      checkoutPrice
     })
   } catch (error) {
     console.log(error);
