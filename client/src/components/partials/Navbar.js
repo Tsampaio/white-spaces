@@ -59,7 +59,7 @@ const Navbar = ({ isAuthenticated, classProp }) => {
                   <li><Link to='/Register'>Register</Link></li>
                 </Fragment>
               )}
-
+            
           </ul>
         </div>
       </div>
