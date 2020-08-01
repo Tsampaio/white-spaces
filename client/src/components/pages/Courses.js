@@ -29,7 +29,7 @@ const Courses = ({ courses }) => {
           </div>
           <div className="separator"></div>
           <div className="priceCtn">
-            <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">$32.90</span>
+            <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">${course.price}</span>
           </div>
         </div>
       </div>

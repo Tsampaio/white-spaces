@@ -26,7 +26,7 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
   const buy = () => {
     let nonce;
     let getNonce = data.instance.requestPaymentMethod()
-    .then( data => {
+    .then( async data => {
       console.log(data);
       nonce = data.nonce
 
@@ -39,7 +39,13 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
       // processPayment(userId, token, paymentData)
       // processPayment('131asdasd', 'adasdadad', paymentData)
       
-      processPayment(auth.user, auth.token, paymentData, courseTag)
+      await processPayment(auth.user, auth.token, paymentData, courseTag);
+
+      console.log( "before redirect" );
+      // console.log( payment.result );
+      // console.log( payment.result.success );
+      
+
     })
     .catch(error => {
       console.log('dropin error: ', error)
@@ -77,15 +83,23 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
     await removeCheckout(courseId, userId )
     loadCheckout(userId);
   }
+  console.log( auth && auth.user && !auth.user.authenticated );
 
-  //Redirect if payment success
-  if( payment.result && payment.result.success ) {
-    return <Redirect to="/cart/checkout/success" /> 
+  if( auth && !auth.isAuthenticated && !auth.loading) {
+    console.log( "inside register redirect ");
+    return <Redirect to="/register" />
   }
+  //Redirect if payment success
+
   // console.log(auth.user);
   // console.log( auth.token );
   // console.log(data);
   console.log(payment);
+
+  if( payment && payment.result) {
+    console.log("inside of redirect to success");
+    return <Redirect to="/cart/checkout/success" /> 
+  }
   return (
     <Fragment>
       <SecondHeader />

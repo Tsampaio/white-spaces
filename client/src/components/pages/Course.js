@@ -103,7 +103,10 @@ const Course = ({ course, addCheckout, auth, payment }) => {
                     <div className="card-body">
                       <h1>${course && course.data && course.data.price} USD</h1>
                       <Link  to="/cart/checkout"></Link>
-                      <button className="buyButton" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
+                      { auth && auth.isAuthenticated ? 
+                        <button className="buyButton" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
+                        : <button className="buyButton"><Link to="/register" className="buyCoursePrice">Buy Course</Link></button>
+                      }
                     </div>
                   </div>
                 }
