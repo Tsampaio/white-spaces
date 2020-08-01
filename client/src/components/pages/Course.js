@@ -46,6 +46,12 @@ const Course = ({ course, addCheckout, auth, payment }) => {
       </div>
     );
   });
+
+  const courseId = course && course.data && course.data._id;
+
+  const userGotCourse = auth && auth.user && auth.user.courses.filter( (course) => {
+    return course == courseId
+  });
   
   console.log( payment);
   
@@ -89,16 +95,18 @@ const Course = ({ course, addCheckout, auth, payment }) => {
                   </div>
                 </div>
 
-                <div className="card purchaseButtons">
-                  <div className="card-header">
-                    Buy Lifetime Access:
+                { userGotCourse && userGotCourse.length > 0 ? null :
+                  <div className="card purchaseButtons">
+                    <div className="card-header">
+                      Buy Lifetime Access:
+                    </div>
+                    <div className="card-body">
+                      <h1>${course && course.data && course.data.price} USD</h1>
+                      <Link  to="/cart/checkout"></Link>
+                      <button className="buyButton" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
+                    </div>
                   </div>
-                  <div className="card-body">
-                    <h1>${course && course.data && course.data.price} USD</h1>
-                    <Link  to="/cart/checkout"></Link>
-                    <button className="buyButton" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
-                  </div>
-                </div>
+                }
               </div>
             </div>
           </div>

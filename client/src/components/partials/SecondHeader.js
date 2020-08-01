@@ -4,7 +4,7 @@ import './SecondHeader.css';
 import logo from '../../images/telmoacademy-logo3.png';
 import { connect } from 'react-redux';
 
-const SecondHeader = ({ isAuthenticated }) => {
+const SecondHeader = ({ isAuthenticated, payment }) => {
   return (
     <div className="secondHeader">
       <div className="container">
@@ -28,7 +28,7 @@ const SecondHeader = ({ isAuthenticated }) => {
                     <li><Link to='/Register'>Register</Link></li>
                   </Fragment>
                 )}
-              <li><Link className="checkoutLink" to="/cart/checkout"><i className="fa fa-shopping-cart"></i><span className="checkoutNumber">1</span></Link></li>
+              <li><Link className="checkoutLink" to="/cart/checkout"><i className="fa fa-shopping-cart"></i><span className="checkoutNumber">{payment && payment.checkout && payment.checkout.length}</span></Link></li>
             </ul>
           </div>
         </div>
@@ -38,7 +38,8 @@ const SecondHeader = ({ isAuthenticated }) => {
 }
 
 const mapStateToProps = state => ({
-	isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  payment: state.payment
 });
 
 export default connect(mapStateToProps)(SecondHeader);

@@ -108,10 +108,13 @@ exports.emailThankYou = async (req, res) => {
 
     const course = await Course.findOne({tag: courseTag});
     console.log( course );
-    await User.findByIdAndUpdate(user._id, {
-      courses: [...user.courses, course._id ],
-      checkout: []
-    });
+
+    if( !user.courses.includes(course._id) ) {
+      await User.findByIdAndUpdate(user._id, {
+        courses: [...user.courses, course._id ],
+        checkout: []
+      });
+    }
     // generateActivationToken(req, user);
 
     const url = `${req.protocol}://localhost:3000/courses/${course.tag}`;
@@ -226,6 +229,19 @@ exports.loadCheckout = async (req, res) => {
       checkout: user.checkout,
       checkoutPrice
     })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.test = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate("5f19e5919136eaa370befd16", {
+      courses: []
+    });
+
+    res.send("courses deleted");
+
   } catch (error) {
     console.log(error);
   }

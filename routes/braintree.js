@@ -8,7 +8,8 @@ const {
     emailThankYou,
     addCheckout,
     removeCheckout,
-    loadCheckout } = require('../controllers/paymentController');
+    loadCheckout,
+    test } = require('../controllers/paymentController');
 
 router.get('/braintree/getToken/:userId', generateToken);
 router.post('/braintree/payment/:userId', processPayment);
@@ -17,6 +18,8 @@ router.post('/braintree/checkout/success', emailThankYou);
 router.post('/addCheckout', addCheckout);
 router.post('/removeCheckout', removeCheckout);
 router.post('/loadCheckout', loadCheckout);
+
+router.post('/test', test );
 
 
 // router.param("userId", userById);

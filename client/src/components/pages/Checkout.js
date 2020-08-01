@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { connect} from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import DropIn from 'braintree-web-drop-in-react';
 import './Checkout.css';
 import SecondHeader from '../partials/SecondHeader';
@@ -100,8 +100,8 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
             </div>
             <div className="col-6 paper-gray">
               <h1 className="basketTitle">Products in Basket:</h1>
-              { checkoutItems.length > 0 ? checkoutItems : <h1>No Products in the checkout</h1> }
-              <div className="checkoutPrice">Total: ${payment.checkoutPrice}</div>
+              { checkoutItems.length > 0 ? checkoutItems : <Fragment><h1>Your basket is empty</h1> <Link to="/courses">Continue shopping</Link></Fragment> }
+              { checkoutItems.length > 0 ? <div className="checkoutPrice">Total: ${payment.checkoutPrice}</div> : null }
             </div>
           </div>
         </div>
