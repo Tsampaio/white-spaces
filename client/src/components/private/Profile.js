@@ -3,21 +3,19 @@ import PropTypes from 'prop-types';
 import SecondHeader from '../partials/SecondHeader';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { getCourses } from '../../actions/courses';
+import store from '../../store';
 import Avatar from '../../images/avatar.png';
 import './Profile.css';
 
-function Profile({ auth, active }) {
-    const [state, setState] = useState({
-        name: ''
-    })
-
+function Profile({ auth, active, courses }) {
+  
     useEffect( () => {
     //     console.log(auth);
         // console.log(active == 'notActive');
         // console.log(!auth.loading)
-        if(auth.user) {
-          setState({ name: auth.user.name });
-        }
+        
+          store.dispatch(getCourses(auth && auth.user && auth.user.courses));
         // console.log(auth.user.name);
         
         // console.log(auth);
@@ -37,7 +35,7 @@ function Profile({ auth, active }) {
             <div className="row">
               <div className="col-4 userLeftCol">
                 <img className="userAvatar" src={Avatar} alt="user avatar"/>
-                <h1>{state.name}</h1>
+                <h1>{auth && auth.user && auth.user.name}</h1>
                 
               </div>
               <div className="col-8 userRightCol">
@@ -45,7 +43,10 @@ function Profile({ auth, active }) {
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptas asperiores omnis? Expedita corrupti, beatae reiciendis possimus ratione autem quos dignissimos provident a ea, veniam hic doloribus, odit atque quia!</p>
                 <h1>My Courses</h1>
                 <div className="myCoursesCtn">
-                  { auth && auth.users && auth.users.courses}
+                  { courses && courses.all && courses.all.map( (course, i) => {
+                      return <h1 key={i}>{course.name}</h1>
+                    })
+                  }
                 </div>
               </div>
             </div>
@@ -63,8 +64,8 @@ Profile.propTypes = {
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    active: state.auth.active
-    // profile: state.profile
+    active: state.auth.active,
+    courses: state.courses
 });
 
 export default connect(mapStateToProps)(Profile);

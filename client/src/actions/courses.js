@@ -7,20 +7,21 @@ import {
   LOAD_CHECKOUT
 } from './types';
 
-export const getCourses = () => async dispatch => {
+export const getCourses = (courses) => async dispatch => {
   // if(localStorage.token) {
   //     setAuthToken(localStorage.token);
   // }
 
   try {
-    console.log("inside actions");
-    const res = await axios(`/api/getCourses`, {
-      method: "POST",
-      headers: {
-        Accept: 'application/json',
-        "Content-Type": "application/json"
-      }
-    });
+    console.log("inside actions getCourses");
+
+    const body = JSON.stringify({ courses });
+
+    const res = await axios.post(`/api/getCourses`, body, {
+        headers: {
+          Accept: 'application/json', "Content-Type": "application/json"
+        }
+      });
 
     dispatch({
       type: GET_COURSES,

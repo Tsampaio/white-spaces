@@ -6,25 +6,25 @@ import { connect } from 'react-redux';
 const PrivateRoute = ({ component: Component, auth: { isAuthenticated, active, loading }, ...rest }) => {
 	useEffect(() => {
 		console.log(active);
-	},[active])
-	
+	}, [active])
+
 	return (
-		<Route 
-				{...rest} 
-				// render={props => !isAuthenticated || !activev
-				render={props => (active == null && !loading)
-				? (<Redirect to="/" />) 
-				: (<Component { ...props} />)} 
+		<Route
+			{...rest}
+			// render={props => !isAuthenticated || !activev
+			render={props => (active == null && !loading)
+				? (<Redirect to="/" />)
+				: (<Component {...props} />)}
 		/>
 	)
 }
 
 PrivateRoute.propTypes = {
-    auth: PropTypes.object.isRequired,
+	auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+	auth: state.auth
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

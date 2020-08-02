@@ -4,12 +4,50 @@ const { promisify } = require('util');
 exports.getCourses = async (req, res, next) => {
   console.log("inside pagesController");
   try {
-    const courses = await Course.find();
-    console.log(courses);
-    res.status(200).json({
+
+    let courses;
+    let allCourses;
+    // console.log( req.body.courses );
+    if( req.body.courses) {
+      courses = req.body.courses;
+      console.log( "this is courses ");
+      console.log( courses );
+      // allCourses = await courses.map( async (course) => {
+      //   console.log( await Course.findById( course ));
+      //   return await Course.findById( course );
+      // })
+      // let myvar;
+
+      Promise.all( courses.map( async (course) => {
+            // console.log( await Course.findById( course ));
+            return await Course.findById( course );
+          })
+      ).then( values => {
+        allCourses = values;
+        console.log(values)
+        
+        return res.status(200).json({
+          status: 'success',
+          courses: allCourses
+        });
+      });
+
+    } else {
+
+    allCourses = await Course.find();
+    return res.status(200).json({
       status: 'success',
-      courses: courses
+      courses: allCourses
     });
+  }
+    
+    
+    // console.log("before res");
+    // console.log( allCourses );
+    // res.status(200).json({
+    //   status: 'success',
+    //   courses: allCourses
+    // });
 
   } catch (error) {
     console.log(error);

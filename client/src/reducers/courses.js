@@ -4,7 +4,8 @@ import {
 } from '../actions/types';
 
 const initialState = {
-  courses: []
+  data: null,
+  all: []
 }
 
 export default function( state = initialState, action ) {
@@ -19,6 +20,7 @@ export default function( state = initialState, action ) {
       }
     case GET_COURSES:
       console.log("Reducer ALL courses");
+      console.log( payload );
       return {
           ...state,
           all: payload.courses
