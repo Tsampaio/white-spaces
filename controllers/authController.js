@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const fs = require('fs')
 
 const Email = require('../utils/email');
 
@@ -356,5 +357,41 @@ exports.emailActivation = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+}
+
+exports.profilePic = async (req, res) => {
+
+  if( req.files === null) {
+    return res.status(400).json({
+      msg: 'No file uploaded'
+    })
+  }
+  
+  const file = req.files.file;
+
+  const path = `${__dirname}/../client/public/${file.name}`;
+
+  try {
+    if (fs.existsSync(path)) {
+      //file exists
+      fs.unlinkSync(path)
+    }
+
+    file.mv(`${__dirname}/../client/public/${file.name}`, err => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send(err);
+      }
+  
+      res.json({ status: "success" });
+    });
+    
+  } catch(err) {
+    console.error(err)
+  }
+
+  
+
+
 }
 

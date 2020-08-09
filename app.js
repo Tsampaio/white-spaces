@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 
@@ -8,6 +9,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json({ extended: false }));
 app.use(cookieParser());
+app.use(fileUpload());
 
 dotenv.config({ path: './.env' });
 const connectDB = require('./config/db');
