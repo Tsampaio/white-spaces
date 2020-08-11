@@ -377,7 +377,7 @@ exports.profilePic = async (req, res) => {
       fs.unlinkSync(path)
     }
 
-    file.mv(`${__dirname}/../client/public/${file.name}`, err => {
+    file.mv(`${__dirname}/../client/src/images/${file.name}`, err => {
       if (err) {
         console.error(err);
         return res.status(500).send(err);

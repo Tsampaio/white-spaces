@@ -1,10 +1,38 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './SecondHeader.css';
 import logo from '../../images/telmoacademy-logo3.png';
 import { connect } from 'react-redux';
 
-const SecondHeader = ({ isAuthenticated, payment }) => {
+const SecondHeader = ({ auth, isAuthenticated, payment }) => {
+
+  let userPic = null;
+
+  const [dropDown, setDropdown] = useState({
+    open: false,
+  });
+
+  const handleDropdown = () => {
+    if( dropDown.open ) {
+      setDropdown({
+        open: false
+      })
+    } else {
+      setDropdown({
+        open: true
+      })
+    }
+  }
+
+  if( auth && auth.user && auth.user._id) {
+    // import Pic from `/${auth.user._id}.jpg`;
+    // userPic = <img src={`/${auth.user._id}.jpg`} />
+    const images = require.context('../../images/', true);
+    let img = images(`./${auth.user._id}.jpg`);
+    
+    userPic = <img src={img} className="userAvatarNav" />
+  }
+
   return (
     <div className="secondHeader">
       <div className="container">
@@ -18,17 +46,29 @@ const SecondHeader = ({ isAuthenticated, payment }) => {
               <li><Link to='/courses'>COURSES</Link></li>
               {/* <li><Link to='/membership'>MEMBERSHIP</Link></li> */}
               {isAuthenticated ? (
-                <Fragment>
-                  <li><Link to='/profile'>Profile</Link></li>
-                  <li><Link to='/logout'>Logout</Link></li>
-                </Fragment>
+              
+                <div className={ dropDown.open ? "navDropDown" : "hideDropDown"}>
+                  <li><Link to='/profile'><i className="fa fa-user"></i> Profile</Link></li>
+                  <li><Link to='/admin/courses'><i className="fas fa-user-shield"></i> Admin</Link></li>
+                  <li><Link to='/logout'><i className="fa fa-door-open"></i> Logout</Link></li>
+                </div>
+                
               ) : (
                   <Fragment>
                     <li><Link to='/login'>Login</Link></li>
                     <li><Link to='/Register'>Register</Link></li>
                   </Fragment>
                 )}
-              <li><Link className="checkoutLink" to="/cart/checkout"><i className="fa fa-shopping-cart"></i><span className="checkoutNumber">{payment && payment.checkout && payment.checkout.length}</span></Link></li>
+              <li>
+                <Link className="checkoutLink" to="/cart/checkout">
+                  <i className="fa fa-shopping-cart"></i>
+                  { payment && payment.checkout && payment.checkout.length > 0 ? (
+                    <span className="checkoutNumber">{payment && payment.checkout && payment.checkout.length}</span> 
+                    ) : null 
+                  }
+                </Link>
+              </li>
+              <li className="userAvatarNavCtn" onClick={handleDropdown}>{userPic}<span className="userBorder"></span></li>
             </ul>
           </div>
         </div>
@@ -39,6 +79,7 @@ const SecondHeader = ({ isAuthenticated, payment }) => {
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
+  auth: state.auth,
   payment: state.payment
 });
 

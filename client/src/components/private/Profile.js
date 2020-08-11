@@ -44,6 +44,16 @@ function Profile({ auth, active, courses }) {
   //let imageRef = null;
   let imageRef = useRef();
 
+  let userPic = null;
+
+  if( auth && auth.user && auth.user._id) {
+    // import Pic from `/${auth.user._id}.jpg`;
+    // userPic = <img src={`/${auth.user._id}.jpg`} />
+    const images = require.context('../../images/', true);
+    let img = images(`./${auth.user._id}.jpg`);
+    
+    userPic = <img src={img} className="userAvatar" />
+  }
 
   // const verifyFile = (files) => {
   //   if (files && files.length > 0) {
@@ -168,7 +178,7 @@ function Profile({ auth, active, courses }) {
     canvas.toBlob(blob => {
       reader.readAsDataURL(blob)
       reader.onloadend = () => {
-        dataURLtoFile(reader.result, 'cropped.jpg')
+        dataURLtoFile(reader.result, `${auth.user._id}.jpg`);
       }
     })
 
@@ -237,7 +247,8 @@ function Profile({ auth, active, courses }) {
         <div className="container">
           <div className="row">
             <div className="col-4 userLeftCol">
-              <img className="userAvatar" src={Avatar} alt="user avatar" />
+              {/* <img className="userAvatar" src={Avatar} alt="user avatar" /> */}
+              {userPic}
               <h1>{auth && auth.user && auth.user.name}</h1>
 
             </div>

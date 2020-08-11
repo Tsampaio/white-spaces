@@ -106,13 +106,16 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
       <div className="checkoutCtn">
         <div className="container">
           <div className="row">
+          { payment && payment.checkout.length > 0 ? (
             <div className="col-6">
               <div className="paymentCtn">
                 <h1>Confirm your purchase</h1>
                 {showDropIn()}
               </div>
             </div>
-            <div className="col-6 paper-gray">
+            ) : null
+          }
+            <div className={ payment && payment.checkout.length > 0 ? "col-6 paper-gray" : "col-8 offset-md-2 paper-gray " }>
               <h1 className="basketTitle">Products in Basket:</h1>
               { checkoutItems.length > 0 ? checkoutItems : <Fragment><h1>Your basket is empty</h1> <Link to="/courses">Continue shopping</Link></Fragment> }
               { checkoutItems.length > 0 ? <div className="checkoutPrice">Total: ${payment.checkoutPrice}</div> : null }

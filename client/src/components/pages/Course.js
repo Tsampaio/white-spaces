@@ -1,19 +1,27 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import parse from 'html-react-parser';
 import { useParams, Link, Redirect } from 'react-router-dom';
 import store from '../../store';
 import { connect } from 'react-redux';
 import { getCourse } from '../../actions/courses';
 import { addCheckout } from '../../actions/courses';
-
+import Loader from '../partials/Loader';
 import SecondHeader from '../partials/SecondHeader';
 import './Course.css';
-import auth from '../../reducers/auth';
+
 
 const Course = ({ course, addCheckout, auth, payment }) => {
 
+  const [page, setPage] = useState({
+    loaded: false
+  })
+
   useEffect( () => {
     store.dispatch(getCourse(courseTag));
+    setPage({
+      loaded: true
+    });
+    console.log( "after page loaded");
   }, []);
 
   const { courseTag } = useParams();
@@ -59,10 +67,14 @@ const Course = ({ course, addCheckout, auth, payment }) => {
     console.log( payment.addingToCheckout );
     return <Redirect to="/cart/checkout" />
   }
-
+  console.log("before render");
+  console.log(page);
   return (
     <Fragment>
       <SecondHeader />
+      { page.loaded ? (
+        <Fragment>
+      
       <div className="container">
         
           <div className="courseCtnHeader">
@@ -115,6 +127,8 @@ const Course = ({ course, addCheckout, auth, payment }) => {
           </div>
        
       </div>
+      </Fragment>
+      ) : <Loader />}
     </Fragment>
   )
 }

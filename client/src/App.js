@@ -23,6 +23,8 @@ import Profile from './components/private/Profile';
 import Activate from './components/pages/Activate';
 import ActivateEmail from './components/pages/ActivateEmail';
 import PrivateRoute from './components/private/PrivateRoute';
+import Admin from './components/pages/Admin';
+import CourseCreate from './components/pages/CourseCreate';
 
 function App() {
   useEffect( () => {
@@ -49,6 +51,8 @@ function App() {
           <Route path="/logout" component={Logout} />
           <Route path="/forgotPassword" component={FGT_PASSWORD} />
           <Route path="/resetPassword/:token" component={RST_PASSWORD} />
+          <Route exact path="/admin/courses" component={Admin} />
+          <Route exact path="/admin/courses/create" component={CourseCreate} />
           <PrivateRoute exact path="/profile" component={Profile} />
         </Switch>
           <Footer />

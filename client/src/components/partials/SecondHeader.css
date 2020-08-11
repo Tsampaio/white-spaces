@@ -1,7 +1,10 @@
 .secondHeader {
   background-color: #fff;
-  padding: 35px 0;
+  /* padding: 35px 0; */
   border-bottom: 1px solid #000;
+  height: 100px;
+  display: flex;
+  align-items: center;
 }
 
 .secondHeader ul {
@@ -20,9 +23,10 @@
   font-size: 14px;
   font-weight: 600;
   transition: all 0.5s ease-in-out;
+  display: inline-block;
 }
 
-.secondHeader ul a:hover {
+.secondHeader ul > li a:hover {
   background-color: #ffb606;
   text-decoration: none;
 }
@@ -47,3 +51,69 @@
   top: 0;
   right: 12px;
 }
+
+.userAvatarNavCtn {
+  position: relative;
+}
+
+.userAvatarNavCtn:hover {
+  cursor: pointer;
+}
+
+.userAvatarNav {
+  display: inline-block;
+  width: 36px;
+  border-radius: 50%;
+  transition: 0.5s all ease-in-out;
+}
+
+.userAvatarNav:hover {
+  box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.75);
+  
+}
+
+.mainNav ul {
+  position: relative;
+}
+
+.navDropDown {
+  padding: 10px 0px;
+  position: absolute;
+  bottom: -115px;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.75);
+  z-index: 2;
+}
+
+.secondHeader .navDropDown li {
+  display: block;
+}
+
+.secondHeader .navDropDown li a:hover{
+  color: rgb(85, 83, 255);
+}
+
+.navDropDown a i {
+  margin-right: 10px;
+}
+
+.hideDropDown {
+  display: none
+}
+
+/* .userBorder {
+  position: absolute;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  transition: 0.5s all ease-in-out;
+}
+
+.userBorder:hover {
+  
+  box-shadow: -4px 4px 11px 0px rgba(0,0,0,0.75);
+} */
