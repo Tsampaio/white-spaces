@@ -74,7 +74,7 @@ exports.getCourse = async (req, res, next) => {
 
 }
 
-exports.createCourse = async (req, res, next) => {
+exports.updateCourse = async (req, res, next) => {
   try {
     console.log("inside getCourse Controller");
     const { courseTag } = req.body;
@@ -93,47 +93,57 @@ exports.createCourse = async (req, res, next) => {
 
 }
 
-exports.updateCourse = async (req, res, next) => {
+exports.createCourse = async (req, res, next) => {
   try {
+    console.log( "inside Create course" );
+    const {courseName, courseIntro, courseTag, courseDescription, coursePrice, classes} = req.body;
     
-    const { tag }  = req.body;
+    console.log( req.body );
+    //const course = await Course.findOne({ tag });
+
+    const course = await Course.create({
+      name: courseName,
+      intro: courseIntro,
+      tag: courseTag,
+      description: courseDescription,
+      price: coursePrice,
+      classes
+    });
     
-    const course = await Course.findOne({ tag });
-    
-    course.description = `<p>In this course you are going to learn how to create a Shopping Cart for an E commerce Website using JavaScript and the Local Storage.</p>`;
-    course.description += `<p><strong>IMPORTANT</strong>:&nbsp;This is a Front-End Project only, no Back-End is involved!</p>`;
-    course.description += `<p>By taking this course you will learn the following skills:</p>`;
-    course.description += `<p><strong>LEARNING OUTCOMES</strong></p>`;
-    course.description += `<ul>`;
-    course.description += `<li>Creating a Shopping Cart using HTML, CSS &amp; Vanilla JavaScript</li>`;
-    course.description += `<li>Learn how to use the Browser Local storage</li>`;
-    course.description += `<li>How to create Modular Functions</li>`;
-    course.description += `</ul>`;
-    course.description += `<p>And don’t worry, I will cover everything at a very slow pace, and explain each step of the process, if you have any questions, post them down and we will be happy to help you 🙂.</p>`;
+    // course.description = `<p>In this course you are going to learn how to create a Shopping Cart for an E commerce Website using JavaScript and the Local Storage.</p>`;
+    // course.description += `<p><strong>IMPORTANT</strong>:&nbsp;This is a Front-End Project only, no Back-End is involved!</p>`;
+    // course.description += `<p>By taking this course you will learn the following skills:</p>`;
+    // course.description += `<p><strong>LEARNING OUTCOMES</strong></p>`;
+    // course.description += `<ul>`;
+    // course.description += `<li>Creating a Shopping Cart using HTML, CSS &amp; Vanilla JavaScript</li>`;
+    // course.description += `<li>Learn how to use the Browser Local storage</li>`;
+    // course.description += `<li>How to create Modular Functions</li>`;
+    // course.description += `</ul>`;
+    // course.description += `<p>And don’t worry, I will cover everything at a very slow pace, and explain each step of the process, if you have any questions, post them down and we will be happy to help you 🙂.</p>`;
 
-    course.intro = "https://player.vimeo.com/video/388672056";
+    // course.intro = "https://player.vimeo.com/video/388672056";
 
-    course.classes = [
-      {
-        lecture: 1,
-        title: "Building the Frontend Interface",
-        url: "https://player.vimeo.com/video/388671124",
-        duration: 14
-      },
-      {
-        lecture: 2,
-        title: "Adding Numbers to the Cart",
-        url: "https://player.vimeo.com/video/388671204",
-        duration: 19
-      },
+    // course.classes = [
+    //   {
+    //     lecture: 1,
+    //     title: "Building the Frontend Interface",
+    //     url: "https://player.vimeo.com/video/388671124",
+    //     duration: 14
+    //   },
+    //   {
+    //     lecture: 2,
+    //     title: "Adding Numbers to the Cart",
+    //     url: "https://player.vimeo.com/video/388671204",
+    //     duration: 19
+    //   },
 
-    ]
+    // ]
   
-    await course.save({ validateBeforeSave: false });
+    // await course.save({ validateBeforeSave: false });
 
     res.status(200).json({
       status: 'success',
-      course: course
+      message: "Course created"
     });
 
   } catch (error) {

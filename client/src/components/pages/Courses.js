@@ -13,19 +13,21 @@ const Courses = ({ courses }) => {
   }, []);
 
   console.log(courses);
+  const images = require.context('../../images/', true);
+
 
   const allCourses = courses.all && courses.all.map((course, index) => {
-
+    let img = images(`./${course.tag}.jpg`);
     return (
       <div className="col-3" key={index}>
         <div className="cardBorder">
           <div className="courseThumbnail courseFeatured1">
-            <Link to="/courses/javascript-shopping-cart">
-              <img src={jsCart} alt="javascript" />
+            <Link to={`/courses/${course.tag}`}>
+              <img src={img} alt="javascript" />
             </Link>
           </div>
           <div className="courseTitleCtn">
-            <Link to="/courses/javascript-shopping-cart">{course.name}</Link>
+            <Link to={`/courses/${course.tag}`}>{course.name}</Link>
           </div>
           <div className="separator"></div>
           <div className="priceCtn">

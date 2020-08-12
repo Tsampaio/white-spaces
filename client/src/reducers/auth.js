@@ -20,7 +20,8 @@ const initialState = {
   isAuthenticated: null,
   active: null,
   user: null,
-  loading: true
+  loading: true,
+  message: ""
 }
 
 export default function( state = initialState, action ) {

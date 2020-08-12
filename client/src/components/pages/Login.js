@@ -14,10 +14,10 @@ const Login = ({ login, resetMessage, isAuthenticated, message, active }) => {
 	});
 
 	useEffect(() => {
-		if( message ) {
-			setTimeout( () => {
+		if (message) {
+			setTimeout(() => {
 				resetMessage();
-				console.log("message deleted");
+				// console.log("message deleted");
 			}, 5000);
 		}
 	}, [message])

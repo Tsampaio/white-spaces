@@ -86,7 +86,7 @@ export const loadUser = () => async dispatch => {
         type: USER_LOADED,
         payload: res.data
       });
-    } else if (res.data.status == 'guest') {
+    } else if (res.data.status === 'guest') {
       dispatch({
         type: USER_GUEST
       });

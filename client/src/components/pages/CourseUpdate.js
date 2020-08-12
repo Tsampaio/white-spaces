@@ -1,18 +1,19 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import store from '../../store';
+import { useParams, Link } from 'react-router-dom';
 import SecondHeader from '../partials/SecondHeader';
-import { createCourse } from '../../actions/courses';
+import { getCourse } from '../../actions/courses';
 import './Admin.css'
 
-const CourseCreate = ({ course, auth, createCourse }) => {
+const CourseUpdate = ({ course, auth }) => {
 	console.log(auth);
 
 	const [courseState, setCourseState] = useState({
 		courseName: "",
 		courseIntro: "",
 		courseTag: "",
-		courseDescription: "",
+		courseDescription: " ",
 		coursePrice: "",
 		classes: [ {
 			lecture: "",
@@ -20,7 +21,24 @@ const CourseCreate = ({ course, auth, createCourse }) => {
 			url: "",
 			duration: 0
 		}],
+		loaded: false
 	});
+
+	const { courseTag } = useParams();
+
+	useEffect( () => {
+		setCourseValues();
+	}, [courseState.loaded]);
+	
+	const setCourseValues = async () => {
+		await store.dispatch(getCourse(courseTag));
+		setCourseState({
+			...courseState,
+			courseName: course && course.data && course.data.name,
+			courseDescription: course && course.data && course.data.description,
+			loaded: true
+		})
+	}
 
 	const addClass = () => {
 		setCourseState({
@@ -44,7 +62,7 @@ const CourseCreate = ({ course, auth, createCourse }) => {
 	const updateClass = (e) => {
 		
 		const index = e.target.parentElement.firstChild.value;
-	console.log("current index is " + index);
+    console.log("current index is " + index);
 		const stateRef = { ...courseState };
 
 		stateRef.classes[index][e.target.name] = e.target.value;
@@ -56,15 +74,16 @@ const CourseCreate = ({ course, auth, createCourse }) => {
 		return (
 			<div key={i}>
 				<input type="hidden" value={i}/>
-				<input type="text" name="lecture" placeholder="lecture" onChange={updateClass}/>
-				<input type="text" name="title" placeholder="title" onChange={  updateClass }/>
-				<input type="text" name="url" placeholder="url" onChange={  updateClass }/>
-				<input type="text" name="duration" placeholder="duration" onChange={  updateClass }/>
+				<input type="text" name="lecture" placeholder="lecture" onChange={updateClass} value={courseState.classes[i].lecture}/>
+				<input type="text" name="title" placeholder="title" onChange={  updateClass } value={courseState.classes[i].title}/>
+				<input type="text" name="url" placeholder="url" onChange={  updateClass } value={courseState.classes[i].url}/>
+				<input type="text" name="duration" placeholder="duration" onChange={  updateClass } value={courseState.classes[i].duration}/>
 			</div>
 		)
 	});
 
-	console.log( courseState )
+	// console.log( course )
+	console.log(courseState);
 
 	return (
 		<Fragment>
@@ -79,18 +98,18 @@ const CourseCreate = ({ course, auth, createCourse }) => {
 						</div>
 						<div className="col-9">
 							<div>
-								<h1>Create your Course</h1>
-								<label>Name</label><input required type="text" name="courseName" onChange={updateCourse} /><br/>
+								<h1>Update the Course</h1>
+								<label>Name</label><input required type="text" name="courseName" onChange={updateCourse} value={courseState.courseName}/><br/>
 								<label>Course Intro</label><input required type="text" name="courseIntro" onChange={updateCourse}/><br/>
 								<label>Course Tag</label><input required type="text" name="courseTag" onChange={updateCourse}/><br/>
 								
 								<label>Course Description</label><br/>
-								<textarea required type="text" name="courseDescription" onChange={updateCourse} rows="15" cols="80" /><br/>
+								<textarea required type="text" name="courseDescription" onChange={updateCourse} rows="15" cols="80" value={courseState.courseDescription} /><br/>
 								<label>Course Price</label><input required type="text" name="coursePrice" onChange={updateCourse}/><br/>
 								<label>Course Classes</label>
 								{allClasses}
 								<button onClick={addClass}>Add Class</button>
-								<button onClick={() => createCourse(courseState)}>Create Course</button>
+								<button >Create Course</button>
 							</div>
 						</div>
 					</div>
@@ -106,4 +125,6 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, { createCourse })(CourseCreate);
+export default connect(mapStateToProps)(CourseUpdate);
+
+

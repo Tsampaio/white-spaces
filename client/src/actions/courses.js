@@ -4,7 +4,8 @@ import {
   GET_COURSES,
   ADD_CHECKOUT,
   REMOVE_CHECKOUT,
-  LOAD_CHECKOUT
+  LOAD_CHECKOUT,
+  CREATE_COURSE
 } from './types';
 
 export const getCourses = (courses) => async dispatch => {
@@ -61,6 +62,29 @@ export const getCourse = (courseTag) => async dispatch => {
   } catch (err) {
     // const errors = err.response.data.message;
     console.log(err);
+  }
+}
+
+export const createCourse = ({courseName, courseIntro, courseTag, courseDescription, coursePrice, classes}) => async dispatch => {
+  try {
+    const body = JSON.stringify({courseName, courseIntro, courseTag, courseDescription, coursePrice, classes});
+    
+    const res = await axios.post(`/api/createCourse`, body, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    // console.log(res.data);
+    console.log( body );
+    console.log("inside create course");
+
+    // dispatch({
+    //   type: CREATE_COURSE,
+    //   payload: res.data
+    // });
+  } catch (error) {
+    
   }
 }
 

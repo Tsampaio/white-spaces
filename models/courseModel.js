@@ -19,7 +19,8 @@ const courseSchema = new mongoose.Schema({
     type: String,
   },
   sold: {
-    type: Number
+    type: Number,
+    default: 0
   },
   classes: [
     {
@@ -37,9 +38,6 @@ const courseSchema = new mongoose.Schema({
       }
     }
   ],
-  image: {
-    type: String
-  },
   users: [
     {
       type: mongoose.Schema.ObjectId,

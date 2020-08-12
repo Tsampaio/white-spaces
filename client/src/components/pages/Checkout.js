@@ -4,7 +4,6 @@ import { Redirect, Link } from 'react-router-dom';
 import DropIn from 'braintree-web-drop-in-react';
 import './Checkout.css';
 import SecondHeader from '../partials/SecondHeader';
-import store from '../../store';
 import { payAction, processPayment } from '../../actions/payments'; 
 import { removeCheckout, loadCheckout } from '../../actions/courses'; 
 

@@ -9,6 +9,7 @@ export const LOGOUT = 'LOGOUT';
 export const LOGOUT_FAIL = 'LOGOUT_FAIL';
 export const GET_COURSES = 'GET_COURSES';
 export const GET_ONE_COURSE = 'GET_ONE_COURSE';
+export const CREATE_COURSE = 'GET_ONE_COURSE';
 export const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
 export const RESET_PASSWORD = 'RESET_PASSWORD';
 export const EMAIL_ACTIVATION = 'EMAIL_ACTIVATION';

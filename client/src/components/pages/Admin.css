@@ -24,4 +24,9 @@ html,body {
 .adminCourseTop {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.adminCourseTop .row {
+    width: 100%;
 }
