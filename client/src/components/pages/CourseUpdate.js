@@ -4,12 +4,15 @@ import store from '../../store';
 import { useParams, Link } from 'react-router-dom';
 import SecondHeader from '../partials/SecondHeader';
 import { getCourse } from '../../actions/courses';
+import { updateCourseAction } from '../../actions/courses';
+import AdminSidebar from '../partials/AdminSidebar';
 import './Admin.css'
 
-const CourseUpdate = ({ course, auth }) => {
+const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 	console.log(auth);
 
 	const [courseState, setCourseState] = useState({
+		id: "",
 		courseName: "",
 		courseIntro: "",
 		courseTag: "",
@@ -32,10 +35,22 @@ const CourseUpdate = ({ course, auth }) => {
 	
 	const setCourseValues = async () => {
 		await store.dispatch(getCourse(courseTag));
+
+		if( course && course.data && course.data._id ) {
+			for( let i=0; i < course.data.classes.length; i++) {
+				delete course.data.classes[i]._id
+			}
+		}
+
 		setCourseState({
 			...courseState,
+			id: course && course.data && course.data._id,
 			courseName: course && course.data && course.data.name,
+			courseIntro: course && course.data && course.data.intro,
+			courseTag: course && course.data && course.data.tag,
 			courseDescription: course && course.data && course.data.description,
+			coursePrice: parseInt(course && course.data && course.data.price),
+			classes: course && course.data && course.data.classes,
 			loaded: true
 		})
 	}
@@ -65,51 +80,54 @@ const CourseUpdate = ({ course, auth }) => {
     console.log("current index is " + index);
 		const stateRef = { ...courseState };
 
-		stateRef.classes[index][e.target.name] = e.target.value;
+		if( e.target.name === ( "duration" || "lecture") ) {
+			stateRef.classes[index][e.target.name] = parseInt( e.target.value );
+		} else {
+			stateRef.classes[index][e.target.name] = e.target.value;
+		}
 		setCourseState(stateRef);
 	}
 		
-	const allClasses = courseState.classes.map( (theClass, i) => {
+	const allClasses = courseState.classes && courseState.classes.length > 0 && courseState.classes.map( (theClass, i) => {
 	
 		return (
 			<div key={i}>
 				<input type="hidden" value={i}/>
-				<input type="text" name="lecture" placeholder="lecture" onChange={updateClass} value={courseState.classes[i].lecture}/>
-				<input type="text" name="title" placeholder="title" onChange={  updateClass } value={courseState.classes[i].title}/>
-				<input type="text" name="url" placeholder="url" onChange={  updateClass } value={courseState.classes[i].url}/>
-				<input type="text" name="duration" placeholder="duration" onChange={  updateClass } value={courseState.classes[i].duration}/>
+				<input type="number" name="lecture" placeholder="lecture" onChange={updateClass} value={courseState.classes[i].lecture} />
+				<input type="text" name="title" placeholder="title" onChange={  updateClass } value={courseState.classes[i].title} />
+				<input type="text" name="url" placeholder="url" onChange={  updateClass } value={courseState.classes[i].url} />
+				<input type="number" name="duration" placeholder="duration" onChange={  updateClass } value={courseState.classes[i].duration} />
 			</div>
+			// value={courseState.classes[i].lecture}
 		)
 	});
 
-	// console.log( course )
+	console.log( course )
 	console.log(courseState);
 
 	return (
 		<Fragment>
 			<SecondHeader />
 			<div className="adminCtn">
-				<div className="container">
+				<div className="container-fluid">
 					<div className="row">
-						<div className="col-3 adminSidebar">
-							<ul>
-								<li>Courses</li>
-							</ul>
-						</div>
-						<div className="col-9">
+						<AdminSidebar />
+						<div className="col-10">
 							<div>
 								<h1>Update the Course</h1>
-								<label>Name</label><input required type="text" name="courseName" onChange={updateCourse} value={courseState.courseName}/><br/>
-								<label>Course Intro</label><input required type="text" name="courseIntro" onChange={updateCourse}/><br/>
-								<label>Course Tag</label><input required type="text" name="courseTag" onChange={updateCourse}/><br/>
+							<label>Name</label><input required type="text" name="courseName" onChange={updateCourse} value={courseState.loaded ? courseState.courseName : " "} size="50"/><br/>
+								<label>Course Intro</label><input required type="text" name="courseIntro" onChange={updateCourse} value={courseState.loaded ? courseState.courseIntro : ""} size="70"/><br/>
+								<label>Course Tag</label><input required type="text" name="courseTag" onChange={updateCourse} value={courseState.loaded ? courseState.courseTag : ""} size="50"/><br/>
 								
 								<label>Course Description</label><br/>
-								<textarea required type="text" name="courseDescription" onChange={updateCourse} rows="15" cols="80" value={courseState.courseDescription} /><br/>
-								<label>Course Price</label><input required type="text" name="coursePrice" onChange={updateCourse}/><br/>
+								<textarea required type="text" name="courseDescription" onChange={updateCourse} rows="15" cols="80" value={courseState.loaded ? courseState.courseDescription : ""} /><br/>
+								<label>Course Price</label><input required type="number" name="coursePrice" onChange={updateCourse} value={courseState.loaded ? courseState.coursePrice : ""} /><br/>
 								<label>Course Classes</label>
 								{allClasses}
 								<button onClick={addClass}>Add Class</button>
-								<button >Create Course</button>
+								<button onClick={() => updateCourseAction(courseState)}>Update Course</button>
+								{ course && course.message ? 
+									<h1>{course.message}</h1> : null }
 							</div>
 						</div>
 					</div>
@@ -125,6 +143,6 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps)(CourseUpdate);
+export default connect(mapStateToProps, { updateCourseAction })(CourseUpdate);
 
 

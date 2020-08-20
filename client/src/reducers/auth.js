@@ -11,7 +11,9 @@ import {
   FORGOT_PASSWORD,
   RESET_PASSWORD,
   EMAIL_ACTIVATION,
-  ACCOUNT_ACTIVATION
+  ACCOUNT_ACTIVATION,
+  GET_COURSES_OWNED,
+  COURSE_ACCESS
 } from '../actions/types';
 
 const initialState = {
@@ -21,7 +23,8 @@ const initialState = {
   active: null,
   user: null,
   loading: true,
-  message: ""
+  message: "",
+  coursesOwned: []
 }
 
 export default function( state = initialState, action ) {
@@ -31,14 +34,14 @@ export default function( state = initialState, action ) {
   // console.log( payload );
   switch(type) {
       case USER_LOADED:
-          return {
-              ...state,
-              isAuthenticated: true,
-              user: payload.user,
-              token: payload.token,
-              active: payload.active,
-              loading: false
-          }
+        return {
+            ...state,
+            isAuthenticated: true,
+            user: payload.user,
+            token: payload.token,
+            active: payload.active,
+            loading: false
+        }
       case USER_GUEST:
         return {
           ...state,
@@ -97,6 +100,16 @@ export default function( state = initialState, action ) {
         return {
           ...state,
           message: payload.message
+        }
+      case GET_COURSES_OWNED:
+        return {
+          ...state,
+          coursesOwned: payload.courses
+        }
+      case COURSE_ACCESS:
+        return {
+          ...state,
+          courseAcces: payload.courses
         }
       default:
           return state;

@@ -18,9 +18,12 @@ const Course = ({ course, addCheckout, auth, payment }) => {
 
   useEffect( () => {
     store.dispatch(getCourse(courseTag));
-    setPage({
-      loaded: true
-    });
+    setTimeout(() => {
+      setPage({
+        loaded: true
+      });
+    }, 1000);
+    
     console.log( "after page loaded");
   }, []);
 
@@ -72,10 +75,9 @@ const Course = ({ course, addCheckout, auth, payment }) => {
   return (
     <Fragment>
       <SecondHeader />
-      { page.loaded ? (
-        <Fragment>
       
-      <div className="container">
+      <div className="courseCtn">
+        <div className="container">
         
           <div className="courseCtnHeader">
             <h1 className="coursePageTitle">{course && course.data && course.data.name}</h1>
@@ -127,8 +129,7 @@ const Course = ({ course, addCheckout, auth, payment }) => {
           </div>
        
       </div>
-      </Fragment>
-      ) : <Loader />}
+      </div>
     </Fragment>
   )
 }

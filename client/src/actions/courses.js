@@ -1,11 +1,14 @@
 import axios from 'axios';
 import {
+  COURSE_ACCESS,
   GET_ONE_COURSE,
   GET_COURSES,
+  GET_COURSES_OWNED,
   ADD_CHECKOUT,
   REMOVE_CHECKOUT,
   LOAD_CHECKOUT,
-  CREATE_COURSE
+  CREATE_COURSE,
+  UPDATE_COURSE
 } from './types';
 
 export const getCourses = (courses) => async dispatch => {
@@ -19,10 +22,10 @@ export const getCourses = (courses) => async dispatch => {
     const body = JSON.stringify({ courses });
 
     const res = await axios.post(`/api/getCourses`, body, {
-        headers: {
-          Accept: 'application/json', "Content-Type": "application/json"
-        }
-      });
+      headers: {
+        Accept: 'application/json', "Content-Type": "application/json"
+      }
+    });
 
     dispatch({
       type: GET_COURSES,
@@ -31,6 +34,28 @@ export const getCourses = (courses) => async dispatch => {
 
   } catch (err) {
     // const errors = err.response.data.message;
+    console.log(err);
+  }
+}
+
+export const getCoursesOwned = (courses) => async dispatch => {
+  try {
+    console.log("inside actions getCourses");
+
+    const body = JSON.stringify({ courses });
+
+    const res = await axios.post(`/api/getCourses`, body, {
+      headers: {
+        Accept: 'application/json', "Content-Type": "application/json"
+      }
+    });
+
+    dispatch({
+      type: GET_COURSES_OWNED,
+      payload: res.data
+    });
+
+  } catch (err) {
     console.log(err);
   }
 }
@@ -65,10 +90,10 @@ export const getCourse = (courseTag) => async dispatch => {
   }
 }
 
-export const createCourse = ({courseName, courseIntro, courseTag, courseDescription, coursePrice, classes}) => async dispatch => {
+export const createCourse = ({ courseName, courseIntro, courseTag, courseDescription, coursePrice, classes }) => async dispatch => {
   try {
-    const body = JSON.stringify({courseName, courseIntro, courseTag, courseDescription, coursePrice, classes});
-    
+    const body = JSON.stringify({ courseName, courseIntro, courseTag, courseDescription, coursePrice, classes });
+
     const res = await axios.post(`/api/createCourse`, body, {
       headers: {
         "Content-Type": "application/json"
@@ -76,7 +101,7 @@ export const createCourse = ({courseName, courseIntro, courseTag, courseDescript
     });
 
     // console.log(res.data);
-    console.log( body );
+    console.log(body);
     console.log("inside create course");
 
     // dispatch({
@@ -84,14 +109,14 @@ export const createCourse = ({courseName, courseIntro, courseTag, courseDescript
     //   payload: res.data
     // });
   } catch (error) {
-    
+
   }
 }
 
 export const addCheckout = ({ selectedCourse, userEmail }) => async dispatch => {
   try {
     console.log("This is the course");
-    console.log( userEmail );
+    console.log(userEmail);
     const body = JSON.stringify({ selectedCourse, userEmail });
     console.log(body);
     const res = await axios.post("/api/addCheckout", body, {
@@ -124,7 +149,7 @@ export const removeCheckout = (courseId, userId) => async dispatch => {
         "Content-Type": "application/json"
       }
     });
-    
+
     console.log(res.data);
     dispatch({
       type: REMOVE_CHECKOUT,
@@ -132,7 +157,29 @@ export const removeCheckout = (courseId, userId) => async dispatch => {
     });
 
   } catch (error) {
-    
+
+  }
+}
+
+export const updateCourseAction = ({ id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes }) => async dispatch => {
+  try {
+
+    const body = JSON.stringify({ id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes });
+    console.log(body);
+    const res = await axios.post("/api/updateCourse", body, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    console.log(res.data);
+    dispatch({
+      type: UPDATE_COURSE,
+      payload: res.data
+    });
+
+  } catch (error) {
+
   }
 }
 
@@ -147,14 +194,40 @@ export const loadCheckout = (userId) => async dispatch => {
       }
     });
 
-    console.log( res );
-    
+    console.log(res);
+
     console.log(res.data);
     dispatch({
       type: LOAD_CHECKOUT,
       payload: res.data
     });
   } catch (error) {
-    
+
   }
+}
+
+export const courseAccess = (courseTag, userId) => async dispatch => {
+
+  try {
+    console.log(userId);
+    const body = JSON.stringify({ courseTag, userId });
+    console.log("inside courseAccess");
+    console.log(body);
+    const res = await axios.post("/api/courseAccess", body, {
+      headers: {
+        Accept: 'application/json',
+        "Content-Type": "application/json"
+      }
+    });
+
+    console.log(res.data);
+    dispatch({
+      type: COURSE_ACCESS,
+      payload: res.data
+    });
+  } catch (error) {
+
+  }
+
+
 }

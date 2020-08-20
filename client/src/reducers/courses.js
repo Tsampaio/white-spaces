@@ -1,11 +1,13 @@
 import {
   GET_ONE_COURSE,
   GET_COURSES,
+  UPDATE_COURSE
 } from '../actions/types';
 
 const initialState = {
   data: null,
-  all: []
+  all: [],
+  message: ""
 }
 
 export default function( state = initialState, action ) {
@@ -24,6 +26,13 @@ export default function( state = initialState, action ) {
       return {
           ...state,
           all: payload.courses
+      }
+    case UPDATE_COURSE:
+    
+      console.log( payload );
+      return {
+          ...state,
+          message: payload.message
       }
     default:
       return state;

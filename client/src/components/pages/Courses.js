@@ -13,11 +13,17 @@ const Courses = ({ courses }) => {
   }, []);
 
   console.log(courses);
-  const images = require.context('../../images/', true);
+  const images = require.context('../../images/courses', true);
 
 
   const allCourses = courses.all && courses.all.map((course, index) => {
-    let img = images(`./${course.tag}.jpg`);
+    let img = "";
+    if( course && course.hasThumbnail) {
+      img = images(`./${course.tag}.jpg`);
+    } else {
+      img = images(`./default-course.jpg`);
+    }
+
     return (
       <div className="col-3" key={index}>
         <div className="cardBorder">
@@ -35,9 +41,9 @@ const Courses = ({ courses }) => {
           </div>
         </div>
       </div>
-
     )
   })
+
   return (
     <Fragment>
       <SecondHeader />

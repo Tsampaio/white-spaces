@@ -76,15 +76,23 @@ exports.getCourse = async (req, res, next) => {
 
 exports.updateCourse = async (req, res, next) => {
   try {
-    console.log("inside getCourse Controller");
-    const { courseTag } = req.body;
-    console.log("this is courseTag ", courseTag);
-    const course = await Course.findOne({ tag: courseTag });
-    console.log("this is course ", course);
+    const {id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes} = req.body;
+    console.log("inside of update Course");
+    console.log( req.body );
+    //const course = await Course.findOne({ tag });
+    
+    await Course.findByIdAndUpdate(id, {
+      name: courseName,
+      intro: courseIntro,
+      tag: courseTag,
+      description: courseDescription,
+      price: coursePrice,
+      classes
+    });
 
     res.status(200).json({
       status: 'success',
-      course: course
+      message: "Course updated"
     });
 
   } catch (error) {
@@ -152,6 +160,46 @@ exports.createCourse = async (req, res, next) => {
 
 }
 
+exports.coursePic = async (req, res) => {
+  try {
+    if (req.files === null) {
+      return res.status(400).json({
+        msg: 'No file uploaded'
+      })
+    }
+
+    const file = req.files.file;
+    console.log( file );
+    // const userId =  req.body.userId;
+
+    // const user = await User.findById(userId);
+
+    // user.hasProfilePic = true;
+
+    // await user.save({ validateBeforeSave: false });
+
+    // const path = `${__dirname}/../client/public/${file.name}`;
+
+
+    // if (fs.existsSync(path)) {
+    //   //file exists
+    //   fs.unlinkSync(path)
+    // }
+
+    file.mv(`${__dirname}/../client/src/images/courses/${file.name}`, err => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send(err);
+      }
+
+      res.json({ status: "success" });
+    });
+
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 exports.test = async (req, res) => {
   console.log("Inside Backend Test");
   const cookieOptions = {
@@ -164,4 +212,36 @@ exports.test = async (req, res) => {
   
   console.log(myCookie);
   res.status(200).json({ message: "success"});
+}
+
+exports.courseThumbnail = async (req, res) => {
+  try {
+    
+    const courses = await Course.find();
+    console.log(courses);
+    for(let i=0; i < courses.length; i++) {
+      courses[i].hasThumbnail = true;
+      await courses[i].save({ validateBeforeSave: false });
+    }
+    
+    // await courses.save({ validateBeforeSave: false });
+
+    res.status(200).json({ message: "success"});
+
+  } catch (err) {
+    console.error(err)
+  }
+}
+exports.courseAccess = async (req, res) => {
+
+try {
+  console.log(req.body);
+
+  res.status(200).json({
+    access: "yes"
+  })
+} catch (error) {
+  
+}
+
 }

@@ -110,6 +110,7 @@
 .courseIntro {
   border: 1px solid rgb(255, 182, 6);
   margin-bottom: 45px;
+  background-color: lightblue;
 }
 
 .courseOverview {
@@ -239,3 +240,7 @@
   margin-bottom: 50px;
 }
 
+.courseCtn {
+  background-color: #f4f4f4;
+  position: relative;
+}

@@ -16,15 +16,12 @@ html,body {
     flex: 1 1;
 }
 
-.adminSidebar {
-    background-color: #52143e;
-    color: #fff;
-}
-
 .adminCourseTop {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    width: 80%;
+    margin: 0 auto;
 }
 
 .adminCourseTop .row {

@@ -5,7 +5,7 @@ DEPENDENCES
 =====
 */
 
-@import url('https://fonts.googleapis.com/css?family=Baloo+Tamma&display=swap');
+/* @import url('https://fonts.googleapis.com/css?family=Baloo+Tamma&display=swap');
 
 /*
 =====
@@ -13,7 +13,7 @@ CORE STYLES
 =====
 */
 
-.loader{
+/* .loader{
 	color: rgba(0, 0, 0, .2);
 	position: relative;
 }
@@ -38,7 +38,7 @@ CORE STYLES
 	40%, 60%{
 		clip-path: circle(50vmax at 50% 50%);
 	}
-}
+} */
 
 /*
 =====
@@ -46,7 +46,7 @@ DEMO
 =====
 */
 
-body{
+/* body{
 	margin: 0;
 }
 
@@ -54,7 +54,7 @@ body{
 	display: flex;
 	flex-direction: column;
 	height: 100vh;
-	background-color: #009688;
+	background-color: #f4f4f4;
 }
 
 .loader{
@@ -65,4 +65,17 @@ body{
 	text-transform: uppercase;
 	
 	margin: auto;
+} */
+
+.loaderCtn {
+	background-color: #f4f4f4;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1;
 }

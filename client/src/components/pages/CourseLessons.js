@@ -1,20 +1,32 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import './CourseLesson.css';
 import store from '../../store';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getCourse } from '../../actions/courses';
+import { getCourse, getCoursesOwned } from '../../actions/courses';
 
-const CourseLessons = ({ course }) => {
-	useEffect(() => {
-		store.dispatch(getCourse(courseTag));
-
-	}, []);
+const CourseLessons = ({ course, auth }) => {
+	const [page, setPage] = useState({
+		loaded: false
+	});
 
 	let { courseTag, lesson } = useParams();
 
 	lesson = parseInt(lesson);
+
+	useEffect(() => {
+		store.dispatch(getCourse(courseTag));
+	}, []);
+
+	useEffect(() => {
+		setCoursesOwned()
+	}, [auth.isAuthenticated]);
+
+	const setCoursesOwned = async () => {
+		await store.dispatch(getCoursesOwned(auth && auth.user && auth.user.courses));
+		setPage({ loaded: true })
+	}
 
 	const totalLessons = course && course.data && course.data.classes.length;
 	console.log(totalLessons);
@@ -45,19 +57,29 @@ const CourseLessons = ({ course }) => {
 		}
 	}
 
-	return (
-		<Fragment>
-			<SecondHeader />
-			<div className="container-fluid courseLesson">
-				<div className="row">
-					<div className="col-4">
-						<h1>{course && course.data && course.data.name}</h1>
+	const checkCourseAccess = auth && auth.coursesOwned.length > 0 && auth.coursesOwned.find((theCourse) => {
+		return theCourse.tag === courseTag
+	});
 
-						<h5 className="courseCurriculum">Curriculum</h5>
-						<div className="lessonsCtn">
+	console.log(checkCourseAccess);
 
-							{classes}
-							{/* <div className="lesson">
+	if (auth && auth.user && auth.user.role !== "admin" && page.loaded && !checkCourseAccess) {
+		return <Redirect to="/courses" />
+	} else {
+
+		return (
+			<Fragment>
+				<SecondHeader />
+				<div className="container-fluid courseLesson">
+					<div className="row">
+						<div className="col-4">
+							<h1>{course && course.data && course.data.name}</h1>
+
+							<h5 className="courseCurriculum">Curriculum</h5>
+							<div className="lessonsCtn">
+
+								{classes}
+								{/* <div className="lesson">
 							<div className="lessonComplete"></div>
 							<i class="fas fa-play-circle"></i>
 							<p>Building the frontend interface <span className="lessonTime">(13:54)</span></p>
@@ -78,27 +100,29 @@ const CourseLessons = ({ course }) => {
 							<p>Building the frontend interface <span className="lessonTime">(13:54)</span></p>
 						</div> */}
 
+							</div>
 						</div>
-					</div>
-					<div className="col-8">
-						{lessonContinue()}
-						<div className="currentLessonTitle">
-							<i className="fas fa-play-circle"></i>
-							<p>{course && course.data && course.data.classes[lesson - 1].title}</p>
-						</div>
+						<div className="col-8">
+							{lessonContinue()}
+							<div className="currentLessonTitle">
+								<i className="fas fa-play-circle"></i>
+								<p>{course && course.data && course.data.classes[lesson - 1].title}</p>
+							</div>
 
-						<div className="videoIframe">
-							<iframe src={course && course.data && course.data.classes[lesson - 1].url} width="800" height="600" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
+							<div className="videoIframe">
+								<iframe src={course && course.data && course.data.classes[lesson - 1].url} width="800" height="600" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</Fragment>
-	)
+			</Fragment>
+		)
+	}
 }
 
 const mapStateToProps = state => ({
-	course: state.courses
+	course: state.courses,
+	auth: state.auth
 	// profile: state.profile
 });
 

@@ -55,7 +55,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "notActive"
   },
-  activationToken: String
+  activationToken: String,
+  hasProfilePic: {
+    type: Boolean,
+    default: false
+  }
 });
 
 userSchema.pre('save', async function(next) {

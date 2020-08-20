@@ -109,12 +109,11 @@ exports.emailThankYou = async (req, res) => {
     const course = await Course.findOne({tag: courseTag});
     console.log( course );
 
-    if( !user.courses.includes(course._id) ) {
-      await User.findByIdAndUpdate(user._id, {
-        courses: [...user.courses, course._id ],
-        checkout: []
-      });
-    }
+    await User.findByIdAndUpdate(user._id, {
+      courses: [...user.courses, course._id ],
+      checkout: []
+    });
+   
     // generateActivationToken(req, user);
 
     const url = `${req.protocol}://localhost:3000/courses/${course.tag}`;

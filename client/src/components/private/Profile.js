@@ -4,11 +4,10 @@ import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import SecondHeader from '../partials/SecondHeader';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getCourses } from '../../actions/courses';
+import { getCoursesOwned } from '../../actions/courses';
 import store from '../../store';
-import Avatar from '../../images/avatar.png';
 import './Profile.css';
 
 // import {
@@ -32,11 +31,11 @@ function Profile({ auth, active, courses }) {
     // console.log(active == 'notActive');
     // console.log(!auth.loading)
 
-    store.dispatch(getCourses(auth && auth.user && auth.user.courses));
+    store.dispatch(getCoursesOwned(auth && auth.user && auth.user.courses));
     // console.log(auth.user.name);
-
+    
     // console.log(auth);
-  }, [auth]);
+  }, [auth.isAuthenticated]);
 
   const imageMaxSize = 1000000000 // bytes
   const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif';
@@ -45,13 +44,17 @@ function Profile({ auth, active, courses }) {
   let imageRef = useRef();
 
   let userPic = null;
+  const images = require.context('../../images/', true);
 
-  if( auth && auth.user && auth.user._id) {
+  let img;
+
+  if( auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
     // import Pic from `/${auth.user._id}.jpg`;
     // userPic = <img src={`/${auth.user._id}.jpg`} />
-    const images = require.context('../../images/', true);
-    let img = images(`./${auth.user._id}.jpg`);
-    
+    img = images(`./${auth.user._id}.jpg`);
+    userPic = <img src={img} className="userAvatar" />
+  } else {
+    img = images(`./default.png`);
     userPic = <img src={img} className="userAvatar" />
   }
 
@@ -226,11 +229,45 @@ function Profile({ auth, active, courses }) {
 
       const formData = new FormData();
       formData.append('file', cropState.croppedImage);
+      formData.append('userId', auth.user._id);
+
+      console.log( formData);
 
       const res = await axios.post("/api/users/profilePic", formData, config);
       console.log("res.data");
       console.log(res.data);
   }
+
+ 
+  const coursesimage = require.context('../../images/courses', true);
+
+  const allCourses = auth && auth.coursesOwned.map((course, index) => {
+    let img = "";
+    if( course && course.hasThumbnail) {
+      img = coursesimage(`./${course.tag}.jpg`);
+    } else {
+      img = coursesimage(`./default-course.jpg`);
+    }
+
+    return (
+      <div className="col-4" key={index}>
+        <div className="cardBorder">
+          <div className="courseThumbnail courseFeatured1">
+            <Link to={`/courses/${course.tag}/lessons/1`}>
+              <img src={img} alt="javascript" />
+            </Link>
+          </div>
+          <div className="courseTitleCtn">
+            <Link to={`/courses/${course.tag}/lessons/1`}>{course.name}</Link>
+          </div>
+          <div className="separator"></div>
+          <div className="priceCtn">
+            <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">${course.price}</span>
+          </div>
+        </div>
+      </div>
+    )
+  })
   
 
   if (active == 'notActive' && !auth.loading) {
@@ -238,8 +275,6 @@ function Profile({ auth, active, courses }) {
     return <Redirect to="/activate" />
   }
 
-
-  console.log(cropState);
   return (
     <Fragment>
       <SecondHeader />
@@ -278,11 +313,15 @@ function Profile({ auth, active, courses }) {
               <h1>About Me</h1>
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptas asperiores omnis? Expedita corrupti, beatae reiciendis possimus ratione autem quos dignissimos provident a ea, veniam hic doloribus, odit atque quia!</p>
               <h1>My Courses</h1>
-              <div className="myCoursesCtn">
-                {courses && courses.all && courses.all.map((course, i) => {
+              <div className="myCoursesCtn container">
+                {/* {courses && courses.all && courses.all.map((course, i) => {
                   return <h1 key={i}>{course.name}</h1>
                 })
-                }
+                } */}
+                <div className="row">
+                  { allCourses }
+                </div>
+                
               </div>
             </div>
           </div>

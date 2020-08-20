@@ -26,7 +26,7 @@ const createSendToken = (user, statusCode, res) => {
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
   console.log(token);
   // console.log(cookieOptions);
-  
+
   res.cookie('jwt', token, cookieOptions);
   // res.cookie('name', 'Telmo', cookieOptions);
   console.log('Cookie Set');
@@ -95,7 +95,7 @@ exports.register = async (req, res) => {
       status: 'success',
       message: 'You are Registered',
     });
-  } catch(error) {
+  } catch (error) {
     console.log(error);
   }
 
@@ -106,8 +106,8 @@ exports.activate = async (req, res, next) => {
 
   console.log('inside account Activation');
   console.log(req.params.token);
-  const user = await User.findOne({activationToken: req.params.token})
-  
+  const user = await User.findOne({ activationToken: req.params.token })
+
   console.log(user);
 
   // 2) If token has not expired, and there is user, set the new password
@@ -124,7 +124,7 @@ exports.activate = async (req, res, next) => {
   user.activationToken = undefined;
   await user.save({ validateBeforeSave: false });
 
-  
+
   res.status(200).json({
     status: 'success',
     message: 'You are Activated',
@@ -134,7 +134,7 @@ exports.activate = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   console.log("Inside Login Controller");
-  
+
   // 1) Check if email and password exist
   if (!email || !password) {
     return res.status(400).json({
@@ -161,7 +161,7 @@ exports.logout = (req, res) => {
     expires: new Date(Date.now() + 5 * 1000),
     httpOnly: true
   });
-  res.status(200).json({ 
+  res.status(200).json({
     status: 'success',
     message: "Token Removed"
   });
@@ -345,7 +345,7 @@ exports.emailActivation = async (req, res) => {
   try {
     console.log('inside emailActivation');
     console.log(req.params.email);
-    const user = await User.findOne({email: req.params.email})
+    const user = await User.findOne({ email: req.params.email })
     console.log(user);
     generateActivationToken(req, user);
 
@@ -360,18 +360,25 @@ exports.emailActivation = async (req, res) => {
 }
 
 exports.profilePic = async (req, res) => {
-
-  if( req.files === null) {
-    return res.status(400).json({
-      msg: 'No file uploaded'
-    })
-  }
-  
-  const file = req.files.file;
-
-  const path = `${__dirname}/../client/public/${file.name}`;
-
   try {
+    if (req.files === null) {
+      return res.status(400).json({
+        msg: 'No file uploaded'
+      })
+    }
+
+    const file = req.files.file;
+    const userId =  req.body.userId;
+
+    const user = await User.findById(userId);
+
+    user.hasProfilePic = true;
+
+    await user.save({ validateBeforeSave: false });
+
+    const path = `${__dirname}/../client/public/${file.name}`;
+
+
     if (fs.existsSync(path)) {
       //file exists
       fs.unlinkSync(path)
@@ -382,16 +389,12 @@ exports.profilePic = async (req, res) => {
         console.error(err);
         return res.status(500).send(err);
       }
-  
+
       res.json({ status: "success" });
     });
-    
-  } catch(err) {
+
+  } catch (err) {
     console.error(err)
   }
-
-  
-
-
 }
 

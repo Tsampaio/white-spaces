@@ -43,7 +43,11 @@ const courseSchema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     }
-  ]
+  ],
+  hasThumbnail: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const Course = mongoose.model('Course', courseSchema);
