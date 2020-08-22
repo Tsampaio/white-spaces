@@ -62,6 +62,7 @@ exports.getCoursesOwned = async (req, res, next) => {
     const user = await User.findById(req.body.userId);
     console.log(user );
 
+    if( user.courses.length > 0 ) {
     Promise.all(user.courses.map(async (course) => {
       // console.log( await Course.findById( course ));
       return await Course.findById(course);
@@ -75,6 +76,12 @@ exports.getCoursesOwned = async (req, res, next) => {
         courses: allCourses
       });
     });
+  } else {
+    return res.status(200).json({
+      status: 'success',
+      courses: []
+    });
+  }
 
   } catch (error) {
     console.log(error)

@@ -1,17 +1,22 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './SecondHeader.css';
 import logo from '../../images/telmoacademy-logo3.png';
-import DefaultImage from '../../images/default.png';
+import { loadCheckout } from '../../actions/courses'; 
 import { connect } from 'react-redux';
 
-const SecondHeader = ({ auth, isAuthenticated, payment }) => {
+const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout }) => {
 
   let userPic = null;
 
   const [dropDown, setDropdown] = useState({
     open: false,
   });
+
+  useEffect(() => {
+    loadCheckout(auth.user && auth.user._id);
+  }, [auth])
+  
 
   const handleDropdown = () => {
     if (dropDown.open) {
@@ -90,4 +95,4 @@ const mapStateToProps = state => ({
   payment: state.payment
 });
 
-export default connect(mapStateToProps)(SecondHeader);
+export default connect(mapStateToProps, { loadCheckout })(SecondHeader);
