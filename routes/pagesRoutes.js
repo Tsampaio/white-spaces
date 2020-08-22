@@ -5,6 +5,7 @@ const router = express.Router();
 console.log("inside routes")
 router.post('/getCourse', pagesController.getCourse);
 router.post('/getCourses', pagesController.getCourses);
+router.post('/getCoursesOwned', pagesController.getCoursesOwned);
 router.post('/createCourse', pagesController.createCourse);
 router.post('/coursePic', pagesController.coursePic);
 router.post('/updateCourse', pagesController.updateCourse);

@@ -34,7 +34,8 @@ export default function( state = initialState, action ) {
     case PAY_COURSE:
       return {
           ...state,
-          result: payload.status
+          result: payload.status,
+          checkout: []
       }
     case ADD_CHECKOUT:
       return {

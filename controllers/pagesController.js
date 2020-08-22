@@ -1,4 +1,5 @@
 const Course = require('./../models/courseModel');
+const User = require('./../models/userModel');
 const { promisify } = require('util');
 
 exports.getCourses = async (req, res, next) => {
@@ -8,24 +9,24 @@ exports.getCourses = async (req, res, next) => {
     let courses;
     let allCourses;
     // console.log( req.body.courses );
-    if( req.body.courses) {
+    if (req.body.courses) {
       courses = req.body.courses;
-      console.log( "this is courses ");
-      console.log( courses );
+      console.log("this is courses ");
+      console.log(courses);
       // allCourses = await courses.map( async (course) => {
       //   console.log( await Course.findById( course ));
       //   return await Course.findById( course );
       // })
       // let myvar;
 
-      Promise.all( courses.map( async (course) => {
-            // console.log( await Course.findById( course ));
-            return await Course.findById( course );
-          })
-      ).then( values => {
+      Promise.all(courses.map(async (course) => {
+        // console.log( await Course.findById( course ));
+        return await Course.findById(course);
+      })
+      ).then(values => {
         allCourses = values;
         console.log(values)
-        
+
         return res.status(200).json({
           status: 'success',
           courses: allCourses
@@ -34,14 +35,14 @@ exports.getCourses = async (req, res, next) => {
 
     } else {
 
-    allCourses = await Course.find();
-    return res.status(200).json({
-      status: 'success',
-      courses: allCourses
-    });
-  }
-    
-    
+      allCourses = await Course.find();
+      return res.status(200).json({
+        status: 'success',
+        courses: allCourses
+      });
+    }
+
+
     // console.log("before res");
     // console.log( allCourses );
     // res.status(200).json({
@@ -53,6 +54,31 @@ exports.getCourses = async (req, res, next) => {
     console.log(error);
   }
 
+}
+
+exports.getCoursesOwned = async (req, res, next) => {
+  try {
+    let allCourses;
+    const user = await User.findById(req.body.userId);
+    console.log(user );
+
+    Promise.all(user.courses.map(async (course) => {
+      // console.log( await Course.findById( course ));
+      return await Course.findById(course);
+    })
+    ).then(values => {
+      allCourses = values;
+      console.log(values)
+
+      return res.status(200).json({
+        status: 'success',
+        courses: allCourses
+      });
+    });
+
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 exports.getCourse = async (req, res, next) => {
@@ -76,11 +102,11 @@ exports.getCourse = async (req, res, next) => {
 
 exports.updateCourse = async (req, res, next) => {
   try {
-    const {id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes} = req.body;
+    const { id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes } = req.body;
     console.log("inside of update Course");
-    console.log( req.body );
+    console.log(req.body);
     //const course = await Course.findOne({ tag });
-    
+
     await Course.findByIdAndUpdate(id, {
       name: courseName,
       intro: courseIntro,
@@ -103,10 +129,10 @@ exports.updateCourse = async (req, res, next) => {
 
 exports.createCourse = async (req, res, next) => {
   try {
-    console.log( "inside Create course" );
-    const {courseName, courseIntro, courseTag, courseDescription, coursePrice, classes} = req.body;
-    
-    console.log( req.body );
+    console.log("inside Create course");
+    const { courseName, courseIntro, courseTag, courseDescription, coursePrice, classes } = req.body;
+
+    console.log(req.body);
     //const course = await Course.findOne({ tag });
 
     const course = await Course.create({
@@ -117,7 +143,7 @@ exports.createCourse = async (req, res, next) => {
       price: coursePrice,
       classes
     });
-    
+
     // course.description = `<p>In this course you are going to learn how to create a Shopping Cart for an E commerce Website using JavaScript and the Local Storage.</p>`;
     // course.description += `<p><strong>IMPORTANT</strong>:&nbsp;This is a Front-End Project only, no Back-End is involved!</p>`;
     // course.description += `<p>By taking this course you will learn the following skills:</p>`;
@@ -146,7 +172,7 @@ exports.createCourse = async (req, res, next) => {
     //   },
 
     // ]
-  
+
     // await course.save({ validateBeforeSave: false });
 
     res.status(200).json({
@@ -169,7 +195,7 @@ exports.coursePic = async (req, res) => {
     }
 
     const file = req.files.file;
-    console.log( file );
+    console.log(file);
     // const userId =  req.body.userId;
 
     // const user = await User.findById(userId);
@@ -208,25 +234,25 @@ exports.test = async (req, res) => {
     ),
     httpOnly: true
   };
-  const myCookie = await res.cookie('test', 'Backend Test', cookieOptions );
-  
+  const myCookie = await res.cookie('test', 'Backend Test', cookieOptions);
+
   console.log(myCookie);
-  res.status(200).json({ message: "success"});
+  res.status(200).json({ message: "success" });
 }
 
 exports.courseThumbnail = async (req, res) => {
   try {
-    
+
     const courses = await Course.find();
     console.log(courses);
-    for(let i=0; i < courses.length; i++) {
+    for (let i = 0; i < courses.length; i++) {
       courses[i].hasThumbnail = true;
       await courses[i].save({ validateBeforeSave: false });
     }
-    
+
     // await courses.save({ validateBeforeSave: false });
 
-    res.status(200).json({ message: "success"});
+    res.status(200).json({ message: "success" });
 
   } catch (err) {
     console.error(err)
@@ -234,14 +260,14 @@ exports.courseThumbnail = async (req, res) => {
 }
 exports.courseAccess = async (req, res) => {
 
-try {
-  console.log(req.body);
+  try {
+    console.log(req.body);
 
-  res.status(200).json({
-    access: "yes"
-  })
-} catch (error) {
-  
-}
+    res.status(200).json({
+      access: "yes"
+    })
+  } catch (error) {
+
+  }
 
 }

@@ -1,7 +1,22 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import SecondHeader from '../partials/SecondHeader';
+import { getCoursesOwned } from '../../actions/courses';
+import { connect } from 'react-redux';
+import store from '../../store';
 
-const CheckoutSuccess = () => {
+const CheckoutSuccess = ({auth}) => {
+
+  useEffect(() => {
+    //     console.log(auth);
+    // console.log(active == 'notActive');
+    // console.log(!auth.loading)
+
+    store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
+    // console.log(auth.user.name);
+    
+    // console.log(auth);
+  }, []);
+
   return (
     <Fragment>
       <SecondHeader />
@@ -17,4 +32,10 @@ const CheckoutSuccess = () => {
   )
 }
 
-export default CheckoutSuccess;
+const mapStateToProps = state => ({
+  auth: state.auth,
+  active: state.auth.active,
+  courses: state.courses
+});
+
+export default connect(mapStateToProps)(CheckoutSuccess);

@@ -21,10 +21,10 @@ const CourseLessons = ({ course, auth }) => {
 
 	useEffect(() => {
 		setCoursesOwned()
-	}, [auth.isAuthenticated]);
+	}, [auth]);
 
 	const setCoursesOwned = async () => {
-		await store.dispatch(getCoursesOwned(auth && auth.user && auth.user.courses));
+		await store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
 		setPage({ loaded: true })
 	}
 
@@ -65,7 +65,7 @@ const CourseLessons = ({ course, auth }) => {
 
 	if (auth && auth.user && auth.user.role !== "admin" && page.loaded && !checkCourseAccess) {
 		return <Redirect to="/courses" />
-	} else {
+	}
 
 		return (
 			<Fragment>
@@ -79,26 +79,6 @@ const CourseLessons = ({ course, auth }) => {
 							<div className="lessonsCtn">
 
 								{classes}
-								{/* <div className="lesson">
-							<div className="lessonComplete"></div>
-							<i class="fas fa-play-circle"></i>
-							<p>Building the frontend interface <span className="lessonTime">(13:54)</span></p>
-						</div>
-						<div className="lesson">
-							<div className="lessonComplete"></div>
-							<i class="fas fa-play-circle"></i>
-							<p>Building the frontend interface <span className="lessonTime">(13:54)</span></p>
-						</div>
-						<div className="lesson">
-							<div className="lessonComplete"></div>
-							<i class="fas fa-play-circle"></i>
-							<p>Building the frontend interface <span className="lessonTime">(13:54)</span></p>
-						</div>
-						<div className="lesson">
-							<div className="lessonComplete"></div>
-							<i class="fas fa-play-circle"></i>
-							<p>Building the frontend interface <span className="lessonTime">(13:54)</span></p>
-						</div> */}
 
 							</div>
 						</div>
@@ -117,7 +97,7 @@ const CourseLessons = ({ course, auth }) => {
 				</div>
 			</Fragment>
 		)
-	}
+	
 }
 
 const mapStateToProps = state => ({

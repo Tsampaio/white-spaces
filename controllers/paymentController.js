@@ -235,7 +235,7 @@ exports.loadCheckout = async (req, res) => {
 
 exports.test = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate("5f19e5919136eaa370befd16", {
+    const user = await User.findByIdAndUpdate("5f35b9a3b716aa48e45c64d0", {
       courses: []
     });
 

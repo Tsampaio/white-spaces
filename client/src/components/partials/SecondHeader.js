@@ -40,9 +40,6 @@ const SecondHeader = ({ auth, isAuthenticated, payment }) => {
     userPic = <img src={img} className="userAvatarNav" />
   }
 
-
-
-
 return (
   <div className="secondHeader">
     <div className="container">

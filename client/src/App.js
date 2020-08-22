@@ -40,8 +40,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/courses" component={Courses} />
           <Route exact path="/courses/:courseTag" component={Course} />
-          <Route exact path="/courses/:courseTag/lessons/:lesson" component={CourseLessons} />
-          /courses/javascript-shopping-cart
+          <Route exact path="/courses/:courseTag/lessons/:lesson" component={CourseLessons} />  
           <Route path="/register" component={Register} />
           <Route exact path="/cart/checkout" component={Checkout} />
           <Route exact path="/cart/checkout/success" component={CheckoutSuccess} />

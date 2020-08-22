@@ -38,13 +38,14 @@ export const getCourses = (courses) => async dispatch => {
   }
 }
 
-export const getCoursesOwned = (courses) => async dispatch => {
+export const getCoursesOwned = (userId) => async dispatch => {
   try {
-    console.log("inside actions getCourses");
+    console.log("inside actions getCoursesOwned");
+    console.log( userId )
 
-    const body = JSON.stringify({ courses });
+    const body = JSON.stringify({ userId });
 
-    const res = await axios.post(`/api/getCourses`, body, {
+    const res = await axios.post(`/api/getCoursesOwned`, body, {
       headers: {
         Accept: 'application/json', "Content-Type": "application/json"
       }

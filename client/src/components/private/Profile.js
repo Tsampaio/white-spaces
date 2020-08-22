@@ -31,11 +31,11 @@ function Profile({ auth, active, courses }) {
     // console.log(active == 'notActive');
     // console.log(!auth.loading)
 
-    store.dispatch(getCoursesOwned(auth && auth.user && auth.user.courses));
+    store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
     
     // console.log(auth);
-  }, [auth.isAuthenticated]);
+  }, [auth && auth.user && auth.user._id]);
 
   const imageMaxSize = 1000000000 // bytes
   const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif';
