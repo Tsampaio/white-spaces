@@ -199,8 +199,6 @@ exports.loadCheckout = async (req, res) => {
     console.log("inside loadCheckout");
 
     const user = await User.findById(req.body.userId);
-    console.log( user._id );
-
 
     // const checkoutPrice = user.checkout.map( (course) => {
     //   return parseInt(total.price) + parseInt(course.price);

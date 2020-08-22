@@ -12,6 +12,8 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
     instance: {}
   });
 
+  const [disableButton, setDisableButton] = useState(false)
+
   console.log( payment );
   const checkoutPrice = payment && payment.checkoutPrice;
   const courseTag = payment && payment.checkout[0] && payment.checkout[0].tag;
@@ -44,7 +46,7 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
       // console.log( payment.result );
       // console.log( payment.result.success );
       
-
+      setDisableButton(true);
     })
     .catch(error => {
       console.log('dropin error: ', error)
@@ -59,7 +61,7 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
           flow: "vault"
         }
       }} onInstance={ instance => (data.instance = instance)} />
-      <button onClick={buy} className="btn btn-primary">Proceed to Payment</button>
+      <button onClick={buy} className={disableButton ? "btn btn-primary invisible" : "btn btn-primary" }>Proceed to Payment</button>
     </Fragment>
   )
   

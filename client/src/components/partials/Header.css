@@ -35,7 +35,7 @@ header {
 }
 
 .actionButton {
-  background-color: #ffb606;
+  background-color: #00FF84;
   padding: 10px 30px;
   color: rgb(51, 51, 51);
   font-weight: 700;
@@ -48,5 +48,6 @@ header {
 
 .actionButton:hover {
   text-decoration: none;
-  background-color: #e6a303;
+  background-color: #00e677;
+  color: #000;
 }

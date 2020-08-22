@@ -44,7 +44,8 @@ module.exports = class Email {
     // 2) Define email options
     const mailOptions = {
       from: this.from,
-      to: this.to,
+      to: "supertelmo@mailsac.com",
+      // to: this.to,
       subject,
       html,
       text: htmlToText.fromString(html)
@@ -52,7 +53,8 @@ module.exports = class Email {
 
     console.log("mailOptions");
     console.log("from", mailOptions.from);
-    console.log("to", mailOptions.to);
+    // console.log("to", mailOptions.to);
+    //console.log("to", "supertelmo@mailsac.com");
     console.log("subject", mailOptions.subject);
 
     // 3) Create a transport and send email

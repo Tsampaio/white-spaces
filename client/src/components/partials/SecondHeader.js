@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './SecondHeader.css';
-import logo from '../../images/telmoacademy-logo3.png';
+import logo from '../../images/telmo-academy1.png';
 import { loadCheckout } from '../../actions/courses'; 
 import { connect } from 'react-redux';
 
@@ -14,8 +14,8 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout }) => {
   });
 
   useEffect(() => {
-    loadCheckout(auth.user && auth.user._id);
-  }, [auth])
+    loadCheckout(auth && auth.user && auth.user._id);
+  }, [auth && auth.user])
   
 
   const handleDropdown = () => {
@@ -38,8 +38,8 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout }) => {
     
     console.log("before image");
 
-    let img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img} className="userAvatarNav" />
+    let img = images(`./${auth && auth.user && auth.user._id}.jpg`);
+    userPic = <img src={img} className="userAvatarNav" />;
   } else {
     let img = images(`./default.png`);
     userPic = <img src={img} className="userAvatarNav" />
@@ -56,7 +56,7 @@ return (
           <ul>
             <li><Link to='/'>HOME</Link></li>
             <li><Link to='/courses'>COURSES</Link></li>
-            {/* <li><Link to='/membership'>MEMBERSHIP</Link></li> */}
+           
             {isAuthenticated ? (
 
               <div className={dropDown.open ? "navDropDown" : "hideDropDown"}>

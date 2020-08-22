@@ -1,10 +1,11 @@
 import React, {Fragment, useEffect} from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import { getCoursesOwned } from '../../actions/courses';
+import { resetPaymentResult } from '../../actions/payments';
 import { connect } from 'react-redux';
 import store from '../../store';
 
-const CheckoutSuccess = ({auth}) => {
+const CheckoutSuccess = ({auth, payment}) => {
 
   useEffect(() => {
     //     console.log(auth);
@@ -13,7 +14,7 @@ const CheckoutSuccess = ({auth}) => {
 
     store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
-    
+    store.dispatch(resetPaymentResult());
     // console.log(auth);
   }, []);
 
@@ -35,7 +36,8 @@ const CheckoutSuccess = ({auth}) => {
 const mapStateToProps = state => ({
   auth: state.auth,
   active: state.auth.active,
-  courses: state.courses
+  courses: state.courses,
+  payment: state.payment
 });
 
 export default connect(mapStateToProps)(CheckoutSuccess);

@@ -60,11 +60,12 @@ const Course = ({ course, addCheckout, auth, payment }) => {
 
   const courseId = course && course.data && course.data._id;
 
-  const userGotCourse = auth && auth.user && auth.user.courses.filter( (course) => {
-    return course == courseId
+  const userGotCourse = auth && auth.coursesOwned.filter( (course) => {
+    console.log( course._id )
+    return course._id == courseId
   });
-  
-  console.log( payment);
+  console.log( auth && auth.coursesOwned );
+  console.log( userGotCourse);
   
   if( payment && payment.addingToCheckout ) {
     console.log( payment.addingToCheckout );

@@ -3,7 +3,8 @@ import {
     PAY_COURSE,
     PAY_ERROR,
     GET_PAYMENT_TOKEN,
-    PAY_MEMBERSHIP
+    PAY_MEMBERSHIP,
+    RESET_PAYMENT_RESULT
 } from './types';
 
 export const payAction = (userId, token) => async dispatch => {
@@ -109,5 +110,15 @@ export const subscriptionPayment = (userId, token, paymentData) => async dispatc
   } catch (err) {
       // const errors = err.response.data.message;
       console.log(err);
+  }
+}
+
+export const resetPaymentResult = () => async dispatch => {
+  try {
+    dispatch({
+      type: RESET_PAYMENT_RESULT,
+    });
+  } catch (error) {
+    console.log(error);
   }
 }

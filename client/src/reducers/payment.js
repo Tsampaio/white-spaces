@@ -5,7 +5,8 @@ import {
   GET_PAYMENT_TOKEN,
   ADD_CHECKOUT,
   REMOVE_CHECKOUT,
-  LOAD_CHECKOUT
+  LOAD_CHECKOUT,
+  RESET_PAYMENT_RESULT
 } from '../actions/types';
 
 const initialState = {
@@ -53,6 +54,12 @@ export default function( state = initialState, action ) {
         ...state,
         checkout: payload.checkout,
         checkoutPrice: payload.checkoutPrice
+      }
+    case RESET_PAYMENT_RESULT:
+      return {
+        ...state,
+        result: '',
+        checkout: []
       }
     default:
       return state;

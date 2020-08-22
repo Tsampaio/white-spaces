@@ -21,7 +21,7 @@ const CourseLessons = ({ course, auth }) => {
 
 	useEffect(() => {
 		setCoursesOwned()
-	}, [auth]);
+	}, [auth && auth.user]);
 
 	const setCoursesOwned = async () => {
 		await store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
