@@ -15,7 +15,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout }) => {
 
   useEffect(() => {
     loadCheckout(auth && auth.user && auth.user._id);
-  }, [auth && auth.user])
+  }, [auth && auth.isAuthenticated && auth.user && auth.user.checkout])
   
 
   const handleDropdown = () => {
@@ -71,15 +71,19 @@ return (
                   <li><Link to='/Register'>Register</Link></li>
                 </Fragment>
               )}
-            <li>
-              <Link className="checkoutLink" to="/cart/checkout">
-                <i className="fa fa-shopping-cart"></i>
-                {payment && payment.checkout && payment.checkout.length > 0 ? (
-                  <span className="checkoutNumber">{payment && payment.checkout && payment.checkout.length}</span>
-                ) : null
-                }
-              </Link>
-            </li>
+            { 
+              isAuthenticated ? (
+                <li>
+                  <Link className="checkoutLink" to="/cart/checkout">
+                    <i className="fa fa-shopping-cart"></i>
+                    {payment && payment.checkout && payment.checkout.length > 0 ? (
+                      <span className="checkoutNumber">{payment && payment.checkout && payment.checkout.length}</span>
+                    ) : null
+                    }
+                  </Link>
+                </li>
+              ) : null
+            }
             { isAuthenticated ? <li className="userAvatarNavCtn" onClick={handleDropdown}>{userPic}<span className="userBorder"></span></li> : "" }
           </ul>
         </div>

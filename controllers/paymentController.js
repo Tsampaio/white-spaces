@@ -205,8 +205,22 @@ exports.loadCheckout = async (req, res) => {
     // });
     let checkoutPrice = 0;
 
-    for(let i=0; i < user.checkout.length; i++) {
-      checkoutPrice+= parseInt(user.checkout[i].price)
+    if( user && user.checkout ) {
+      for(let i=0; i < user.checkout.length; i++) {
+        checkoutPrice+= parseInt(user.checkout[i].price)
+      }
+
+      res.status(200).json({
+        status: 'success',
+        checkout: user.checkout,
+        checkoutPrice
+      })
+    } else {
+      res.status(200).json({
+        status: 'success',
+        checkout: [],
+        checkoutPrice
+      })
     }
 
     // const newArray = [ { price: 25 }, { price: 25}];
@@ -221,11 +235,11 @@ exports.loadCheckout = async (req, res) => {
     console.log("**************" +  checkoutPrice + "**************");
     console.log(checkoutPrice);
 
-    res.status(200).json({
-      status: 'success',
-      checkout: user.checkout,
-      checkoutPrice
-    })
+    // res.status(200).json({
+    //   status: 'success',
+    //   checkout: user.checkout,
+    //   checkoutPrice
+    // })
   } catch (error) {
     console.log(error);
   }

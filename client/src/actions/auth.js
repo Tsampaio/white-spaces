@@ -143,13 +143,16 @@ export const fgt_pass = ({ email }) => async dispatch => {
     const res = await axios.post('/api/users/forgotPassword', body, config);
 
     //console.log(res.data);
-    dispatch({ type: FORGOT_PASSWORD });
+    dispatch({ 
+      type: FORGOT_PASSWORD,
+      payload: "We have sent you an email, with a Link to reset your password"
+    });
 
 
     // dispatch(loadUser());
   } catch (err) {
-    const errors = err.response.data.errors;
-    console.log(errors);
+    // const errors = err.response.data.errors;
+    console.log(err);
     // if(errors) {
     //     errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     // }
@@ -215,11 +218,11 @@ export const activateEmailAction = (token) => async dispatch => {
 }
 
 export const resetMessage = () => async dispatch => {
-  console.log("inside reset message");
+  console.log("inside reset message action");
   try {
     dispatch({
       type: RESET_MESSAGE,
-      payload: { message: false }
+      payload: ""
     });
 
   } catch (error) {

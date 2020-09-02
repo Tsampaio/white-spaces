@@ -7,20 +7,21 @@ import './Login.css';
 import { login, resetMessage } from '../../actions/auth';
 import PropTypes from 'prop-types';
 
-const Login = ({ login, resetMessage, isAuthenticated, message, active }) => {
+const Login = ({ login, resetMessage, isAuthenticated, auth, active }) => {
 	const [formData, setFormData] = useState({
 		email: '',
 		password: ''
 	});
 
+	const [message, setMessage] = useState("")
+
 	useEffect(() => {
-		if (message) {
-			setTimeout(() => {
-				resetMessage();
-				// console.log("message deleted");
-			}, 5000);
-		}
-	}, [message])
+		resetMessage();
+	}, []);
+
+	useEffect(() => {
+		setMessage(auth.message);
+	}, [auth.message])
 
 	const { email, password } = formData;
 	const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -65,7 +66,7 @@ const Login = ({ login, resetMessage, isAuthenticated, message, active }) => {
 											required
 										/>
 									</div>
-									<input type="submit" className="btn btn-primary" value="Login" />
+									<input type="submit" className="btn btn-success" value="Login" />
 
 									{message && (
 										<div className="loginError">
@@ -102,7 +103,7 @@ Login.propTypes = {
 
 const mapStateToProps = state => ({
 	isAuthenticated: state.auth.isAuthenticated,
-	message: state.auth.message
+	auth: state.auth
 })
 
 export default connect(mapStateToProps, { login, resetMessage })(Login);

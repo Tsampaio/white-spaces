@@ -1,35 +1,66 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import store from '../../store';
 import { getCourses } from '../../actions/courses';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import SecondHeader from '../partials/SecondHeader';
-import jsCart from '../../images/javascript-shopping.jpg';
 import './Courses.css';
 
 const Courses = ({ courses }) => {
+
+  const [page, setPage] = useState({
+    loaded: false
+  })
+
+  const [ coursesThumbnail, setCoursesThumbnail] = useState([]);
+
   useEffect(() => {
     store.dispatch(getCourses());
+    loaderDelay();
   }, []);
+
+  // useEffect(() => {
+    
+  //     setPage({loaded: true})
+   
+    
+  //   loadMyThumbNail();
+  // }, [courses.all])
 
   console.log(courses);
   const images = require.context('../../images/courses', true);
 
+  // const loadMyThumbNail = async () => {
+  //   console.log(courses.all);
+  //   const allThumbnails = courses && courses.all.map((course, index) => {
+  //     return images(`./${course.tag}.jpg`);
+  //   });
+  //   setCoursesThumbnail(allThumbnails);
+  // };
 
-  const allCourses = courses.all && courses.all.map((course, index) => {
-    let img = "";
-    if( course && course.hasThumbnail) {
-      img = images(`./${course.tag}.jpg`);
-    } else {
-      img = images(`./default-course.jpg`);
-    }
+  const allCourses = courses && courses.all.map((course, index) => {
 
+    // if( course && course.hasThumbnail) {
+    //   img = images(`./${course.tag}.jpg`);
+    // } else {
+    //   img = images(`./default-course.jpg`);
+    // }
+
+    let img = images(`./${course.tag}.jpg`);
+    
     return (
       <div className="col-3" key={index}>
         <div className="cardBorder">
           <div className="courseThumbnail courseFeatured1">
             <Link to={`/courses/${course.tag}`}>
-              <img src={img} alt="javascript" />
+              { !page.loaded ? (
+                <div className="preLoaderThumbnail">
+                  <div className="spinner-border " role="status">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div> ) : <img src={img} alt="courseThumbnail" />
+              }
+              
             </Link>
           </div>
           <div className="courseTitleCtn">
@@ -43,6 +74,12 @@ const Courses = ({ courses }) => {
       </div>
     )
   })
+
+  const loaderDelay = () => {
+    setTimeout(() => {
+      setPage({loaded: true})
+    }, 500);
+  }
 
   return (
     <Fragment>

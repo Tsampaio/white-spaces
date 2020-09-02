@@ -244,4 +244,5 @@
 .courseCtn {
   background-color: #f4f4f4;
   position: relative;
+  flex: 1 1;
 }

@@ -5,7 +5,6 @@ import store from '../../store';
 import { connect } from 'react-redux';
 import { getCourse } from '../../actions/courses';
 import { addCheckout } from '../../actions/courses';
-import Loader from '../partials/Loader';
 import SecondHeader from '../partials/SecondHeader';
 import './Course.css';
 

@@ -121,7 +121,7 @@ const Register = ({ register, isAuthenticated }) => {
 										</div>
 									)}
 
-									<input type="submit" className="btn btn-primary" value="Register" />
+									<input type="submit" className="btn btn-success" value="Register" />
 								</form>
 
 								{message && (

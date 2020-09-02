@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { connect} from 'react-redux';
 import { useParams, Redirect } from 'react-router-dom';
 import { reset_pass } from '../../actions/auth';
+import SecondHeader from '../partials/SecondHeader';
 
 const ResetPassword = ({ reset_pass, message, isAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -32,6 +33,7 @@ const ResetPassword = ({ reset_pass, message, isAuthenticated }) => {
 
   return (
     <Fragment>
+      <SecondHeader />
 			<h1 className="large text-primary">Update Password</h1>
 			<p className="lead"><i className="fas fa-user"></i> Please enter your new password</p>
 			<form className="form" onSubmit={e => onSubmit(e)}>

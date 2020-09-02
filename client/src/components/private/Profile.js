@@ -26,6 +26,20 @@ function Profile({ auth, active, courses }) {
     }
   });
 
+  const [page, setPage] = useState({
+    loaded: false
+  });
+
+  useEffect(() => {
+    loaderDelay();
+  }, []);
+
+  const loaderDelay = () => {
+    setTimeout(() => {
+      setPage({loaded: true})
+    }, 500);
+  }
+
   useEffect(() => {
     //     console.log(auth);
     // console.log(active == 'notActive');
@@ -283,14 +297,18 @@ function Profile({ auth, active, courses }) {
           <div className="row">
             <div className="col-4 userLeftCol">
               {/* <img className="userAvatar" src={Avatar} alt="user avatar" /> */}
-              {userPic}
               <h1>{auth && auth.user && auth.user.name}</h1>
-
-            </div>
-            <div className="col-8 userRightCol">
-              {/* <input ref={fileInputRef} type='file' accept={acceptedFileTypes} multiple={false} onChange={handleFileSelect} /> */}
-              <div>
-                <input type="file" accept="image/*" onChange={onSelectFile} />
+              { !page.loaded ? (
+                <div className="preLoaderProfilePic">
+                  <div className="spinner-border " role="status">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div>
+              ) : userPic}
+              
+              <div className="uploadButtonCtn">
+                <label htmlFor="file" className="uploadButton">Upload photo</label>
+                <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
               </div>
               {cropState.src && (
                 <ReactCrop
@@ -305,9 +323,17 @@ function Profile({ auth, active, courses }) {
               {cropState.croppedImageUrl && (
                 <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
               )}
-              <form onSubmit={handleSubmit}>
-                <button type="submit">Save</button>
-              </form>
+              { cropState.src ? (
+                <form onSubmit={handleSubmit}>
+                  <button type="submit">Save image</button>
+                </form>
+                ) : null
+              }
+              
+            </div>
+            <div className="col-8 userRightCol">
+              {/* <input ref={fileInputRef} type='file' accept={acceptedFileTypes} multiple={false} onChange={handleFileSelect} /> */}
+              
 
 
               <h1>About Me</h1>

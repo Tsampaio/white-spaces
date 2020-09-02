@@ -6,3 +6,15 @@
 .courses {
     margin-top: 50px;
 }
+
+.preLoaderThumbnail {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.courseThumbnail > a {
+    width: 100%;
+}

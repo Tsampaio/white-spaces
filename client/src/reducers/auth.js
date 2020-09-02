@@ -31,7 +31,7 @@ export default function( state = initialState, action ) {
   const { type, payload } = action;
   // console.log("inside auth reducers");
   // console.log( type );
-  // console.log( payload );
+  console.log( payload );
   switch(type) {
       case USER_LOADED:
         return {
@@ -72,7 +72,7 @@ export default function( state = initialState, action ) {
       case RESET_MESSAGE:
         return {
           ...state,
-          message: payload.message
+          message: payload
         }
       // case REGISTER_FAIL:
       // case AUTH_ERROR:
@@ -88,7 +88,7 @@ export default function( state = initialState, action ) {
       case FORGOT_PASSWORD:
         return {
           ...state,
-          emailSent: true
+          message: payload
         }
       case RESET_PASSWORD:
         return {
