@@ -14,7 +14,9 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout }) => {
   });
 
   useEffect(() => {
-    loadCheckout(auth && auth.user && auth.user._id);
+    if( auth && auth.isAuthenticated ) {
+      loadCheckout(auth && auth.user && auth.user._id);
+    }
   }, [auth && auth.isAuthenticated && auth.user && auth.user.checkout])
   
 
