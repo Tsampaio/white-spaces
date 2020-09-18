@@ -2,9 +2,9 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { connect} from 'react-redux';
 import DropIn from 'braintree-web-drop-in-react';
 import store from '../../store';
-import { payAction, subscriptionPayment } from '../../actions/payments'; 
+import { payAction, membershipPayment } from '../../actions/payments'; 
 
-const Subscription = ({payAction, paymentToken, subscriptionPayment}) => {
+const MembershipCheckout = ({payAction, paymentToken, auth, membershipPayment}) => {
   const [data, setData ] = useState({
     instance: {}
   });
@@ -26,7 +26,7 @@ const Subscription = ({payAction, paymentToken, subscriptionPayment}) => {
       }
 
       // processPayment(userId, token, paymentData)
-      subscriptionPayment('131asdasd', 'adasdadad', paymentData)
+      membershipPayment(auth && auth.user, auth && auth.token, paymentData)
     })
     .catch(error => {
       console.log('dropin error: ', error)
@@ -44,20 +44,20 @@ const Subscription = ({payAction, paymentToken, subscriptionPayment}) => {
       <button onClick={buy} className="btn btn-success">Proceed to Payment</button>
     </Fragment>
   )
-      console.log(data)
+  console.log(data)
   return (
     <div className="container">
       <div className="paypal">
         <h1>Inside Subscriptions</h1>
         {showDropIn()}
-      
       </div>
     </div>
   )
 }
 
 const mapStateToProps = state => ({
-  paymentToken: state.payment.paymentToken
+  paymentToken: state.payment.paymentToken,
+  auth: state.auth
 })
 
-export default connect(mapStateToProps, { payAction, subscriptionPayment })(Subscription);
+export default connect(mapStateToProps, { payAction, membershipPayment })(MembershipCheckout);

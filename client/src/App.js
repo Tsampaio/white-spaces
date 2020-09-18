@@ -15,7 +15,8 @@ import Register from './components/pages/Register';
 import Login from './components/pages/Login';
 import Logout from './components/pages/Logout';
 import Checkout from './components/pages/Checkout';
-import Subscription from './components/pages/Subscription';
+import Membership from './components/pages/Membership';
+import MembershipCheckout from './components/pages/MembershipCheckout';
 import CheckoutSuccess from './components/pages/CheckoutSuccess';
 import FGT_PASSWORD from './components/pages/ForgotPassword';
 import RST_PASSWORD from './components/pages/ResetPassword';
@@ -44,7 +45,8 @@ function App() {
           <Route path="/register" component={Register} />
           <Route exact path="/cart/checkout" component={Checkout} />
           <Route exact path="/cart/checkout/success" component={CheckoutSuccess} />
-          <Route exact path="/subscription" component={Subscription} />
+          <Route exact path="/membership" component={Membership} />
+          <Route exact path="/membership/:duration" component={MembershipCheckout} />
           <Route exact path="/activate" component={Activate} />
           <Route exact path="/activate/:token" component={ActivateEmail} />
           <Route path="/login" component={Login} />

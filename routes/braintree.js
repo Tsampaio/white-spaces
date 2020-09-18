@@ -4,7 +4,7 @@ const router = express.Router();
 const { 
     generateToken, 
     processPayment, 
-    subscriptionPayment, 
+    membershipPayment, 
     emailThankYou,
     addCheckout,
     removeCheckout,
@@ -13,7 +13,7 @@ const {
 
 router.get('/braintree/getToken/:userId', generateToken);
 router.post('/braintree/payment/:userId', processPayment);
-router.post('/braintree/subscription/:userId', subscriptionPayment);
+router.post('/braintree/membership/:userId', membershipPayment);
 router.post('/braintree/checkout/success', emailThankYou);
 router.post('/addCheckout', addCheckout);
 router.post('/removeCheckout', removeCheckout);

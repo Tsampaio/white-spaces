@@ -44,6 +44,17 @@ const userSchema = new mongoose.Schema({
     }
   ],
   checkout: [ ],
+  membership: {
+    customerId: {
+      type: Number
+    },
+    paymentToken: {
+      type: String
+    },
+    subscriptionId: {
+      type: String
+    }
+  },
   joined: { 
     type: Date, 
     default: Date.now 

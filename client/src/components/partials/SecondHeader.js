@@ -58,7 +58,7 @@ return (
           <ul>
             <li><Link to='/'>HOME</Link></li>
             <li><Link to='/courses'>COURSES</Link></li>
-           
+            <li><Link to='/membership'>MEMBERSHIP</Link></li>
             {isAuthenticated ? (
 
               <div className={dropDown.open ? "navDropDown" : "hideDropDown"}>

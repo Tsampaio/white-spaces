@@ -50,35 +50,52 @@ exports.processPayment = (req, res) => {
   }
 }
 
-exports.subscriptionPayment = (req, res) => {
+exports.membershipPayment = (req, res) => {
   console.log("inside memberPayment");
   console.log(req.body);
   try {
     let nonceFromTheClient = req.body.paymentMethodNonce;
     let planId = "monthly-plan-id";
+    let name = req.body.name.split(" ");
 
     gateway.customer.create({
-      firstName: "Manish",
-      lastName: "Gupta",
-      email: "mhcub3@gmail.com",
+      firstName: name[0],
+      lastName: name[1],
+      email: req.body.email,
       paymentMethodNonce: nonceFromTheClient
-    }, function (err, result) {
+    }, async function (err, result) {
       if (result.success) {
-        let customerid = result.customer.id;
+        let customerId = result.customer.id;
         let token = result.customer.paymentMethods[0].token;
+
+        const user = await User.findOne({ email: req.body.email});
+        console.log("////////////");
+        console.log(result);
+        console.log(user);
 
         gateway.subscription.create({
           // merchantAccountId: "",
           paymentMethodToken: token,
           planId: planId
-        }, function (err, result) {
+        }, async function (err, result) {
+          console.log("4444444444");
+          console.log(result);
           if (result.success) {
+            user.membership = {
+              customerId: customerId,
+              paymentToken: token,
+              subscriptionId: result.subscription.Subscription.id
+            }
+            await user.save({ validateBeforeSave: false });
             console.log("Subscription created successfully");
           }
         });
       }
     });
 
+
+    // gateway.subscription.find("aSubscriptionId", function (err, result) {
+    // });
 
     // gateway.subscription.create({
     //   paymentMethodNonce: nonceFromTheClient,

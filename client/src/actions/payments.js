@@ -84,8 +84,8 @@ export const processPayment = (user, token, paymentData, courseTag) => async dis
   }
 }
 
-export const subscriptionPayment = (userId, token, paymentData) => async dispatch => {
- 
+export const membershipPayment = (user, token, paymentData) => async dispatch => {
+  console.log("this is payment data");
   console.log(paymentData);
   try {
     console.log("inside subscriptionPayment actions");
@@ -97,15 +97,20 @@ export const subscriptionPayment = (userId, token, paymentData) => async dispatc
       }
     }
     
-    const body = JSON.stringify(paymentData);
+    // const body = JSON.stringify(paymentData);
+    const body = JSON.stringify({
+      ...paymentData,
+      name: user.name,
+      email: user.email
+    });
 
-      const res = await axios.post(`/api/braintree/subscription/${userId}`,body, config);
-        
-      console.log(res.data);
-      dispatch({
-          type: PAY_MEMBERSHIP,
-          payload: res.data
-      });
+    const res = await axios.post(`/api/braintree/membership/${user._id}`,body, config);
+      
+    console.log(res.data);
+    dispatch({
+        type: PAY_MEMBERSHIP,
+        payload: res.data
+    });
      
   } catch (err) {
       // const errors = err.response.data.message;
