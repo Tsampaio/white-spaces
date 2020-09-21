@@ -7,6 +7,7 @@ import SecondHeader from '../partials/SecondHeader';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
+import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
 import store from '../../store';
 import './Profile.css';
 
@@ -18,7 +19,7 @@ import './Profile.css';
 // } from '../utils/imageUtils';
 // import e from 'express';
 
-function Profile({ auth, active, courses }) {
+function Profile({ auth, active, checkMembership, cancelMembership, membershipResubscribe }) {
   const [cropState, setCropState] = useState({
     src: null,
     crop: {
@@ -36,7 +37,7 @@ function Profile({ auth, active, courses }) {
 
   const loaderDelay = () => {
     setTimeout(() => {
-      setPage({loaded: true})
+      setPage({ loaded: true })
     }, 500);
   }
 
@@ -47,7 +48,11 @@ function Profile({ auth, active, courses }) {
 
     store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
-    
+    console.log("before check membership ");
+    if( auth && auth.user && auth.user.membership && auth.user.membership.customerId ) {
+      checkMembership(auth.token);
+    }
+
     // console.log(auth);
   }, [auth && auth.user && auth.user._id]);
 
@@ -62,7 +67,7 @@ function Profile({ auth, active, courses }) {
 
   let img;
 
-  if( auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
+  if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
     // import Pic from `/${auth.user._id}.jpg`;
     // userPic = <img src={`/${auth.user._id}.jpg`} />
     img = images(`./${auth.user._id}.jpg`);
@@ -234,30 +239,30 @@ function Profile({ auth, active, courses }) {
   const handleSubmit = async (e) => {
 
     e.preventDefault();
-  
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
+    }
 
-      const formData = new FormData();
-      formData.append('file', cropState.croppedImage);
-      formData.append('userId', auth.user._id);
+    const formData = new FormData();
+    formData.append('file', cropState.croppedImage);
+    formData.append('userId', auth.user._id);
 
-      console.log( formData);
+    console.log(formData);
 
-      const res = await axios.post("/api/users/profilePic", formData, config);
-      console.log("res.data");
-      console.log(res.data);
+    const res = await axios.post("/api/users/profilePic", formData, config);
+    console.log("res.data");
+    console.log(res.data);
   }
 
- 
+
   const coursesimage = require.context('../../images/courses', true);
 
   const allCourses = auth && auth.coursesOwned.map((course, index) => {
     let img = "";
-    if( course && course.hasThumbnail) {
+    if (course && course.hasThumbnail) {
       img = coursesimage(`./${course.tag}.jpg`);
     } else {
       img = coursesimage(`./default-course.jpg`);
@@ -282,7 +287,7 @@ function Profile({ auth, active, courses }) {
       </div>
     )
   })
-  
+
 
   if (active == 'notActive' && !auth.loading) {
     console.log("inside redirect");
@@ -298,14 +303,14 @@ function Profile({ auth, active, courses }) {
             <div className="col-4 userLeftCol">
               {/* <img className="userAvatar" src={Avatar} alt="user avatar" /> */}
               <h1>{auth && auth.user && auth.user.name}</h1>
-              { !page.loaded ? (
+              {!page.loaded ? (
                 <div className="preLoaderProfilePic">
                   <div className="spinner-border " role="status">
                     <span className="sr-only">Loading...</span>
                   </div>
                 </div>
               ) : userPic}
-              
+
               <div className="uploadButtonCtn">
                 <label htmlFor="file" className="uploadButton">Upload photo</label>
                 <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
@@ -323,17 +328,17 @@ function Profile({ auth, active, courses }) {
               {cropState.croppedImageUrl && (
                 <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
               )}
-              { cropState.src ? (
+              {cropState.src ? (
                 <form onSubmit={handleSubmit}>
                   <button type="submit">Save image</button>
                 </form>
-                ) : null
+              ) : null
               }
-              
+
             </div>
             <div className="col-8 userRightCol">
               {/* <input ref={fileInputRef} type='file' accept={acceptedFileTypes} multiple={false} onChange={handleFileSelect} /> */}
-              
+
 
 
               <h1>About Me</h1>
@@ -345,9 +350,27 @@ function Profile({ auth, active, courses }) {
                 })
                 } */}
                 <div className="row">
-                  { allCourses }
+                  {allCourses}
                 </div>
-                
+                <div className="row">
+                  <div className="col-12">
+                    {auth && auth.membership.active && (
+                    <>
+                      <h1>Payments</h1>
+                      <h3>Membership Status: {auth && auth.membership.status}</h3>
+                      <h3>Membership Valid Until: {auth && auth.membership.paidThroughDate}</h3>
+                    </>
+                    )}
+                    {auth && auth.membership.status === "Active" && (
+                      <button onClick={() => cancelMembership(auth && auth.token)}>Cancel Membership</button>
+                    )}
+                    {auth && auth.membership.status === "Canceled" && (
+                      <button onClick={() => membershipResubscribe(auth && auth.token)}>Resubscribe</button>
+                    )}
+                    
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -365,8 +388,7 @@ Profile.propTypes = {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  active: state.auth.active,
-  courses: state.courses
+  active: state.auth.active
 });
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps, { checkMembership, cancelMembership, membershipResubscribe })(Profile);

@@ -63,7 +63,7 @@ const CourseLessons = ({ course, auth }) => {
 
 	console.log(checkCourseAccess);
 
-	if (auth && auth.user && auth.user.role !== "admin" && page.loaded && !checkCourseAccess) {
+	if (auth && auth.user && auth.user.role !== "admin" && page.loaded && !checkCourseAccess && !auth.membership.active) {
 		return <Redirect to="/courses" />
 	}
 

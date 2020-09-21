@@ -7,7 +7,7 @@ router.post('/register', authController.register);
 router.post('/activate/:token', authController.activate);
 router.post('/activateAccount/:email', authController.emailActivation);
 router.post('/login', authController.login);
-router.post('/loadUser', authController.protect);
+router.post('/loadUser', authController.protect, authController.loadUser);
 router.get('/logout', authController.logout);
 router.post('/profilePic', authController.profilePic);
 

@@ -16,7 +16,7 @@ const Courses = ({ courses }) => {
 
   useEffect(() => {
     store.dispatch(getCourses());
-    loaderDelay();
+    // loaderDelay();
   }, []);
 
   // useEffect(() => {
@@ -38,6 +38,14 @@ const Courses = ({ courses }) => {
   //   setCoursesThumbnail(allThumbnails);
   // };
 
+  const loaderDelay = () => {
+    // setTimeout(() => {
+    //   setPage({loaded: true})
+    // }, 500);
+    setPage({loaded: true})
+    
+  }
+
   const allCourses = courses && courses.all.map((course, index) => {
 
     // if( course && course.hasThumbnail) {
@@ -53,13 +61,16 @@ const Courses = ({ courses }) => {
         <div className="cardBorder">
           <div className="courseThumbnail courseFeatured1">
             <Link to={`/courses/${course.tag}`}>
-              { !page.loaded ? (
+              { !page.loaded && (
                 <div className="preLoaderThumbnail">
                   <div className="spinner-border " role="status">
                     <span className="sr-only">Loading...</span>
                   </div>
-                </div> ) : <img src={img} alt="courseThumbnail" />
-              }
+                </div> ) 
+              } 
+              
+              <img src={img} alt="courseThumbnail" onLoad={() => setPage({loaded: true})}/>
+              
               
             </Link>
           </div>
@@ -75,11 +86,9 @@ const Courses = ({ courses }) => {
     )
   })
 
-  const loaderDelay = () => {
-    setTimeout(() => {
-      setPage({loaded: true})
-    }, 500);
-  }
+  
+
+  console.log(page);
 
   return (
     <Fragment>

@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
-const fs = require('fs')
+const fs = require('fs');
 
 const Email = require('../utils/email');
 
@@ -14,7 +14,7 @@ const signToken = id => {
 
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
-  console.log(process.env.JWT_COOKIE_EXPIRES_IN)
+  // console.log(process.env.JWT_COOKIE_EXPIRES_IN)
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -24,12 +24,12 @@ const createSendToken = (user, statusCode, res) => {
     httpOnly: true,
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-  console.log(token);
+  // console.log(token);
   // console.log(cookieOptions);
 
   res.cookie('jwt', token, cookieOptions);
   // res.cookie('name', 'Telmo', cookieOptions);
-  console.log('Cookie Set');
+  // console.log('Cookie Set');
   // Remove password from output
   user.password = undefined;
 
@@ -48,7 +48,7 @@ const generateActivationToken = async (req, user) => {
 
   const url = `${req.protocol}://localhost:3000/activate/${activationToken}`;
   //Or http://localhost:3000/dashboard   for HOST
-  console.log(url);
+  // console.log(url);
   await new Email(user, url).sendWelcome();
 }
 
@@ -104,11 +104,11 @@ exports.register = async (req, res) => {
 exports.activate = async (req, res, next) => {
   // 1) Get user based on the token
 
-  console.log('inside account Activation');
-  console.log(req.params.token);
+  // console.log('inside account Activation');
+  // console.log(req.params.token);
   const user = await User.findOne({ activationToken: req.params.token })
 
-  console.log(user);
+  // console.log(user);
 
   // 2) If token has not expired, and there is user, set the new password
   if (!user) {
@@ -133,7 +133,7 @@ exports.activate = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log("Inside Login Controller");
+  // console.log("Inside Login Controller");
 
   // 1) Check if email and password exist
   if (!email || !password) {
@@ -144,7 +144,7 @@ exports.login = async (req, res, next) => {
   }
   // 2) Check if user exists && password is correct
   const user = await User.findOne({ email }).select('+password');
-  console.log(user);
+  // console.log(user);
   if (!user || !(await user.correctPassword(password, user.password))) {
     return res.status(401).json({
       status: 'fail',
@@ -169,7 +169,7 @@ exports.logout = (req, res) => {
 
 exports.protect = async (req, res, next) => {
   // 1) Getting token and check of it's there
-  console.log("inside protect");
+  // console.log("inside protect");
   let token;
   if (
     req.headers.authorization &&
@@ -180,8 +180,7 @@ exports.protect = async (req, res, next) => {
     token = req.cookies.jwt;
   } else {
     return res.status(200).json({
-      status: 'guest',
-      message: 'You are not logged in! You are a guest'
+      message: 'Failed to authenticate'
     });
   }
 
@@ -201,20 +200,34 @@ exports.protect = async (req, res, next) => {
     );
   }
 
-  res.status(200).json({
-    status: 'success',
-    message: 'your are authenticated',
-    token,
-    user: currentUser,
-    active: currentUser.active
-  });
+  req.user = currentUser;
+  req.token = token;
+  next();
+
+  // res.status(200).json({
+  //   status: 'success',
+  //   message: 'your are authenticated',
+  //   token,
+  //   user: currentUser,
+  //   active: currentUser.active
+  // });
 
 };
 
+exports.loadUser = (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'your are authenticated',
+    token: req.token,
+    user: req.user,
+    active: req.user.active
+  });
+}
+
 exports.forgotPassword = async (req, res, next) => {
-  console.log("inside forgot password");
+  // console.log("inside forgot password");
   //1) Get user based on POSTed email
-  console.log(req.body.email);
+  // console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     return next(
@@ -343,10 +356,10 @@ exports.updatePassword = async (req, res, next) => {
 
 exports.emailActivation = async (req, res) => {
   try {
-    console.log('inside emailActivation');
-    console.log(req.params.email);
+    // console.log('inside emailActivation');
+    // console.log(req.params.email);
     const user = await User.findOne({ email: req.params.email })
-    console.log(user);
+    // console.log(user);
     generateActivationToken(req, user);
 
     res.status(200).json({

@@ -3,7 +3,7 @@ const User = require('./../models/userModel');
 const { promisify } = require('util');
 
 exports.getCourses = async (req, res, next) => {
-  console.log("inside pagesController");
+  // console.log("inside pagesController");
   try {
 
     let courses;
@@ -11,8 +11,8 @@ exports.getCourses = async (req, res, next) => {
     // console.log( req.body.courses );
     if (req.body.courses) {
       courses = req.body.courses;
-      console.log("this is courses ");
-      console.log(courses);
+      // console.log("this is courses ");
+      // console.log(courses);
       // allCourses = await courses.map( async (course) => {
       //   console.log( await Course.findById( course ));
       //   return await Course.findById( course );
@@ -25,7 +25,7 @@ exports.getCourses = async (req, res, next) => {
       })
       ).then(values => {
         allCourses = values;
-        console.log(values)
+        // console.log(values)
 
         return res.status(200).json({
           status: 'success',
@@ -60,16 +60,16 @@ exports.getCoursesOwned = async (req, res, next) => {
   try {
     let allCourses;
     const user = await User.findById(req.body.userId);
-    console.log(user );
+    // console.log(user );
 
-    if( user.courses.length > 0 ) {
+    if( user && user.courses.length > 0 ) {
     Promise.all(user.courses.map(async (course) => {
       // console.log( await Course.findById( course ));
       return await Course.findById(course);
     })
     ).then(values => {
       allCourses = values;
-      console.log(values)
+      // console.log(values)
 
       return res.status(200).json({
         status: 'success',
@@ -90,11 +90,11 @@ exports.getCoursesOwned = async (req, res, next) => {
 
 exports.getCourse = async (req, res, next) => {
   try {
-    console.log("inside getCourse Controller");
+    // console.log("inside getCourse Controller");
     const { courseTag } = req.body;
-    console.log("this is courseTag ", courseTag);
+    // console.log("this is courseTag ", courseTag);
     const course = await Course.findOne({ tag: courseTag });
-    console.log("this is course ", course);
+    // console.log("this is course ", course);
 
     res.status(200).json({
       status: 'success',
@@ -110,8 +110,8 @@ exports.getCourse = async (req, res, next) => {
 exports.updateCourse = async (req, res, next) => {
   try {
     const { id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes } = req.body;
-    console.log("inside of update Course");
-    console.log(req.body);
+    // console.log("inside of update Course");
+    // console.log(req.body);
     //const course = await Course.findOne({ tag });
 
     await Course.findByIdAndUpdate(id, {
@@ -136,10 +136,10 @@ exports.updateCourse = async (req, res, next) => {
 
 exports.createCourse = async (req, res, next) => {
   try {
-    console.log("inside Create course");
+    // console.log("inside Create course");
     const { courseName, courseIntro, courseTag, courseDescription, coursePrice, classes } = req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
     //const course = await Course.findOne({ tag });
 
     const course = await Course.create({
@@ -202,7 +202,7 @@ exports.coursePic = async (req, res) => {
     }
 
     const file = req.files.file;
-    console.log(file);
+    // console.log(file);
     // const userId =  req.body.userId;
 
     // const user = await User.findById(userId);
@@ -234,7 +234,7 @@ exports.coursePic = async (req, res) => {
 }
 
 exports.test = async (req, res) => {
-  console.log("Inside Backend Test");
+  // console.log("Inside Backend Test");
   const cookieOptions = {
     expires: new Date(
       Date.now() + 80 * 24 * 60 * 60 * 1000
@@ -243,7 +243,7 @@ exports.test = async (req, res) => {
   };
   const myCookie = await res.cookie('test', 'Backend Test', cookieOptions);
 
-  console.log(myCookie);
+  // console.log(myCookie);
   res.status(200).json({ message: "success" });
 }
 
@@ -251,7 +251,7 @@ exports.courseThumbnail = async (req, res) => {
   try {
 
     const courses = await Course.find();
-    console.log(courses);
+    // console.log(courses);
     for (let i = 0; i < courses.length; i++) {
       courses[i].hasThumbnail = true;
       await courses[i].save({ validateBeforeSave: false });
@@ -268,7 +268,7 @@ exports.courseThumbnail = async (req, res) => {
 exports.courseAccess = async (req, res) => {
 
   try {
-    console.log(req.body);
+    // console.log(req.body);
 
     res.status(200).json({
       access: "yes"

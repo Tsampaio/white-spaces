@@ -13,7 +13,8 @@ import {
   EMAIL_ACTIVATION,
   ACCOUNT_ACTIVATION,
   GET_COURSES_OWNED,
-  COURSE_ACCESS
+  COURSE_ACCESS,
+  CHECK_MEMBERSHIP
 } from '../actions/types';
 
 const initialState = {
@@ -24,7 +25,10 @@ const initialState = {
   user: null,
   loading: true,
   message: "",
-  coursesOwned: []
+  coursesOwned: [],
+  membership: {
+    active: false
+  }
 }
 
 export default function( state = initialState, action ) {
@@ -110,6 +114,11 @@ export default function( state = initialState, action ) {
         return {
           ...state,
           courseAcces: payload.courses
+        }
+      case CHECK_MEMBERSHIP:
+        return {
+          ...state,
+          membership: payload
         }
       default:
           return state;
