@@ -2,7 +2,7 @@ const express = require('express');
 const pagesController = require('./../controllers/pagesController');
 
 const router = express.Router();
-console.log("inside routes")
+// console.log("inside routes")
 router.post('/getCourse', pagesController.getCourse);
 router.post('/getCourses', pagesController.getCourses);
 router.post('/getCoursesOwned', pagesController.getCoursesOwned);

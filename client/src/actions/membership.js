@@ -49,7 +49,7 @@ export const cancelMembership = (token) => async dispatch => {
     payload: res.data
    })
   } catch (error) {
-    
+    console.log(error)
   }
 }
 

@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema({
         paymentToken: {
           type: String
         },
-        subscriptionId: {
+        price: {
           type: String
         }
       }

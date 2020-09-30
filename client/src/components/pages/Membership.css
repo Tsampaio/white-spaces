@@ -1,0 +1,134 @@
+.membershipCtn {
+    padding-top: 100px;
+    padding-bottom: 100px;
+    background-color: #f5f6f7;
+    flex: 1 1;
+}
+
+.monthlyCtn, .annualCtn {
+    background-color: white;
+    text-align: center;
+    padding-bottom: 50px;
+}
+
+.annualCtn {
+    -webkit-box-shadow: -2px 7px 29px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: -2px 7px 29px 0px rgba(0,0,0,0.75);
+    box-shadow: -2px 7px 29px 0px rgba(0,0,0,0.75);
+    transition: all 0.5s ease-in-out;
+}
+
+.annualCtn:hover {
+    cursor: pointer;
+    transform: scale(1.05, 1.05);
+}
+
+.monthlyCtn {
+    margin-top: 54px;
+}
+
+.membershipRecommended {
+    background-color: #4a4290;
+    color: #fff;
+    font-size: 20px;
+    padding: 15px 0;
+}
+
+.membershipTitle {
+    color: #0a2b4e;
+    font-weight: bold;
+    font-size: 32px;
+    margin-top: 50px;
+}
+
+.monthlyCtn .membershipTitle {
+    margin-top: 0;
+    padding-top: 50px;
+}
+
+.membershipPrice {
+    font-weight: bold;
+    font-family: "Source Sans Pro",sans-serif;
+    margin-bottom: 0;
+}
+
+.membershipPrice > div {
+    display: flex;
+}
+
+.membershipPrice span {
+    color: #39b982;
+    font-size: 18px;
+    
+}
+
+.membershipPrice .membershipPriceValue {
+    font-size: 100px;
+    color: #0a2b4e;
+}
+
+.membershipPriceValue {
+    position: relative;
+}
+
+.membershipPriceValue span{
+    position: absolute;
+    top: 25px;
+    right: -30px;
+    color: #0a2b4e;
+}
+
+.membershipPrice .membershipDollar {
+    font-size: 55px;
+}
+
+.membershipPriceToPay {
+    color: #0a2b4e;
+    font-weight: bold;
+    font-family: "Source Sans Pro",sans-serif;
+    font-size: 24px;
+}
+
+.membershipBilled {
+    color: #39b982;
+    font-weight: bold;
+    font-size: 12px;
+    padding-left: 10px;
+}
+
+.membershipFeatures {
+    list-style: none;
+    text-align: left;
+    margin: 0 auto;
+    margin-top: 50px;
+    display: inline-block;
+}
+
+.membershipFeatures i {
+    margin-right: 10px;
+    color: #39b982;
+}
+
+.membershipBuyButton {
+    border-radius: 30px;
+    background-color: #39b982;
+    color: #fff;
+    margin-top: 30px;
+    transition: all 0.5s ease-in-out;
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 20px;
+    width: 60%;
+}
+
+.membershipBuyButton:hover {
+    background-color: #2c9266;
+    color: #fff;
+    text-decoration: none;
+}
+
+i.fa-times {
+    color: red;
+}

@@ -175,8 +175,10 @@ exports.protect = async (req, res, next) => {
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
+    console.log("checking req header authorization");
     token = req.headers.authorization.split(' ')[1];
   } else if (req.cookies.jwt) {
+    console.log("inside browser cookies");
     token = req.cookies.jwt;
   } else {
     return res.status(200).json({
@@ -184,6 +186,7 @@ exports.protect = async (req, res, next) => {
     });
   }
 
+  console.log(token);
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   //console.log(decoded);

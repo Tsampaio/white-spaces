@@ -364,10 +364,13 @@ function Profile({ auth, active, checkMembership, cancelMembership, membershipRe
                     {auth && auth.membership.status === "Active" && (
                       <button onClick={() => cancelMembership(auth && auth.token)}>Cancel Membership</button>
                     )}
-                    {auth && auth.membership.status === "Canceled" && (
+                    {auth && auth.membership.status === "Canceled" && auth && auth.user && 
+                      auth.user.membership && auth.user.membership.billingHistory && auth.user.membership.billingHistory.length > 0 && (
                       <button onClick={() => membershipResubscribe(auth && auth.token)}>Resubscribe</button>
                     )}
-                    
+                    {auth && auth.membership && auth.membership.status === "Failed" && (
+                      <Link to="/membership">Add a new payment method</Link>
+                    )}
                   </div>
                 </div>
 

@@ -84,9 +84,11 @@ export const processPayment = (user, token, paymentData, courseTag) => async dis
   }
 }
 
-export const membershipPayment = (user, token, paymentData) => async dispatch => {
+export const membershipPayment = (user, token, paymentData, duration) => async dispatch => {
   console.log("this is payment data");
-  console.log(paymentData);
+  // console.log(paymentData);
+  // console.log(duration);
+  // console.log(user.membership.customerID);
   try {
     console.log("inside subscriptionPayment actions");
     const config = {
@@ -101,7 +103,8 @@ export const membershipPayment = (user, token, paymentData) => async dispatch =>
     const body = JSON.stringify({
       ...paymentData,
       name: user.name,
-      email: user.email
+      email: user.email,
+      membershipDuration: duration
     });
 
     const res = await axios.post(`/api/braintree/membership/${user._id}`,body, config);

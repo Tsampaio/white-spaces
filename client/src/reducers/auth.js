@@ -14,7 +14,9 @@ import {
   ACCOUNT_ACTIVATION,
   GET_COURSES_OWNED,
   COURSE_ACCESS,
-  CHECK_MEMBERSHIP
+  CHECK_MEMBERSHIP,
+  CANCEL_MEMBERSHIP,
+  RESUBSCRIBE_MEMBERSHIP
 } from '../actions/types';
 
 const initialState = {
@@ -119,6 +121,24 @@ export default function( state = initialState, action ) {
         return {
           ...state,
           membership: payload
+        }
+      case CANCEL_MEMBERSHIP:
+        return {
+          ...state,
+          membership: {
+            ...state.membership,
+            active: payload.active,
+            status: payload.status
+          }
+        }
+      case RESUBSCRIBE_MEMBERSHIP:
+        return {
+          ...state,
+          membership: {
+            ...state.membership,
+            active: payload.active,
+            status: payload.status
+          }
         }
       default:
           return state;

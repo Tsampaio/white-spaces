@@ -1,57 +1,87 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { connect} from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { connect } from 'react-redux';
 import DropIn from 'braintree-web-drop-in-react';
-import store from '../../store';
-import { payAction, membershipPayment } from '../../actions/payments'; 
+import SecondHeader from '../partials/SecondHeader';
+import { payAction, membershipPayment } from '../../actions/payments';
+import './MembershipCheckout.css';
 
-const MembershipCheckout = ({payAction, paymentToken, auth, membershipPayment}) => {
-  const [data, setData ] = useState({
+const MembershipCheckout = ({ payAction, paymentToken, auth, membershipPayment }) => {
+  const [data, setData] = useState({
     instance: {}
   });
 
-  useEffect( () => {
+  const { duration } = useParams();
+
+  useEffect(() => {
     payAction();
   }, []);
 
-  const buy = () => {
+  const buy = (membershipDuration) => {
     let nonce;
     let getNonce = data.instance.requestPaymentMethod()
-    .then( data => {
-      console.log(data);
-      nonce = data.nonce
+      .then(data => {
+        console.log(data);
+        nonce = data.nonce
 
-      // console.log('send nonce and total to process ', nonce);
-      const paymentData = {
-        paymentMethodNonce: nonce
-      }
+        // console.log('send nonce and total to process ', nonce);
+        const paymentData = {
+          paymentMethodNonce: nonce
+        }
 
-      // processPayment(userId, token, paymentData)
-      membershipPayment(auth && auth.user, auth && auth.token, paymentData)
-    })
-    .catch(error => {
-      console.log('dropin error: ', error)
-    })
+        // processPayment(userId, token, paymentData)
+        membershipPayment(auth && auth.user, auth && auth.token, paymentData, membershipDuration);
+      })
+      .catch(error => {
+        console.log('dropin error: ', error)
+      })
   }
 
   const showDropIn = () => (
     paymentToken && <Fragment>
-      <DropIn options ={{ 
+      <DropIn options={{
         authorization: paymentToken,
         paypal: {
           flow: "vault"
         }
-      }} onInstance={ instance => (data.instance = instance)} />
-      <button onClick={buy} className="btn btn-success">Proceed to Payment</button>
+      }} onInstance={instance => (data.instance = instance)} />
+      {
+        duration === "monthly" ? (
+          <button onClick={() => buy("monthly")} className="membershipPay">Proceed to Payment</button>
+        ) : (
+          <button onClick={() => buy("yearly")} className="membershipPay">Proceed to Payment</button>
+        )
+      
+      }
+
     </Fragment>
   )
-  console.log(data)
+  console.log(duration)
   return (
-    <div className="container">
-      <div className="paypal">
-        <h1>Inside Subscriptions</h1>
-        {showDropIn()}
+    <Fragment>
+      <SecondHeader />
+      <div className="MembershipCheckoutCtn">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-8 offset-lg-2">
+              <div className="paypal">
+                <h1>{ duration === "monthly" ? "Monthly Subscription" : "Annual Subscription"}</h1>
+                <div className="discountCtn">
+                  <input type="text" placeholder="Discound Code"/><button>Apply</button>
+                </div>
+                
+                <div className="MembershipTotal">
+                  <span>Total to pay:</span>
+                  <span>${ duration === "monthly" ? "24.99" : "179.88"} USD</span>
+                </div>
+                {showDropIn()}
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
+    </Fragment>
   )
 }
 

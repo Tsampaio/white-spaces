@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 // import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
-import './Register.css';
+import './Membership.css';
 
 const Membership = ({ register, isAuthenticated }) => {
 	const [formData, setFormData] = useState({
@@ -20,11 +20,11 @@ const Membership = ({ register, isAuthenticated }) => {
 	const { name, email, password, passwordConfirm, randNumber1, randNumber2, message, result } = formData;
 
 	useEffect(() => {
-		if( message ) {
-			setTimeout( () => {
+		if (message) {
+			setTimeout(() => {
 				// resetMessage();
 				console.log("message deleted");
-				setFormData({ ...formData, message: ""});
+				setFormData({ ...formData, message: "" });
 			}, 5000);
 		}
 	}, [message])
@@ -69,13 +69,51 @@ const Membership = ({ register, isAuthenticated }) => {
 	return (
 		<Fragment>
 			<SecondHeader />
-			<div className="registerCtn">
+			<div className="membershipCtn">
 				<div className="container">
 					<div className="row">
-						<div className="col-6 offset-3">
-							<h3>Most Popular</h3>
-							<h2>Annual Plan</h2>
-							<Link to="/membership/monthly">Buy Now</Link>
+						<div className="col-lg-5 offset-lg-1 col-md-10 offset-md-1">
+							<div className="annualCtn">
+								<h2 className="membershipRecommended">MOST POPULAR</h2>
+								<h3 className="membershipTitle">Annual</h3>
+								<h1 className="membershipPrice">
+									<span className="membershipDollar">$</span>
+									<span className="membershipPriceValue">14<span>.99</span></span>
+									<span>/Month</span>
+								</h1>
+								<div>
+									<span className="membershipPriceToPay">$179.88</span>
+									<span className="membershipBilled">BILLED YEARLY</span>
+								</div>
+								<ul className="membershipFeatures">
+									<li><i className="fa fa-check"></i>Access all courses from Library</li>
+									<li><i className="fa fa-check"></i>New courses every month</li>
+									<li><i className="fa fa-check"></i>Cancel at any time</li>
+									<li><i className="fa fa-check"></i>Download videos for offline learning</li>
+									<li><i className="fa fa-check"></i>Save 33%</li>
+								</ul>
+								<Link className="membershipBuyButton" to="/membership/annual">Start Plan</Link>
+							</div>
+
+						</div>
+						<div className="col-lg-5 col-md-10 offset-md-1">
+							<div className="monthlyCtn">
+								<h3 className="membershipTitle">Monthly</h3>
+								<h1 className="membershipPrice">
+									<span className="membershipDollar">$</span>
+									<span className="membershipPriceValue">24<span>.99</span></span>
+									<span>/Month</span>
+								</h1>
+								
+								<ul className="membershipFeatures">
+									<li><i className="fa fa-check"></i>Access all courses from Library</li>
+									<li><i className="fa fa-check"></i>New courses every month</li>
+									<li><i className="fa fa-check"></i>Cancel at any time</li>
+									<li><i className="fa fa-times"></i><span style={{textDecoration: "line-through"}}>Download videos for offline learning</span></li>
+									<li><i className="fa fa-times"></i><span style={{textDecoration: "line-through"}}>Save 33%</span></li>
+								</ul>
+								<Link className="membershipBuyButton" to="/membership/monthly">Start Plan</Link>
+							</div>
 						</div>
 					</div>
 				</div>

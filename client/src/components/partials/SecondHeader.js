@@ -2,10 +2,11 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './SecondHeader.css';
 import logo from '../../images/telmo-academy1.png';
-import { loadCheckout } from '../../actions/courses'; 
+import { loadCheckout } from '../../actions/courses';
+import { checkMembership } from '../../actions/membership';
 import { connect } from 'react-redux';
 
-const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout }) => {
+const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembership }) => {
 
   let userPic = null;
 
@@ -17,7 +18,17 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout }) => {
     if( auth && auth.isAuthenticated ) {
       loadCheckout(auth && auth.user && auth.user._id);
     }
-  }, [auth && auth.isAuthenticated && auth.user && auth.user.checkout])
+    
+  }, [auth && auth.isAuthenticated && auth.user && auth.user.checkout]);
+
+  useEffect(() => {
+    console.log("loading check")
+    console.log( auth && auth.token )
+    if(auth && auth.token) {
+      checkMembership(auth && auth.token);
+    }
+
+  }, [auth && auth.isAuthenticated]);
   
 
   const handleDropdown = () => {
@@ -58,7 +69,12 @@ return (
           <ul>
             <li><Link to='/'>HOME</Link></li>
             <li><Link to='/courses'>COURSES</Link></li>
-            <li><Link to='/membership'>MEMBERSHIP</Link></li>
+            {/* Add when all finished
+            { auth && auth.membership && !auth.membership.active && (
+              <li><Link to='/membership'>PRICING</Link></li>
+
+            )} */}
+            <li><Link to='/membership'>PRICING</Link></li>
             {isAuthenticated ? (
 
               <div className={dropDown.open ? "navDropDown" : "hideDropDown"}>
@@ -101,4 +117,4 @@ const mapStateToProps = state => ({
   payment: state.payment
 });
 
-export default connect(mapStateToProps, { loadCheckout })(SecondHeader);
+export default connect(mapStateToProps, { loadCheckout, checkMembership })(SecondHeader);

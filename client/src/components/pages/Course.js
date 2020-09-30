@@ -17,14 +17,19 @@ const Course = ({ course, addCheckout, auth, payment }) => {
 
   useEffect( () => {
     store.dispatch(getCourse(courseTag));
-    setTimeout(() => {
-      setPage({
-        loaded: true
-      });
-    }, 1000);
+    
+      setPage({ loaded: true });
+    
     
     console.log( "after page loaded");
   }, []);
+
+  useEffect( () => {
+    if(auth && auth.membership && auth.membership.active) {
+      setPage({ loaded: true });
+    }
+
+  }, [auth && auth.membership && auth.membership.active]);
 
   const { courseTag } = useParams();
   console.log(courseTag);
@@ -70,8 +75,11 @@ const Course = ({ course, addCheckout, auth, payment }) => {
     console.log( payment.addingToCheckout );
     return <Redirect to="/cart/checkout" />
   }
-  console.log("before render");
-  console.log(page);
+
+  if( auth && auth.membership && auth.membership.active) {
+    console.log("final check");
+  }
+
   return (
     <Fragment>
       <SecondHeader />
@@ -99,17 +107,31 @@ const Course = ({ course, addCheckout, auth, payment }) => {
                 </div>
               </div>
               <div className="col-4">
-                <div className="card purchaseButtons">
-                  <div className="card-header">
-                    Unlimited access all courses
+                { (page.loaded && auth && auth.membership && auth.membership.active) ? null : (
+                  <div className="card purchaseButtons">
+                    <div className="card-header">
+                      Unlimited access all courses
+                    </div>
+                    <div className="card-body">
+                      <h1>$18/month</h1>
+                      <Link className="membershipButton" to="/checkout"> <span className="buyMembershipPrice">Become Member</span></Link>
+                    </div>
                   </div>
-                  <div className="card-body">
-                    <h1>$18/month</h1>
-                    <Link className="membershipButton" to="/checkout"> <span className="buyMembershipPrice">Become Member</span></Link>
-                  </div>
-                </div>
+                  )
+                }
 
-                { userGotCourse && userGotCourse.length > 0 ? null :
+                { userGotCourse && userGotCourse.length > 0 || (auth && auth.membership && auth.membership.active) ? (
+                    <div className="card purchaseButtons">
+                      <div className="card-header">
+                        Start Learning
+                      </div>
+                      <div className="card-body">
+                        <Link className="buyButton" to={`/courses/${course && course.data && course.data.tag}/lessons/1`}><span className="buyCoursePrice">Go to course</span></Link>
+                      </div>
+                    </div>
+                  ) : null 
+                }
+                { userGotCourse && userGotCourse.length < 1 && (
                   <div className="card purchaseButtons">
                     <div className="card-header">
                       Buy Lifetime Access:
@@ -123,6 +145,7 @@ const Course = ({ course, addCheckout, auth, payment }) => {
                       }
                     </div>
                   </div>
+                )
                 }
               </div>
             </div>

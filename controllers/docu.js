@@ -14,7 +14,8 @@
     // we need to pass that here for additional safety.  
     creditCard: {
       options:{
-          verifyCard: true
+          verifyCard: true,
+          verificationAmount: "1.00",
       }
     },
     paymentMethodNonce: nonceFromTheClient
