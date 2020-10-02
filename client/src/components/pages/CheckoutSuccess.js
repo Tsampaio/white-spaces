@@ -1,11 +1,17 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import { getCoursesOwned } from '../../actions/courses';
 import { resetPaymentResult } from '../../actions/payments';
 import { connect } from 'react-redux';
+import { Redirect, Link } from 'react-router-dom';
 import store from '../../store';
+import './CheckoutSuccess.css';
 
 const CheckoutSuccess = ({auth, payment}) => {
+
+  const [page, setPage] = useState({
+    loaded: false
+  });
 
   useEffect(() => {
     //     console.log(auth);
@@ -16,16 +22,32 @@ const CheckoutSuccess = ({auth, payment}) => {
     // console.log(auth.user.name);
     store.dispatch(resetPaymentResult());
     // console.log(auth);
+    
   }, []);
+
+  useEffect(() => {
+    if( auth && auth.isAuthenticated ) {
+      setPage({
+        loaded: true
+      })
+    }
+    
+  }, [auth && auth.isAuthenticated]);
+
+  if( auth && !auth.isAuthenticated && page.loaded) {
+    return <Redirect to="/" />
+  }
 
   return (
     <Fragment>
       <SecondHeader />
-      <div className="container">
+      <div className="container checkoutSuccessCtn">
         <div className="row">
-          <div className="col-12">
-            <h1>Thank you Your Order is Complete</h1>
-            <h1>You will receive an email soon</h1>
+          <div className="col-12 checkoutSuccess">
+            <h1>Thank you! Your Order is Complete</h1>
+            <h4>You will receive an email confirmation shortly.</h4>
+            <Link className="checkoutSuccessBtn" to="/courses">Start Learning</Link>
+
           </div>
         </div>
       </div>

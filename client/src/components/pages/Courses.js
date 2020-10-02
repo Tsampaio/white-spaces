@@ -57,7 +57,7 @@ const Courses = ({ courses }) => {
     let img = images(`./${course.tag}.jpg`);
     
     return (
-      <div className="col-3" key={index}>
+      <div className="col-lg-3 col-md-4" key={index}>
         <div className="cardBorder">
           <div className="courseThumbnail courseFeatured1">
             <Link to={`/courses/${course.tag}`}>

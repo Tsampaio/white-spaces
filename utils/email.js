@@ -70,6 +70,14 @@ module.exports = class Email {
     await this.send('thankYou', `Welcome to The ${course} Course`);
   }
 
+  async subscriptionWelcome() {
+    await this.send('subscriptionWelcome', `Your subscription is ready`);
+  }
+
+  async subscriptionCancellation() {
+    await this.send('subscriptionCancellation', `Telmo Academy Membership Cancellation`);
+  }
+
   async sendPasswordReset() {
     await this.send(
       'passwordReset',

@@ -1,12 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DropIn from 'braintree-web-drop-in-react';
 import SecondHeader from '../partials/SecondHeader';
 import { payAction, membershipPayment } from '../../actions/payments';
 import './MembershipCheckout.css';
 
-const MembershipCheckout = ({ payAction, paymentToken, auth, membershipPayment }) => {
+const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershipPayment }) => {
   const [data, setData] = useState({
     instance: {}
   });
@@ -47,9 +47,9 @@ const MembershipCheckout = ({ payAction, paymentToken, auth, membershipPayment }
       }} onInstance={instance => (data.instance = instance)} />
       {
         duration === "monthly" ? (
-          <button onClick={() => buy("monthly")} className="membershipPay">Proceed to Payment</button>
+          <button onClick={() => buy("monthly")} className="membershipPay">Finish Payment</button>
         ) : (
-          <button onClick={() => buy("yearly")} className="membershipPay">Proceed to Payment</button>
+          <button onClick={() => buy("yearly")} className="membershipPay">Finish Payment</button>
         )
       
       }
@@ -57,6 +57,11 @@ const MembershipCheckout = ({ payAction, paymentToken, auth, membershipPayment }
     </Fragment>
   )
   console.log(duration)
+  
+  if(payment && payment.paymentComplete) {
+    return <Redirect to="/membership/success"/>
+  }
+
   return (
     <Fragment>
       <SecondHeader />
@@ -87,6 +92,7 @@ const MembershipCheckout = ({ payAction, paymentToken, auth, membershipPayment }
 
 const mapStateToProps = state => ({
   paymentToken: state.payment.paymentToken,
+  payment: state.payment,
   auth: state.auth
 })
 

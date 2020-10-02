@@ -96,7 +96,7 @@ const Course = ({ course, addCheckout, auth, payment }) => {
               <iframe src={course && course.data && course.data.intro} width="640" height="360" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
             </div>
             <div className="row">
-              <div className="col-8">
+              <div className="col-lg-8 col-sm-12">
                 <h4 className="courseOverview">Overview</h4>
                 <div className="courseDescription">
                   { parse(description()) }
@@ -106,7 +106,7 @@ const Course = ({ course, addCheckout, auth, payment }) => {
                   { classes }
                 </div>
               </div>
-              <div className="col-4">
+              <div className="col-lg-4 offset-sm-2 offset-lg-0 col-sm-8">
                 { (page.loaded && auth && auth.membership && auth.membership.active) ? null : (
                   <div className="card purchaseButtons">
                     <div className="card-header">
@@ -140,8 +140,8 @@ const Course = ({ course, addCheckout, auth, payment }) => {
                       <h1>${course && course.data && course.data.price} USD</h1>
                       <Link  to="/cart/checkout"></Link>
                       { auth && auth.isAuthenticated ? 
-                        <button className="buyButton" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
-                        : <button className="buyButton"><Link to="/register" className="buyCoursePrice">Buy Course</Link></button>
+                        <button className="buyButton buyLifetime" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
+                        : <button className="buyButton buyLifetime"><Link to="/register" className="buyCoursePrice">Buy Course</Link></button>
                       }
                     </div>
                   </div>

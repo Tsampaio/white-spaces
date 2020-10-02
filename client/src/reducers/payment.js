@@ -15,6 +15,7 @@ const initialState = {
   checkout: [],
   checkoutPrice: 0,
   addingToCheckout: false,
+  paymentComplete: false
 }
 
 export default function( state = initialState, action ) {
@@ -24,7 +25,8 @@ export default function( state = initialState, action ) {
     case PAY_MEMBERSHIP:
       return {
           ...state,
-          paymentToken: payload.clientToken
+          paymentToken: payload.clientToken,
+          paymentComplete: payload.paymentComplete
       }
     case GET_PAYMENT_TOKEN:
       return {
