@@ -7,7 +7,6 @@ import SecondHeader from '../partials/SecondHeader';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
-import { updateUserAction } from '../../actions/auth';
 import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
 import store from '../../store';
 import './Profile.css';
@@ -20,7 +19,7 @@ import './Profile.css';
 // } from '../utils/imageUtils';
 // import e from 'express';
 
-function Profile({ auth, active, checkMembership, updateUserAction, cancelMembership, membershipResubscribe }) {
+function ProfileBilling({ auth, active, checkMembership, cancelMembership, membershipResubscribe }) {
   const [cropState, setCropState] = useState({
     src: null,
     crop: {
@@ -29,17 +28,8 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   });
 
   const [page, setPage] = useState({
-    loaded: false,
-    showImagePreview: false
+    loaded: false
   });
-
-  const [userDetails, setUserDetails] = useState({
-    name: '',
-    newPassword: '',
-    newPasswordConfirm: '',
-    password: '',
-    error: ''
-  })
 
   useEffect(() => {
     loaderDelay();
@@ -47,7 +37,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
 
   const loaderDelay = () => {
     setTimeout(() => {
-      setPage({ ...page, loaded: true })
+      setPage({ loaded: true })
     }, 500);
   }
 
@@ -63,32 +53,8 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
       checkMembership(auth.token);
     }
 
-    setUserDetails({
-      ...userDetails,
-      name: auth && auth.user && auth.user.name
-    })
-
     // console.log(auth);
   }, [auth && auth.user && auth.user._id]);
-
-  const updateUserDetails = (event) => {
-    setUserDetails({
-      ...userDetails,
-      [event.target.name]: event.target.value 
-    })
-  }
-
-  const submitUserDetails = (event) => {
-    event.preventDefault();
-    if(userDetails.newPassword !== userDetails.newPasswordConfirm) {
-      setUserDetails({
-        ...userDetails,
-        error: "Passwords do not match"
-      })
-    }
-
-    updateUserAction(auth && auth.token, userDetails);
-  }
 
   const imageMaxSize = 1000000000 // bytes
   const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif';
@@ -111,17 +77,56 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     userPic = <img src={img} className="userAvatar" />
   }
 
+  // const verifyFile = (files) => {
+  //   if (files && files.length > 0) {
+  //     const currentFile = files[0]
+  //     const currentFileType = currentFile.type
+  //     const currentFileSize = currentFile.size
+  //     if (currentFileSize > imageMaxSize) {
+  //       alert("This file is not allowed. " + currentFileSize + " bytes is too large")
+  //       return false
+  //     }
+  //     if (!acceptedFileTypesArray.includes(currentFileType)) {
+  //       alert("This file is not allowed. Only images are allowed.")
+  //       return false
+  //     }
+  //     return true
+  //   }
+  // }
+
+  // const handleOnDrop = (files, rejectedFiles) => {
+  //   if (rejectedFiles && rejectedFiles.length > 0) {
+  //     verifyFile(rejectedFiles)
+  //   }
+
+  //   if (files && files.length > 0) {
+  //     const isVerified = this.verifyFile(files)
+  //     if (isVerified) {
+  //       // imageBase64Data 
+  //       const currentFile = files[0]
+  //       const myFileItemReader = new FileReader()
+  //       myFileItemReader.addEventListener("load", () => {
+  //         // console.log(myFileItemReader.result)
+  //         const myResult = myFileItemReader.result;
+  //         setCropState({
+  //           ...cropState,
+  //           imgSrc: myResult,
+  //           imgSrcExt: extractImageFileExtensionFromBase64(myResult)
+  //         })
+  //       }, false)
+  //       myFileItemReader.readAsDataURL(currentFile)
+  //     }
+  //   }
+  // }
+
   const onSelectFile = e => {
     if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
-      reader.addEventListener('load', () => {
-          
-          setCropState({
-            ...cropState,
-            src: reader.result
-          })
-          setPage({ ...page, showImagePreview: true })
-        }
+      reader.addEventListener('load', () =>
+        setCropState({
+          ...cropState,
+          src: reader.result
+        })
       );
       reader.readAsDataURL(e.target.files[0]);
     }
@@ -149,7 +154,6 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   const makeClientCrop = async (crop) => {
     console.log(imageRef.current);
     if (imageRef.current && crop.width && crop.height) {
-      console.log(crop );
       const croppedImageUrl = await getCroppedImg(
         imageRef.current,
         crop,
@@ -185,6 +189,13 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
       crop.height
     );
 
+    // return new Promise((resolve, reject) => {
+    //   canvas.toBlob(blob => {
+    //     blob.name = fileName;
+    //     resolve(blob);
+    //   }, 'image/jpeg', 1);
+    // });
+
     const reader = new FileReader()
     canvas.toBlob(blob => {
       reader.readAsDataURL(blob)
@@ -192,6 +203,20 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
         dataURLtoFile(reader.result, `${auth.user._id}.jpg`);
       }
     })
+
+    // return new Promise((resolve, reject) => {
+    //   canvas.toBlob(blob => {
+    //     if (!blob) {
+    //       //reject(new Error('Canvas is empty'));
+    //       console.error('Canvas is empty');
+    //       return;
+    //     }
+    //     blob.name = fileName;
+    //     window.URL.revokeObjectURL(this.fileUrl);
+    //     this.fileUrl = window.URL.createObjectURL(blob);
+    //     resolve(this.fileUrl);
+    //   }, 'image/jpeg');
+    // });
   }
 
   const dataURLtoFile = (dataurl, filename) => {
@@ -269,7 +294,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     return <Redirect to="/activate" />
   }
 
-  console.log(userDetails)
+  console.log( cropState.croppedImageUrl);
 
   return (
     <Fragment>
@@ -277,7 +302,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
       <div className="profileCtn">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-xl-2 col-lg-3 col-md-4 userLeftCol">
+            <div className="col-lg-2 userLeftCol">
               {/* <img className="userAvatar" src={Avatar} alt="user avatar" /> */}
               
               {!page.loaded ? (
@@ -290,7 +315,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
               <h3>{auth && auth.user && auth.user.name}</h3>
               <h4>{auth && auth.user && auth.user.email}</h4>
 
-              {/* <div className="uploadButtonCtn">
+              <div className="uploadButtonCtn">
                 <label htmlFor="file" className="uploadButton">Upload photo</label>
                 <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
               </div>
@@ -311,80 +336,48 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
                 <form onSubmit={handleSubmit}>
                   <button type="submit">Save image</button>
                 </form>
-                ) : null
-              } */}
-              <ul className="profileLinks">
-                <li>
-                  <i className="fa fa-user"></i>
-                  <Link to="/profile">PROFILE</Link>
-                </li>
-                <li>
-                  <i className="fa fa-graduation-cap"></i>
-                  <Link to="/profile/courses">COURSES</Link>
-                </li>
-                <li>
-                  <i className="far fa-credit-card"></i>
-                  <Link to="/profile/billing">BILLING</Link>
-                </li>
-              </ul>
+              ) : null
+              }
 
             </div>
-            <div className="col-xl-10 col-lg-9 col-md-8 userRightCol">
-              <div className="userDetails">
-                  {!page.loaded ? (
-                    <div className="preLoaderProfilePic">
-                      <div className="spinner-border " role="status">
-                        <span className="sr-only">Loading...</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="uploadButtonCtn">
-                      <label htmlFor="file">{userPic}</label>
-                      <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
-                    </div>
-                  )}
-                  { page.showImagePreview && (<div className="imagePreviewOverlay">
-                    <h2>Crop your Image</h2>
-                    {cropState.src && (
-                      <ReactCrop
-                        src={cropState.src}
-                        crop={cropState.crop}
-                        ruleOfThirds
-                        onImageLoaded={onImageLoaded}
-                        onComplete={onCropComplete}
-                        onChange={onCropChange}
-                      />
+            <div className="col-lg-10 userRightCol">
+              {/* <input ref={fileInputRef} type='file' accept={acceptedFileTypes} multiple={false} onChange={handleFileSelect} /> */}
+
+
+
+              <h1>About Me</h1>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptas asperiores omnis? Expedita corrupti, beatae reiciendis possimus ratione autem quos dignissimos provident a ea, veniam hic doloribus, odit atque quia!</p>
+              <h1>My Courses</h1>
+              <div className="myCoursesCtn container">
+                {/* {courses && courses.all && courses.all.map((course, i) => {
+                  return <h1 key={i}>{course.name}</h1>
+                })
+                } */}
+                <div className="row">
+                  {allCourses}
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                    {auth && auth.membership.active && (
+                    <>
+                      <h1>Payments</h1>
+                      <h3>Membership Status: {auth && auth.membership.status}</h3>
+                      <h3>Membership Valid Until: {auth && auth.membership.paidThroughDate}</h3>
+                    </>
                     )}
-                    {cropState.croppedImageUrl && (
-                      <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
+                    {auth && auth.membership.status === "Active" && (
+                      <button onClick={() => cancelMembership(auth && auth.token)}>Cancel Membership</button>
                     )}
-                    {cropState.src ? (
-                      <form onSubmit={handleSubmit}>
-                        <button type="submit" className="uploadButton">Save image</button>
-                      </form>
-                      ) : null
-                    }
-                  </div>)
-                }
-                {/* <div className="uploadButtonCtn">
-                  <label htmlFor="file" className="uploadButton">Upload photo</label>
-                  <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
-                </div> */}
-                <h3>Upload a new profile image</h3>
-                <form onSubmit={submitUserDetails}>
-                  <label htmlFor="">Full Name</label>
-                  <input type="text" placeholder="My name" value={userDetails.name || ""} name="name" onChange={updateUserDetails}/>
-                  <label htmlFor="">New Password</label>
-                  <input type="password" name="newPassword" onChange={updateUserDetails}/>
-                  <label htmlFor="">Confirm Password</label>
-                  <input type="password" name="newPasswordConfirm" onChange={updateUserDetails}/>
-                  
-                  <hr />
-                  <label htmlFor="">To save changes, enter current password</label>
-                  <input type="password" name="password" onChange={updateUserDetails}/>
-                  <p className="formError">{auth && auth.message}</p>
-                  <button className="saveChanges" type="submit">Save Changes</button>
-                </form>
+                    {auth && auth.membership.status === "Canceled" && auth && auth.user && 
+                      auth.user.membership && auth.user.membership.billingHistory && auth.user.membership.billingHistory.length > 0 && (
+                      <button onClick={() => membershipResubscribe(auth && auth.token)}>Resubscribe</button>
+                    )}
+                    {auth && auth.membership && auth.membership.status === "Failed" && (
+                      <Link to="/membership">Add a new payment method</Link>
+                    )}
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -405,4 +398,4 @@ const mapStateToProps = state => ({
   active: state.auth.active
 });
 
-export default connect(mapStateToProps, { checkMembership, cancelMembership, membershipResubscribe, updateUserAction })(Profile);
+export default connect(mapStateToProps, { checkMembership, cancelMembership, membershipResubscribe })(ProfileBilling);

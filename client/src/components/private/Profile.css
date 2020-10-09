@@ -179,3 +179,7 @@
     padding: 6px 20px;
     border: 1px solid black;
 }
+
+.formError {
+    color: red
+}

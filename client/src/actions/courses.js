@@ -8,7 +8,8 @@ import {
   REMOVE_CHECKOUT,
   LOAD_CHECKOUT,
   CREATE_COURSE,
-  UPDATE_COURSE
+  UPDATE_COURSE,
+  RESET_MESSAGE
 } from './types';
 
 export const getCourses = (courses) => async dispatch => {
@@ -201,6 +202,10 @@ export const loadCheckout = (userId) => async dispatch => {
     dispatch({
       type: LOAD_CHECKOUT,
       payload: res.data
+    });
+
+    dispatch({
+      type: RESET_MESSAGE
     });
   } catch (error) {
 

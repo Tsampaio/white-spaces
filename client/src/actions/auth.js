@@ -1,5 +1,7 @@
 import axios from 'axios';
 import {
+  UPDATE_USER,
+  UPDATE_USER_ERROR,
   RESET_MESSAGE,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
@@ -79,8 +81,8 @@ export const login = ({ email, password }) => async dispatch => {
 export const loadUser = () => async dispatch => {
   try {
     const res = await axios.post('/api/users/loadUser');
-    console.log(res.data);
-
+    // console.log(res.data);
+    console.log("Loading User");
     if (res.data.token) {
       dispatch({
         type: USER_LOADED,
@@ -221,11 +223,51 @@ export const resetMessage = () => async dispatch => {
   console.log("inside reset message action");
   try {
     dispatch({
-      type: RESET_MESSAGE,
-      payload: ""
+      type: RESET_MESSAGE
     });
 
   } catch (error) {
     console.log(error);
+  }
+}
+
+export const updateUserAction = (token, userDetails) => async dispatch => {
+  try {
+    console.log(userDetails);
+    const body = JSON.stringify({
+      name: userDetails.name,
+      newPassword: userDetails.newPassword,
+      newPasswordConfirm: userDetails.newPasswordConfirm,
+      password: userDetails.password 
+    });
+
+    if( userDetails.newPassword !== userDetails.newPasswordConfirm) {
+      return dispatch({
+        type: UPDATE_USER_ERROR,
+        payload: "Passwords do not Match"
+      });
+    }
+
+    const res = await axios.post(`/api/users/udpateUserDb`, body, {
+      headers: {
+        Accept: 'application/json', 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log(res);
+
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data
+    });
+
+  } catch (error) {
+    // console.log(error.response.data.message);
+    dispatch({
+      type: UPDATE_USER_ERROR,
+      payload: error.response.data.message
+    });
   }
 }

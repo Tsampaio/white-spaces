@@ -54,8 +54,9 @@ const Courses = ({ courses }) => {
     //   img = images(`./default-course.jpg`);
     // }
 
-    let img = images(`./${course.tag}.jpg`);
-    
+    // let img = images(`./${course.tag}.jpg`);
+    let img = `/images/${course.tag}.jpg`;
+
     return (
       <div className="col-lg-3 col-md-4" key={index}>
         <div className="cardBorder">

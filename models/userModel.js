@@ -115,6 +115,8 @@ userSchema.methods.correctPassword = async function(
   candidatePassword,
   userPassword
 ) {
+  console.log("candidatePassword is :" + candidatePassword);
+  console.log("userPassword is :" + userPassword);
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 

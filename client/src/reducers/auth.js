@@ -1,4 +1,6 @@
 import {
+  UPDATE_USER,
+  UPDATE_USER_ERROR,
   RESET_MESSAGE,
   REGISTER_SUCCESS,
   LOGIN_SUCCESS,
@@ -46,7 +48,8 @@ export default function( state = initialState, action ) {
             user: payload.user,
             token: payload.token,
             active: payload.active,
-            loading: false
+            loading: false,
+            message: ""
         }
       case USER_GUEST:
         return {
@@ -78,7 +81,7 @@ export default function( state = initialState, action ) {
       case RESET_MESSAGE:
         return {
           ...state,
-          message: payload
+          message: ""
         }
       // case REGISTER_FAIL:
       // case AUTH_ERROR:
@@ -92,6 +95,7 @@ export default function( state = initialState, action ) {
             message: payload.message
         }
       case FORGOT_PASSWORD:
+      case UPDATE_USER_ERROR:
         return {
           ...state,
           message: payload
@@ -138,6 +142,15 @@ export default function( state = initialState, action ) {
             ...state.membership,
             active: payload.active,
             status: payload.status
+          }
+        }
+      case UPDATE_USER:
+        return {
+          ...state,
+          message: payload.message,
+          user: {
+            ...state.user,
+            name: payload.user.name
           }
         }
       default:

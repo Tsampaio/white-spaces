@@ -19,7 +19,7 @@ import './Profile.css';
 // } from '../utils/imageUtils';
 // import e from 'express';
 
-function Profile({ auth, active, checkMembership, cancelMembership, membershipResubscribe }) {
+function ProfileBilling({ auth, active, checkMembership, cancelMembership, membershipResubscribe }) {
   const [cropState, setCropState] = useState({
     src: null,
     crop: {
@@ -387,7 +387,7 @@ function Profile({ auth, active, checkMembership, cancelMembership, membershipRe
   );
 };
 
-Profile.propTypes = {
+ProfileBilling.propTypes = {
   // getCurrentProfile: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
   // profile: PropTypes.object.isRequired
@@ -398,4 +398,4 @@ const mapStateToProps = state => ({
   active: state.auth.active
 });
 
-export default connect(mapStateToProps, { checkMembership, cancelMembership, membershipResubscribe })(Profile);
+export default connect(mapStateToProps, { checkMembership, cancelMembership, membershipResubscribe })(ProfileBilling);

@@ -12,7 +12,7 @@ const signToken = id => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, res, message) => {
   const token = signToken(user._id);
   // console.log(process.env.JWT_COOKIE_EXPIRES_IN)
   const cookieOptions = {
@@ -35,7 +35,7 @@ const createSendToken = (user, statusCode, res) => {
 
   res.status(statusCode).json({
     status: 'success',
-    message: 'You are Registered',
+    message: message,
     token,
     user: user
   });
@@ -153,7 +153,7 @@ exports.login = async (req, res, next) => {
   }
 
   // 3) If everything ok, send token to client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, res, "You are logged in");
 };
 
 exports.logout = (req, res) => {
@@ -330,7 +330,7 @@ exports.resetPassword = async (req, res, next) => {
 
   // 3) Update changedPasswordAt property for the user
   // 4) Log the user in, send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, res, "Password reseted");
 };
 
 exports.updatePassword = async (req, res, next) => {
@@ -354,7 +354,7 @@ exports.updatePassword = async (req, res, next) => {
   // User.findByIdAndUpdate will NOT work as intended!
 
   // 4) Log user in, send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, res, "Password updated");
 };
 
 exports.emailActivation = async (req, res) => {
@@ -384,7 +384,7 @@ exports.profilePic = async (req, res) => {
     }
 
     const file = req.files.file;
-    const userId =  req.body.userId;
+    const userId = req.body.userId;
 
     const user = await User.findById(userId);
 
@@ -413,4 +413,48 @@ exports.profilePic = async (req, res) => {
     console.error(err)
   }
 }
+
+exports.udpateUserDb = async (req, res, next) => {
+  try {
+    console.log(req.body.newPassword);
+    let message = '';
+    const user = await User.findById(req.user.id).select('+password');
+    // console.log("password is: " +  req.body.password)
+    // console.log(await user.correctPassword(req.body.password, user.password));
+    // 2) Check if POSTed current password is correct
+    if (!req.body.password || !(await user.correctPassword(req.body.password, user.password))) {
+      return next(
+        res.status(401).json({
+          status: 'fail',
+          message: 'Your current password is wrong.'
+        })
+      );
+    }
+
+    // 3) If so, update password
+    user.name = req.body.name;
+
+    if( req.body.newPassword) {
+      console.log("inside password")
+      user.password = req.body.newPassword;
+      user.passwordConfirm = req.body.newPasswordConfirm;
+      message="Password updated",
+      await user.save();
+    } else {
+      message="Name updated",
+      await user.save({ validateBeforeSave: false });
+    }
+    
+    
+    // User.findByIdAndUpdate will NOT work as intended!
+
+    // 4) Log user in, send JWT
+    createSendToken(user, 200, res, message);
+
+  } catch (error) {
+    console.log("inside error")
+    console.log(error)
+  }
+}
+
 

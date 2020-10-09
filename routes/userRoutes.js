@@ -10,6 +10,7 @@ router.post('/login', authController.login);
 router.post('/loadUser', authController.protect, authController.loadUser);
 router.get('/logout', authController.logout);
 router.post('/profilePic', authController.profilePic);
+router.post('/udpateUserDb', authController.protect, authController.udpateUserDb);
 
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
