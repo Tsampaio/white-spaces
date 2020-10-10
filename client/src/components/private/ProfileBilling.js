@@ -9,15 +9,8 @@ import { connect } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
 import store from '../../store';
+import ProfileSidebar from './ProfileSidebar';
 import './Profile.css';
-
-// import {
-//   base64StringtoFile,
-//   downloadBase64File,
-//   extractImageFileExtensionFromBase64,
-//   image64toCanvasRef
-// } from '../utils/imageUtils';
-// import e from 'express';
 
 function ProfileBilling({ auth, active, checkMembership, cancelMembership, membershipResubscribe }) {
   const [cropState, setCropState] = useState({
@@ -49,7 +42,7 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
     store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
     console.log("before check membership ");
-    if( auth && auth.user && auth.user.membership && auth.user.membership.customerId ) {
+    if (auth && auth.user && auth.user.membership && auth.user.membership.customerId) {
       checkMembership(auth.token);
     }
 
@@ -294,7 +287,7 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
     return <Redirect to="/activate" />
   }
 
-  console.log( cropState.croppedImageUrl);
+  console.log(cropState.croppedImageUrl);
 
   return (
     <Fragment>
@@ -302,83 +295,45 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
       <div className="profileCtn">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-lg-2 userLeftCol">
-              {/* <img className="userAvatar" src={Avatar} alt="user avatar" /> */}
-              
-              {!page.loaded ? (
-                <div className="preLoaderProfilePic">
-                  <div className="spinner-border " role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
-              ) : userPic}
-              <h3>{auth && auth.user && auth.user.name}</h3>
-              <h4>{auth && auth.user && auth.user.email}</h4>
-
-              <div className="uploadButtonCtn">
-                <label htmlFor="file" className="uploadButton">Upload photo</label>
-                <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
-              </div>
-              {cropState.src && (
-                <ReactCrop
-                  src={cropState.src}
-                  crop={cropState.crop}
-                  ruleOfThirds
-                  onImageLoaded={onImageLoaded}
-                  onComplete={onCropComplete}
-                  onChange={onCropChange}
-                />
-              )}
-              {cropState.croppedImageUrl && (
-                <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
-              )}
-              {cropState.src ? (
-                <form onSubmit={handleSubmit}>
-                  <button type="submit">Save image</button>
-                </form>
-              ) : null
-              }
-
-            </div>
-            <div className="col-lg-10 userRightCol">
-              {/* <input ref={fileInputRef} type='file' accept={acceptedFileTypes} multiple={false} onChange={handleFileSelect} /> */}
-
-
-
-              <h1>About Me</h1>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptas asperiores omnis? Expedita corrupti, beatae reiciendis possimus ratione autem quos dignissimos provident a ea, veniam hic doloribus, odit atque quia!</p>
-              <h1>My Courses</h1>
-              <div className="myCoursesCtn container">
-                {/* {courses && courses.all && courses.all.map((course, i) => {
-                  return <h1 key={i}>{course.name}</h1>
-                })
-                } */}
-                <div className="row">
-                  {allCourses}
-                </div>
-                <div className="row">
-                  <div className="col-12">
-                    {auth && auth.membership.active && (
+            <ProfileSidebar />
+            <div className="col-lg-10 billingCtn">
+              <div className="card">
+                <div class="card-header">
+                  Membership Details
+                      </div>
+                <div class="card-body">
+                  {auth && auth.membership.active && (
                     <>
-                      <h1>Payments</h1>
-                      <h3>Membership Status: {auth && auth.membership.status}</h3>
-                      <h3>Membership Valid Until: {auth && auth.membership.paidThroughDate}</h3>
-                    </>
-                    )}
-                    {auth && auth.membership.status === "Active" && (
-                      <button onClick={() => cancelMembership(auth && auth.token)}>Cancel Membership</button>
-                    )}
-                    {auth && auth.membership.status === "Canceled" && auth && auth.user && 
-                      auth.user.membership && auth.user.membership.billingHistory && auth.user.membership.billingHistory.length > 0 && (
-                      <button onClick={() => membershipResubscribe(auth && auth.token)}>Resubscribe</button>
-                    )}
-                    {auth && auth.membership && auth.membership.status === "Failed" && (
-                      <Link to="/membership">Add a new payment method</Link>
-                    )}
-                  </div>
-                </div>
 
+                      <h3><b>Membership Status:</b> {auth && auth.membership.status}</h3>
+                      <h3><b>Membership Valid Until:</b> {auth && auth.membership.paidThroughDate}</h3>
+                    </>
+                  )}
+                  {auth && auth.membership.status === "Active" && (
+                    <button onClick={() => cancelMembership(auth && auth.token)}>Cancel Membership</button>
+                  )}
+                  {auth && auth.membership.status === "Canceled" && auth && auth.user &&
+                    auth.user.membership && auth.user.membership.billingHistory && auth.user.membership.billingHistory.length > 0 && (
+                      <button onClick={() => membershipResubscribe(auth && auth.token)} className="actionButton">Resubscribe</button>
+                    )}
+                  {auth && auth.membership && auth.membership.status === "Failed" && (
+                    <Link to="/membership">Add a new payment method</Link>
+                  )}
+                </div>
               </div>
+              
+              <h2><b>Billing History</b></h2>
+              <div className="row userBillingHistoryTitle">
+                <div className="col-2"><h4>Date</h4></div>
+                <div className="col-3"><h4>Product</h4></div>
+                <div className="col-3"><h4>Period</h4></div>
+                <div className="col-2"><h4>Coupon</h4></div>
+                <div className="col-2"><h4>Sale Price</h4></div>
+                
+              </div>
+              <hr/>
+
+
             </div>
           </div>
         </div>

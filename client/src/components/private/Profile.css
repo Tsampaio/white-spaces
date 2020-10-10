@@ -21,7 +21,7 @@
 .userLeftCol {
     text-align: center;
     background-color: white;
-    padding-top: 50px;
+    padding: 50px 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -79,14 +79,18 @@
     text-align: left;
     margin-top: 100px;
     align-self: flex-start;
-    padding-left: 40px;
+}
+
+.profileLinks li {
+    margin-bottom: 20px;
 }
 
 .profileLinks i {
     margin-right: 20px;
     color: #8592a6;
     height: 10px;
-    width: 20px;
+    width: 25px;
+    font-size: 20px;
 }
 
 .profileLinks li a {
@@ -182,4 +186,34 @@
 
 .formError {
     color: red
+}
+
+.billingCtn {
+    padding: 50px;
+}
+
+.billingCtn .card-header {
+    font-size: 20px;
+}
+
+.billingCtn h2 {
+    font-size: 20px;
+    margin-top: 50px;
+}
+
+.billingCtn h3 {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.billingCtn .actionButton {
+    border: none;
+}
+
+.billingCtn h4 {
+    font-size: 16px;
+}
+
+.userBillingHistoryTitle {
+    margin-top: 50px;
 }

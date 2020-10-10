@@ -11,6 +11,7 @@ import { updateUserAction } from '../../actions/auth';
 import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
 import store from '../../store';
 import './Profile.css';
+import ProfileSidebar from './ProfileSidebar';
 
 // import {
 //   base64StringtoFile,
@@ -42,7 +43,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   })
 
   useEffect(() => {
-    loaderDelay();
+    // loaderDelay();
   }, []);
 
   const loaderDelay = () => {
@@ -105,10 +106,10 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     // import Pic from `/${auth.user._id}.jpg`;
     // userPic = <img src={`/${auth.user._id}.jpg`} />
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img} className="userAvatar" />
+    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({loaded: true})} />
   } else {
     img = images(`./default.png`);
-    userPic = <img src={img} className="userAvatar" />
+    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({loaded: true})} />
   }
 
   const onSelectFile = e => {
@@ -277,72 +278,21 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
       <div className="profileCtn">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-xl-2 col-lg-3 col-md-4 userLeftCol">
-              {/* <img className="userAvatar" src={Avatar} alt="user avatar" /> */}
-              
-              {!page.loaded ? (
-                <div className="preLoaderProfilePic">
-                  <div className="spinner-border " role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
-              ) : userPic}
-              <h3>{auth && auth.user && auth.user.name}</h3>
-              <h4>{auth && auth.user && auth.user.email}</h4>
-
-              {/* <div className="uploadButtonCtn">
-                <label htmlFor="file" className="uploadButton">Upload photo</label>
-                <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
-              </div>
-              {cropState.src && (
-                <ReactCrop
-                  src={cropState.src}
-                  crop={cropState.crop}
-                  ruleOfThirds
-                  onImageLoaded={onImageLoaded}
-                  onComplete={onCropComplete}
-                  onChange={onCropChange}
-                />
-              )}
-              {cropState.croppedImageUrl && (
-                <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
-              )}
-              {cropState.src ? (
-                <form onSubmit={handleSubmit}>
-                  <button type="submit">Save image</button>
-                </form>
-                ) : null
-              } */}
-              <ul className="profileLinks">
-                <li>
-                  <i className="fa fa-user"></i>
-                  <Link to="/profile">PROFILE</Link>
-                </li>
-                <li>
-                  <i className="fa fa-graduation-cap"></i>
-                  <Link to="/profile/courses">COURSES</Link>
-                </li>
-                <li>
-                  <i className="far fa-credit-card"></i>
-                  <Link to="/profile/billing">BILLING</Link>
-                </li>
-              </ul>
-
-            </div>
+            <ProfileSidebar />
             <div className="col-xl-10 col-lg-9 col-md-8 userRightCol">
               <div className="userDetails">
-                  {!page.loaded ? (
+                  {!page.loaded && (
                     <div className="preLoaderProfilePic">
                       <div className="spinner-border " role="status">
                         <span className="sr-only">Loading...</span>
                       </div>
                     </div>
-                  ) : (
-                    <div className="uploadButtonCtn">
-                      <label htmlFor="file">{userPic}</label>
-                      <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
-                    </div>
                   )}
+                  <div className="uploadButtonCtn">
+                    <label htmlFor="file">{userPic}</label>
+                    <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
+                  </div>
+                  
                   { page.showImagePreview && (<div className="imagePreviewOverlay">
                     <h2>Crop your Image</h2>
                     {cropState.src && (
@@ -366,10 +316,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
                     }
                   </div>)
                 }
-                {/* <div className="uploadButtonCtn">
-                  <label htmlFor="file" className="uploadButton">Upload photo</label>
-                  <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
-                </div> */}
+                
                 <h3>Upload a new profile image</h3>
                 <form onSubmit={submitUserDetails}>
                   <label htmlFor="">Full Name</label>

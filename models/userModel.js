@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema({
     }
   ],
   checkout: [ ],
+  customerId: {
+    type: String
+  },
   membership: {
     customerId: {
       type: String
