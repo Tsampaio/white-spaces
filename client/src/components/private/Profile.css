@@ -217,3 +217,7 @@
 .userBillingHistoryTitle {
     margin-top: 50px;
 }
+
+.billingRow {
+    padding: 10px 0;
+}

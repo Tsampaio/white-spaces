@@ -6,7 +6,8 @@ import {
   ADD_CHECKOUT,
   REMOVE_CHECKOUT,
   LOAD_CHECKOUT,
-  RESET_PAYMENT_RESULT
+  RESET_PAYMENT_RESULT,
+  GET_USER_BILLING
 } from '../actions/types';
 
 const initialState = {
@@ -15,7 +16,8 @@ const initialState = {
   checkout: [],
   checkoutPrice: 0,
   addingToCheckout: false,
-  paymentComplete: false
+  paymentComplete: false,
+  billing: []
 }
 
 export default function( state = initialState, action ) {
@@ -62,6 +64,11 @@ export default function( state = initialState, action ) {
         ...state,
         result: '',
         checkout: []
+      }
+    case GET_USER_BILLING: 
+      return {
+        ...state,
+        billing: payload.billing
       }
     default:
       return state;

@@ -8,11 +8,12 @@ import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
+import { getBilling } from '../../actions/payments';
 import store from '../../store';
 import ProfileSidebar from './ProfileSidebar';
 import './Profile.css';
 
-function ProfileBilling({ auth, active, checkMembership, cancelMembership, membershipResubscribe }) {
+function ProfileBilling({ auth, active, payment, checkMembership, cancelMembership, membershipResubscribe, getBilling }) {
   const [cropState, setCropState] = useState({
     src: null,
     crop: {
@@ -25,7 +26,7 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
   });
 
   useEffect(() => {
-    loaderDelay();
+    // loaderDelay();
   }, []);
 
   const loaderDelay = () => {
@@ -41,10 +42,12 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
 
     store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
-    console.log("before check membership ");
+    // console.log("before check membership ");
     if (auth && auth.user && auth.user.membership && auth.user.membership.customerId) {
       checkMembership(auth.token);
     }
+
+    getBilling();
 
     // console.log(auth);
   }, [auth && auth.user && auth.user._id]);
@@ -126,7 +129,7 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
   };
 
   const onImageLoaded = async image => {
-    console.log(image);
+    // console.log(image);
     imageRef.current = image;
 
   };
@@ -137,7 +140,7 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
 
   const onCropChange = (crop, percentCrop) => {
     // You could also use percentCrop:
-    console.log("inside onCropChange");
+    // console.log("inside onCropChange");
     setCropState({
       ...cropState,
       crop
@@ -279,15 +282,28 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
         </div>
       </div>
     )
-  })
+  });
+
+  const userBilling = payment && payment.billing.map((bill) => {
+    const date = new Date(bill.date);
+    const newDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+    return (
+      <div key={bill._id} className="row billingRow">
+        <div className="col-3"><h4>{newDate}</h4></div>
+        <div className="col-3"><h4>{bill.productName}</h4></div>
+        <div className="col-3"><h4>{bill._id}</h4></div>
+        <div className="col-3"><h4>${bill.price}</h4></div>
+      </div>
+    )
+  });
 
 
   if (active == 'notActive' && !auth.loading) {
-    console.log("inside redirect");
+    // console.log("inside redirect");
     return <Redirect to="/activate" />
   }
 
-  console.log(cropState.croppedImageUrl);
+  // console.log(cropState.croppedImageUrl);
 
   return (
     <Fragment>
@@ -298,13 +314,15 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
             <ProfileSidebar />
             <div className="col-lg-10 billingCtn">
               <div className="card">
-                <div class="card-header">
+                <div className="card-header">
                   Membership Details
                       </div>
-                <div class="card-body">
+                <div className="card-body">
+                  {auth && auth.membership && !auth.membership.active && (
+                    <h3><b>Membership Status:</b> Not active</h3>
+                  )}
                   {auth && auth.membership.active && (
                     <>
-
                       <h3><b>Membership Status:</b> {auth && auth.membership.status}</h3>
                       <h3><b>Membership Valid Until:</b> {auth && auth.membership.paidThroughDate}</h3>
                     </>
@@ -321,17 +339,16 @@ function ProfileBilling({ auth, active, checkMembership, cancelMembership, membe
                   )}
                 </div>
               </div>
-              
+
               <h2><b>Billing History</b></h2>
               <div className="row userBillingHistoryTitle">
-                <div className="col-2"><h4>Date</h4></div>
+                <div className="col-3"><h4>Date</h4></div>
                 <div className="col-3"><h4>Product</h4></div>
-                <div className="col-3"><h4>Period</h4></div>
-                <div className="col-2"><h4>Coupon</h4></div>
-                <div className="col-2"><h4>Sale Price</h4></div>
-                
+                <div className="col-3"><h4>Order Number</h4></div>
+                <div className="col-3"><h4>Sale Price</h4></div>
               </div>
-              <hr/>
+              <hr />
+              {userBilling}
 
 
             </div>
@@ -350,7 +367,9 @@ ProfileBilling.propTypes = {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  active: state.auth.active
+  active: state.auth.active,
+  payment: state.payment
 });
 
-export default connect(mapStateToProps, { checkMembership, cancelMembership, membershipResubscribe })(ProfileBilling);
+export default connect(mapStateToProps,
+  { checkMembership, cancelMembership, membershipResubscribe, getBilling })(ProfileBilling);

@@ -24,10 +24,10 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
     function handleClickOutside(event) {
       if (dropMenu.current && !dropMenu.current.contains(event.target) && !profileIcon.current.contains(event.target)) {
         // alert("You clicked outside of me!");
-        console.log("outside");
+        // console.log("outside");
         setDropdown(false)
       } else {
-        console.log("inside");
+        // console.log("inside");
       }
     }
 
@@ -47,8 +47,8 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
   }, [auth && auth.isAuthenticated && auth.user && auth.user.checkout]);
 
   useEffect(() => {
-    console.log("loading check")
-    console.log(auth && auth.token)
+    // console.log("loading check")
+    // console.log(auth && auth.token)
     if (auth && auth.token) {
       checkMembership(auth && auth.token);
     }
@@ -74,7 +74,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
     // import Pic from `/${auth.user._id}.jpg`;
     // userPic = <img src={`/${auth.user._id}.jpg`} />
 
-    console.log("before image");
+    // console.log("before image");
 
     let img = images(`./${auth && auth.user && auth.user._id}.jpg`);
     userPic = <img src={img} className="userAvatarNav" />;

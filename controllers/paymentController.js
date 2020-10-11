@@ -1,8 +1,10 @@
 const Course = require('./../models/courseModel');
 const User = require('./../models/userModel');
+const Transaction = require('./../models/transactionModel');
 const braintree = require('braintree');
 const Email = require('../utils/email');
 const { promisify } = require('util');
+const { rest } = require('lodash');
 require('dotenv').config();
 
 const gateway = braintree.connect({
@@ -25,27 +27,96 @@ exports.generateToken = (req, res) => {
   });
 }
 
-exports.processPayment = (req, res) => {
-  // console.log("inside processPayment Controller");
-  // console.log(req.body);
+exports.processPayment = async (req, res) => {
 
   try {
+    console.log("inside processPayment");
     let nonceFromTheClient = req.body.paymentMethodNonce;
     let amountFromTheClient = req.body.amount;
+    let courseTag = req.body.courseTag;
 
-    gateway.transaction.sale({
-      amount: amountFromTheClient,
-      paymentMethodNonce: nonceFromTheClient,
-      options: {
-        submitForSettlement: true
-      }
-    }, (error, result) => {
-      if (error) {
-        res.status(500).json()
-      } else {
-        res.status(200).json(result);
-      }
-    })
+    let user = req.user;
+    let userName = user.name.split(" ");
+
+    const course = await Course.findOne({ tag: courseTag })
+    // console.log(course);
+    if (!user.customerId) {
+      gateway.customer.create({
+        firstName: userName[0],
+        lastName: userName[1],
+        email: user.email
+      }, (err, result) => {
+        console.log("The user id is: ");
+        const customerId = result.customer.id;
+
+        gateway.transaction.sale({
+          customerId: customerId,
+          amount: amountFromTheClient,
+          paymentMethodNonce: nonceFromTheClient,
+          options: {
+            submitForSettlement: true
+          }
+        }, async (error, transactionResult) => {
+          console.log("result is: ");
+          console.log(transactionResult);
+          console.log(transactionResult.transaction.amount);
+         
+          await Transaction.create({
+            date: new Date(),
+            user: user._id,
+            userName: user.name,
+            customerId: result.customer.id,
+            productId: course._id,
+            productName: course.name,
+            price: transactionResult.transaction.amount,
+            transactionId: transactionResult.transaction.id
+          });
+
+          user.customerId = result.customer.id;
+
+          await user.save({ validateBeforeSave: false });
+
+          return res.status(200).json({
+            success: true
+          })
+        })
+
+      })
+    } else {
+      gateway.customer.find(user.customerId, function (err, customer) {
+        console.log("customer is:");
+        console.log(customer);
+
+        gateway.transaction.sale({
+          customerId: customer.id,
+          amount: amountFromTheClient,
+          paymentMethodNonce: nonceFromTheClient,
+          options: {
+            submitForSettlement: true
+          }
+        }, async (error, transactionResult) => {
+          // console.log("result is: ");
+          // console.log(transactionResult);
+          // console.log(transactionResult.transaction.amount);
+         
+          await Transaction.create({
+            date: new Date(),
+            user: user._id,
+            userName: user.name,
+            customerId: customer.id,
+            productId: course._id,
+            productName: course.name,
+            price: transactionResult.transaction.amount,
+            transactionId: transactionResult.transaction.id
+          });
+
+          return res.status(200).json({
+            success: true
+          })
+        })
+      });
+    }
+
   } catch (error) {
     console.log(error);
   }
@@ -60,8 +131,8 @@ exports.membershipPayment = async (req, res) => {
     let planId = req.body.membershipDuration === "monthly" ? "monthly-plan-id" : "yearly-plan-id";
     let name = req.body.name.split(" ");
     const user = await User.findOne({ email: req.user.email });
-    
-    if (user.membership.customerId) {
+
+    if (user.customerId) {
       let firstBillingDate = "";
 
       const dateInPast = function (firstDate, secondDate) {
@@ -94,7 +165,7 @@ exports.membershipPayment = async (req, res) => {
         firstBillingDate = new Date();
       }
 
-      gateway.customer.update(user.membership.customerId, {
+      gateway.customer.update(user.customerId, {
         paymentMethodNonce: nonceFromTheClient
       }, function (err, result) {
 
@@ -107,9 +178,8 @@ exports.membershipPayment = async (req, res) => {
           firstBillingDate: firstBillingDate
         }, async function (err, result) {
           console.log(result);
-          if(result.success) {
+          if (result.success) {
             user.membership = {
-              ...user.membership,
               billingHistory: [
                 ...user.membership.billingHistory,
                 {
@@ -123,10 +193,23 @@ exports.membershipPayment = async (req, res) => {
                 }
               ]
             }
+
+            await Transaction.create({
+              date: new Date(),
+              user: user._id,
+              userName: user.name,
+              customerId: user.customerId,
+              productId: req.body.membershipDuration === "monthly" ? "5f837d1ea687101a7cff8d66" : "",
+              productName: req.body.membershipDuration === "monthly" ? "Monthly Membership" : "Annual Membership",
+              price: result.subscription.price,
+              transactionId: result.subscription.id
+            });
+
+
             await user.save({ validateBeforeSave: false });
             console.log(result);
             console.log("subscription successful");
-            
+
             const url = `${req.protocol}://localhost:3000/courses`;
             //Or http://localhost:3000/dashboard   for HOST
             // console.log(url);
@@ -160,7 +243,7 @@ exports.membershipPayment = async (req, res) => {
           let token = result.customer.paymentMethods[0].token;
 
           const user = await User.findOne({ email: req.body.email });
-     
+
           gateway.subscription.create({
             // merchantAccountId: "",
             paymentMethodToken: token,
@@ -171,7 +254,6 @@ exports.membershipPayment = async (req, res) => {
             console.log(result);
             if (result.success) {
               user.membership = {
-                customerId: customerId,
                 billingHistory: [
                   ...user.membership.billingHistory,
                   {
@@ -185,6 +267,19 @@ exports.membershipPayment = async (req, res) => {
                   }
                 ]
               }
+
+              await Transaction.create({
+                date: new Date(),
+                user: user._id,
+                userName: user.name,
+                customerId: customerId,
+                productId: req.body.membershipDuration === "monthly" ? "5f837d1ea687101a7cff8d66" : "",
+                productName: req.body.membershipDuration === "monthly" ? "Monthly Membership" : "Annual Membership",
+                price: result.subscription.price,
+                transactionId: result.subscription.id
+              });
+
+              user.customerId = customerId;
               await user.save({ validateBeforeSave: false });
               // console.log("Subscription created successfully");
 
@@ -225,7 +320,14 @@ exports.emailThankYou = async (req, res) => {
 
     await User.findByIdAndUpdate(user._id, {
       courses: [...user.courses, course._id],
-      checkout: []
+      checkout: [],
+      purchases: user.purchases + req.body.amount
+    });
+
+    await Course.findByIdAndUpdate(course._id, {
+      users: [...course.users, user._id],
+      sold: course.sold + 1,
+      revenue: course.revenue + req.body.amount
     });
 
     // generateActivationToken(req, user);
@@ -392,13 +494,13 @@ exports.checkMembership = async (req, res) => {
   let user = await User.findOne({ email: req.user.email });
 
   const initialBill = [...req.user.membership.billingHistory];
-  
+
   const fetchBillInfo = async (bills) => {
     const requests = bills.map((bill, i) => {
-      
+
       return new Promise((resolve, reject) => {
         gateway.subscription.find(bill.subscriptionId, async function (err, result) {
-          if( bill.status != result.status) {
+          if (bill.status != result.status) {
             bill.status = result.status;
           }
           resolve(bill);
@@ -411,26 +513,26 @@ exports.checkMembership = async (req, res) => {
   const checkSame = (x, y) => {
     return JSON.stringify(x) === JSON.stringify(y);
   }
-  
+
   fetchBillInfo(user.membership.billingHistory)
-  .then(async (billingUpdated) => {
+    .then(async (billingUpdated) => {
 
-    const areNotEqual = initialBill.find( (obj, i) => { 
-      // console.log(checkSame(obj, billingUpdated[i]));
-      return !checkSame(obj, billingUpdated[i]);
-    })
+      const areNotEqual = initialBill.find((obj, i) => {
+        // console.log(checkSame(obj, billingUpdated[i]));
+        return !checkSame(obj, billingUpdated[i]);
+      })
 
-    if( areNotEqual ) {
-      console.log("There are changes please update");
-      user.billingHistory = billingUpdated;
-      await user.save({ validateBeforeSave: false });
-    } else {
-      console.log("they are all the same");
-    }
-  });
+      if (areNotEqual) {
+        console.log("There are changes please update");
+        user.billingHistory = billingUpdated;
+        await user.save({ validateBeforeSave: false });
+      } else {
+        console.log("they are all the same");
+      }
+    });
 
 
-  if( pendingMembership && userMembership) {
+  if (pendingMembership && userMembership) {
     gateway.subscription.find(pendingMembership.subscriptionId, function (err, result) {
       console.log()
       res.status(200).json({
@@ -477,7 +579,7 @@ exports.cancelMembership = async (req, res) => {
       const user = await User.findOne({ email: req.user.email });
       user.membership.billingHistory[index].status = "Canceled";
       await user.save({ validateBeforeSave: false });
-      
+
       const url = `${req.protocol}://localhost:3000/membership`;
       //Or http://localhost:3000/dashboard   for HOST
       // console.log(url);
@@ -544,8 +646,8 @@ exports.resubscribeMembership = async (req, res) => {
         planId: "monthly-plan-id",
         firstBillingDate: firstBillingDate
       }, async function (err, result) {
-        
-        if(result.success) {
+
+        if (result.success) {
           user.membership = {
             ...user.membership,
             billingHistory: [
@@ -564,16 +666,16 @@ exports.resubscribeMembership = async (req, res) => {
           await user.save({ validateBeforeSave: false });
           console.log(result);
           console.log("subscription successful");
-          
+
           const url = `${req.protocol}://localhost:3000/courses`;
-            //Or http://localhost:3000/dashboard   for HOST
-            // console.log(url);
-            await new Email(user, url).subscriptionWelcome();
-            console.log("email sent");
+          //Or http://localhost:3000/dashboard   for HOST
+          // console.log(url);
+          await new Email(user, url).subscriptionWelcome();
+          console.log("email sent");
 
           return res.status(200).json({
             // NOT SURE IF PENDING IS CORRECT
-            active: (result.subscription.status === 'Active' || (userMembership &&  result.subscription.status === 'Pending')) ? true : false,
+            active: (result.subscription.status === 'Active' || (userMembership && result.subscription.status === 'Pending')) ? true : false,
             status: 'Active'
           });
         }
@@ -593,17 +695,44 @@ exports.resubscribeMembership = async (req, res) => {
   }
 }
 
+exports.getUserBilling = async (req, res) => {
+  try {
+    const { user }  = req;
+    console.log(user._id)
+    const allTransactions = await Transaction.find();
+    console.log(allTransactions);
 
+    const userTransactions = allTransactions.filter((transaction) => {
+      console.log("this true or false");
+      
+      console.log(JSON.stringify(transaction.user) == JSON.stringify(user._id));
+
+      return JSON.stringify(transaction.user) == JSON.stringify(user._id);
+    });
+
+    console.log(userTransactions);
+
+    res.status(200).json({
+      billing: userTransactions
+    })
+
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 exports.test = async (req, res) => {
   try {
-    // const user = await User.findByIdAndUpdate("5f3ed1c921c7862bec590e41", {
+    // const user = await User.findByIdAndUpdate("5f69012f7d28a22620a57927", {
     //   courses: []
     // });
 
-    const user = await User.findByIdAndUpdate("5f3ed1c921c7862bec590e41", {
-      membership: {}
-    });
+    // const user = await User.findByIdAndUpdate("5f69012f7d28a22620a57927", {
+    //   customerId: "",
+    //   membership: {}
+    // });
+
+    const user = await Transaction.deleteMany();
 
     res.send("courses deleted");
 

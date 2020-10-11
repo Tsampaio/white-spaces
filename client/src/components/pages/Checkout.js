@@ -22,7 +22,7 @@ const Membership = ({payAction, payment, processPayment, auth, removeCheckout, l
   useEffect( () => {
     payAction(auth.user && auth.user._id, auth.user && auth.token);
     loadCheckout(auth.user && auth.user._id);
-  }, [auth]);
+  }, [auth && auth.user]);
 
   const buy = () => {
     let nonce;

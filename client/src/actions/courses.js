@@ -41,8 +41,8 @@ export const getCourses = (courses) => async dispatch => {
 
 export const getCoursesOwned = (userId) => async dispatch => {
   try {
-    console.log("inside actions getCoursesOwned");
-    console.log( userId )
+    // console.log("inside actions getCoursesOwned");
+    // console.log( userId )
 
     const body = JSON.stringify({ userId });
 
@@ -187,7 +187,7 @@ export const updateCourseAction = ({ id, courseName, courseIntro, courseTag, cou
 
 export const loadCheckout = (userId) => async dispatch => {
   try {
-    console.log("inside loadCheckout action");
+    // console.log("inside loadCheckout action");
     const body = JSON.stringify({ userId });
     const res = await axios.post("/api/loadCheckout", body, {
       headers: {
@@ -196,9 +196,9 @@ export const loadCheckout = (userId) => async dispatch => {
       }
     });
 
-    console.log(res);
+    // console.log(res);
 
-    console.log(res.data);
+    // console.log(res.data);
     dispatch({
       type: LOAD_CHECKOUT,
       payload: res.data

@@ -82,7 +82,7 @@ export const loadUser = () => async dispatch => {
   try {
     const res = await axios.post('/api/users/loadUser');
     // console.log(res.data);
-    console.log("Loading User");
+    // console.log("Loading User");
     if (res.data.token) {
       dispatch({
         type: USER_LOADED,

@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema({
   customerId: {
     type: String
   },
+  purchases: {
+    type: Number,
+    default: 0
+  },
   membership: {
     customerId: {
       type: String
