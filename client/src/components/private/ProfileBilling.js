@@ -344,8 +344,8 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
 
               <h2><b>Billing History</b></h2>
               <div className="row userBillingHistoryTitle">
-                <div className="col-3"><h4>Date</h4></div>
-                <div className="col-3"><h4>Product</h4></div>
+                <div className="col-3"><h4>Date - dd/mm/yyyy</h4></div>
+                <div className="col-3"><h4>Product Name</h4></div>
                 <div className="col-3"><h4>Order Number</h4></div>
                 <div className="col-3"><h4>Sale Price</h4></div>
               </div>

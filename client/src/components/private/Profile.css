@@ -226,3 +226,25 @@
     padding: 6px 20px;
     border: 1px solid black;
 }
+
+.myCoursesCtn {
+    max-width: 1200px;
+    padding: 50px;
+}
+
+.myCoursesCtn h1 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.profileLinks li .activeProfilePage,
+.profileLinks li .activeProfilePage i {
+    color: #212529;
+}
+
+@media only screen and (max-width: 1024px) {
+    .myCoursesCtn .courseTitleCtn a {
+        font-size: 14px;
+    }
+}

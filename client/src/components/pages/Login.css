@@ -27,6 +27,11 @@
     text-align: center;
 }
 
+.loginCard form {
+    width: 60%;
+    margin: 0 auto;
+}
+
 .col-3 a {
     
     display: inline-block;

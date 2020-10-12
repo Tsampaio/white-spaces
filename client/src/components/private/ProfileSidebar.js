@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment, useState, useRef } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './Profile.css';
 
@@ -49,16 +49,14 @@ function ProfileSidebar({ auth }) {
 
       <ul className="profileLinks">
         <li>
-          <i className="fa fa-user"></i>
-          <Link to="/profile">USER PROFILE</Link>
+          {/* <i className="fa fa-user"></i> */}
+          <NavLink exact to="/profile" activeClassName="activeProfilePage"><i className="fa fa-user"></i>USER PROFILE</NavLink>
         </li>
         <li>
-          <i className="fa fa-graduation-cap"></i>
-          <Link to="/profile/courses">COURSES PURCHASED</Link>
+          <NavLink to="/profile/courses" activeClassName="activeProfilePage"><i className="fa fa-graduation-cap"></i>COURSES PURCHASED</NavLink>
         </li>
         <li>
-          <i className="far fa-credit-card"></i>
-          <Link to="/profile/billing">BILLING</Link>
+          <NavLink to="/profile/billing" activeClassName="activeProfilePage"><i className="far fa-credit-card"></i>BILLING</NavLink>
         </li>
       </ul>
     </div>

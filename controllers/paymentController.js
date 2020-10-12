@@ -601,7 +601,7 @@ exports.cancelMembership = async (req, res) => {
 exports.resubscribeMembership = async (req, res) => {
   console.log("inside resubscribeMembership");
 
-  const customerId = req.user.membership.customerId;
+  const customerId = req.user.customerId;
   // console.log(customerId);
   // console.log(typeof customerId);
   try {
@@ -649,7 +649,6 @@ exports.resubscribeMembership = async (req, res) => {
 
         if (result.success) {
           user.membership = {
-            ...user.membership,
             billingHistory: [
               ...user.membership.billingHistory,
               {
@@ -708,6 +707,12 @@ exports.getUserBilling = async (req, res) => {
       console.log(JSON.stringify(transaction.user) == JSON.stringify(user._id));
 
       return JSON.stringify(transaction.user) == JSON.stringify(user._id);
+    });
+
+    userTransactions.sort(function(a,b){
+      // Turn your strings into dates, and then subtract them
+      // to get a value that is either negative, positive, or zero.
+      return new Date(b.date) - new Date(a.date);
     });
 
     console.log(userTransactions);

@@ -104,6 +104,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
 
                 <div ref={dropMenu} className={dropDown.open ? "navDropDown" : "hideDropDown"}>
                   <li><Link to='/profile'><i className="fa fa-user"></i> Profile</Link></li>
+                  <li><Link to='/profile/courses'><i className="fa fa-play-circle"></i> My Courses</Link></li>
                   { auth && auth.user && auth.user.role === "admin" ? <li><Link to='/admin/courses'><i className="fas fa-user-shield"></i> Admin</Link></li> : ""}
                   <li><Link to='/logout'><i className="fa fa-door-open"></i> Logout</Link></li>
                 </div>
