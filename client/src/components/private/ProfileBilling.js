@@ -286,7 +286,7 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
 
   const userBilling = payment && payment.billing.map((bill) => {
     const date = new Date(bill.date);
-    const newDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+    const newDate = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
     return (
       <div key={bill._id} className="row billingRow">
         <div className="col-3"><h4>{newDate}</h4></div>
@@ -297,6 +297,8 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
     )
   });
 
+  const untilDate = new Date(auth && auth.membership.paidThroughDate);
+  const newUntilDate = `${untilDate.getDate()}/${untilDate.getMonth()+1}/${untilDate.getFullYear()}`;
 
   if (active == 'notActive' && !auth.loading) {
     // console.log("inside redirect");
@@ -324,11 +326,11 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
                   {auth && auth.membership.active && (
                     <>
                       <h3><b>Membership Status:</b> {auth && auth.membership.status}</h3>
-                      <h3><b>Membership Valid Until:</b> {auth && auth.membership.paidThroughDate}</h3>
+                      <h3><b>Membership Valid Until:</b> {newUntilDate}</h3>
                     </>
                   )}
                   {auth && auth.membership.status === "Active" && (
-                    <button onClick={() => cancelMembership(auth && auth.token)}>Cancel Membership</button>
+                    <button className="cancelMembership" onClick={() => cancelMembership(auth && auth.token)}>Cancel Membership</button>
                   )}
                   {auth && auth.membership.status === "Canceled" && auth && auth.user &&
                     auth.user.membership && auth.user.membership.billingHistory && auth.user.membership.billingHistory.length > 0 && (

@@ -12,7 +12,7 @@ const Courses = ({ courses }) => {
     loaded: false
   })
 
-  const [ coursesThumbnail, setCoursesThumbnail] = useState([]);
+  const [coursesThumbnail, setCoursesThumbnail] = useState([]);
 
   useEffect(() => {
     store.dispatch(getCourses());
@@ -20,10 +20,10 @@ const Courses = ({ courses }) => {
   }, []);
 
   // useEffect(() => {
-    
+
   //     setPage({loaded: true})
-   
-    
+
+
   //   loadMyThumbNail();
   // }, [courses.all])
 
@@ -42,8 +42,8 @@ const Courses = ({ courses }) => {
     // setTimeout(() => {
     //   setPage({loaded: true})
     // }, 500);
-    setPage({loaded: true})
-    
+    setPage({ loaded: true })
+
   }
 
   const allCourses = courses && courses.all.map((course, index) => {
@@ -56,38 +56,37 @@ const Courses = ({ courses }) => {
 
     // let img = images(`./${course.tag}.jpg`);
     let img = `/images/${course.tag}.jpg`;
+    if (course.tag != "monthly-plan") {
+      return (
+        <div className="col-lg-3 col-md-4" key={index}>
+          <div className="cardBorder">
+            <div className="courseThumbnail courseFeatured1">
+              <Link to={`/courses/${course.tag}`}>
+                {!page.loaded && (
+                  <div className="preLoaderThumbnail">
+                    <div className="spinner-border " role="status">
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  </div>)
+                }
 
-    return (
-      <div className="col-lg-3 col-md-4" key={index}>
-        <div className="cardBorder">
-          <div className="courseThumbnail courseFeatured1">
-            <Link to={`/courses/${course.tag}`}>
-              { !page.loaded && (
-                <div className="preLoaderThumbnail">
-                  <div className="spinner-border " role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div> ) 
-              } 
-              
-              <img src={img} alt="courseThumbnail" onLoad={() => setPage({loaded: true})}/>
-              
-              
-            </Link>
-          </div>
-          <div className="courseTitleCtn">
-            <Link to={`/courses/${course.tag}`}>{course.name}</Link>
-          </div>
-          <div className="separator"></div>
-          <div className="priceCtn">
-            <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">${course.price}</span>
+                <img src={img} alt="courseThumbnail" onLoad={() => setPage({ loaded: true })} />
+
+
+              </Link>
+            </div>
+            <div className="courseTitleCtn">
+              <Link to={`/courses/${course.tag}`}>{course.name}</Link>
+            </div>
+            <div className="separator"></div>
+            <div className="priceCtn">
+              <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">${course.price}</span>
+            </div>
           </div>
         </div>
-      </div>
-    )
+      )
+    }
   })
-
-  
 
   console.log(page);
 

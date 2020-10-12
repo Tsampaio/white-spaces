@@ -221,3 +221,8 @@
 .billingRow {
     padding: 10px 0;
 }
+
+.cancelMembership {
+    padding: 6px 20px;
+    border: 1px solid black;
+}
