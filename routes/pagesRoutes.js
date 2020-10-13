@@ -1,6 +1,8 @@
 const express = require('express');
 const pagesController = require('./../controllers/pagesController');
 
+const { protect } = require('../controllers/authController');
+
 const router = express.Router();
 // console.log("inside routes")
 router.post('/getCourse', pagesController.getCourse);
@@ -11,5 +13,7 @@ router.post('/coursePic', pagesController.coursePic);
 router.post('/updateCourse', pagesController.updateCourse);
 router.post('/courseThumbnail', pagesController.courseThumbnail);
 router.post('/courseAccess', pagesController.courseAccess);
+router.post('/finishLesson', protect, pagesController.finishLesson);
+
 
 module.exports = router;

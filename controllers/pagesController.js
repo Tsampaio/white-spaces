@@ -278,3 +278,49 @@ exports.courseAccess = async (req, res) => {
   }
 
 }
+
+exports.finishLesson = async (req, res) => {
+  try {
+    const course = await Course.findById(req.body.courseId);
+    console.log("INSIDE FINISH LESSON");
+    //console.log(course);
+    let lessonCounter = 0;
+    // let foundUserLesson = "";
+    // console.log("Total watched is: ", course.classes[req.body.lesson].watched.length);
+
+    // for(let i=0; i < course.classes[req.body.lesson].watched.length; i++ ) {
+    //   console.log("My i is: ", i);
+    //   if( course.classes[req.body.lesson].watched[i].user && JSON.stringify(course.classes[req.body.lesson].watched[i].user) === JSON.stringify(req.user._id) ) {
+    //     lessonCounter = i;
+    //     foundUserLesson = course.classes[req.body.lesson].watched[i].user;
+    //   }
+    // }
+
+    const foundUserLesson = course.classes[req.body.lesson].watched.find((theLesson, i) => {
+      lessonCounter = i;
+      return JSON.stringify(theLesson.user) === JSON.stringify(req.user._id);
+    });
+
+    console.log(lessonCounter);
+    console.log("FOUND THE USER")
+    console.log(foundUserLesson);
+
+    if( foundUserLesson ) {
+      // foundUserLesson.complete = !foundUserLesson.complete
+      course.classes[req.body.lesson].watched[lessonCounter].complete = !course.classes[req.body.lesson].watched[lessonCounter].complete;
+    } else {
+      course.classes[req.body.lesson].watched = [ ...course.classes[req.body.lesson].watched, { user: req.user._id, complete: true} ];
+    }
+
+    await course.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      lesson: req.body.lesson,
+      watched: course.classes[req.body.lesson].watched
+    })
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
+

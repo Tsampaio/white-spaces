@@ -4,9 +4,9 @@ import './CourseLesson.css';
 import store from '../../store';
 import { useParams, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getCourse, getCoursesOwned } from '../../actions/courses';
+import { getCourse, getCoursesOwned, finishLessonAction } from '../../actions/courses';
 
-const CourseLessons = ({ course, auth }) => {
+const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonAction }) => {
 	const [page, setPage] = useState({
 		loaded: false
 	});
@@ -16,30 +16,83 @@ const CourseLessons = ({ course, auth }) => {
 	lesson = parseInt(lesson);
 
 	useEffect(() => {
-		store.dispatch(getCourse(courseTag));
+		let isSubscribed = true;
+		if (isSubscribed) {
+			getCourse(courseTag);
+			setPage({ loaded: true });
+		}
+
+		return () => (isSubscribed = false);
 	}, []);
 
 	useEffect(() => {
-		setCoursesOwned()
-	}, [auth && auth.user]);
+		let isSubscribed = true;
+		if (isSubscribed) {
+			setCoursesOwned();
+		}
+
+		return () => (isSubscribed = false);
+	}, [auth && auth.user && auth.user._id]);
+
+	useEffect(() => {
+		let isSubscribed = true;
+		if (isSubscribed) {
+			redirectUser();
+		}
+		return () => (isSubscribed = false);
+	}, [auth.coursesOwned])
+
+	// useEffect(() => {
+	// 	console.log("calling redirect user")
+	// 	if ( (page.loaded && auth && auth.user && auth.user.role !== "admin" && !checkCourseAccess) || (auth && auth.membership && auth.membership.active)) {
+	// 		redirectUser();
+	// 	}
+	// }, [page.loaded, auth.membership, auth.user]);
 
 	const setCoursesOwned = async () => {
-		await store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
-		setPage({ loaded: true })
+		await getCoursesOwned(auth && auth.user && auth.user._id);
+
 	}
 
 	const totalLessons = course && course.data && course.data.classes.length;
-	console.log(totalLessons);
+	// console.log(totalLessons);
 
-	console.log(course);
-	console.log(lesson)
+	// console.log(course);
+	// console.log(lesson)
+
+	const checkLesson = (theClass, i) => {
+		console.log("INSIDE Checking Lesson");
+		console.log(theClass.watched)
+		for (let y = 0; y <= theClass.watched.length; y++) {
+			console.log("Are there classes");
+			console.log(theClass.watched.length > 0)
+			if (theClass.watched.length > 0 && JSON.stringify(theClass.watched[y].user) === JSON.stringify(auth && auth.user && auth.user._id)) {
+				console.log("We found a CLASS");
+				return theClass.watched[y].complete ?
+					<i className="fas fa-check-circle complete"></i>
+					: <i className="far fa-circle"></i>
+			} else {
+				return <i className="far fa-circle"></i>
+			}
+
+		}
+	}
 
 	let classes = course && course.data && course.data.classes.map((theClass, i) => {
 		return (
 			<div className="lesson" key={i}>
-				<div className="lessonComplete"></div>
+				<div className="lessonComplete" onClick={() => finishLessonAction(i, course && course.data && course.data._id, auth && auth.token)}>
+					{/* {	theClass.watched.complete ? 
+						<i className="fas fa-check-circle complete"></i>
+					 : <i className="far fa-circle"></i>
+					} */}
+					{console.log("CHECKING LESSON")}
+					{checkLesson(theClass, i)}
+
+
+				</div>
 				<Link className={lesson === (i + 1) ? "lessonLink lessonActive" : "lessonLink"} to={`/courses/${course.data.tag}/lessons/${theClass.lecture}`}>
-					<i className="fas fa-play-circle"></i>
+					{/* <i className="fas fa-play-circle"></i> */}
 					<p>{theClass.title} <span className="lessonTime"> - ({theClass.duration} mins)</span></p>
 				</Link>
 			</div>
@@ -48,11 +101,11 @@ const CourseLessons = ({ course, auth }) => {
 
 	const lessonContinue = () => {
 		if ((lesson + 1) > totalLessons) {
-			console.log(lesson);
-			console.log("inside of if");
+			// console.log(lesson);
+			// console.log("inside of if");
 			return <h1>Last Lesson of the Course!</h1>
 		} else {
-			console.log("inside of else");
+			// console.log("inside of else");
 			return <Link to={`/courses/${course && course.data && course.data.tag}/lessons/${lesson + 1}`}><h1>Next Lesson <i className="fas fa-arrow-right"></i></h1></Link>
 		}
 	}
@@ -63,41 +116,58 @@ const CourseLessons = ({ course, auth }) => {
 
 	console.log(checkCourseAccess);
 
-	if (auth && auth.user && auth.user.role !== "admin" && page.loaded && !checkCourseAccess && !auth.membership.active) {
-		return <Redirect to="/courses" />
+	const percentageWatched = () => {
+		if (course && course.data && course.data.classes) {
+			const totalLessons = course && course.data && course.data.classes.length;
+
+			let totalLessonsWatched = 0;
+
+			for (let i = 0; i < course.data.classes.length; i++) {
+				if (course.data.classes[i].watched[0].complete) {
+					totalLessonsWatched += 1;
+				}
+			}
+
+			return (totalLessonsWatched * 100 / totalLessons).toFixed(2);
+		}
 	}
 
-		return (
-			<Fragment>
-				<SecondHeader />
-				<div className="container-fluid courseLesson">
-					<div className="row">
-						<div className="col-4">
-							<h1>{course && course.data && course.data.name}</h1>
+	const redirectUser = () => {
+		if (auth && auth.user && auth.user.role !== "admin" && !checkCourseAccess && !auth.membership.active && page.loaded) {
+			return <Redirect to="/courses" />
+		}
+	}
 
-							<h5 className="courseCurriculum">Curriculum</h5>
-							<div className="lessonsCtn">
+	return (
+		<Fragment>
+			<SecondHeader />
+			<div className="container-fluid courseLesson">
+				<div className="row">
+					<div className="courseLinksCtn">
+						<h1>{course && course.data && course.data.name}</h1>
 
-								{classes}
-
-							</div>
+						<h5 className="courseCurriculum">{percentageWatched()}% complete</h5>
+						<div className="lessonsCtn">
+							{classes}
 						</div>
-						<div className="col-8">
-							{lessonContinue()}
-							<div className="currentLessonTitle">
-								<i className="fas fa-play-circle"></i>
-								<p>{course && course.data && course.data.classes[lesson - 1].title}</p>
-							</div>
+					</div>
+					<div className="courseMainVideoCtn">
+						{lessonContinue()}
+						<div className="currentLessonTitle">
+							<i className="fas fa-play-circle"></i>
+							<p>{course && course.data && course.data.classes[lesson - 1].title}</p>
+						</div>
 
-							<div className="videoIframe">
-								<iframe src={course && course.data && course.data.classes[lesson - 1].url} width="800" height="600" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
-							</div>
+						<div className="videoIframe">
+							{/* <iframe src={course && course.data && course.data.classes[lesson - 1].url} width="800" height="600" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe> */}
+							<iframe src={course && course.data && course.data.classes[lesson - 1].url} width="1024" height="768" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
 						</div>
 					</div>
 				</div>
-			</Fragment>
-		)
-	
+			</div>
+		</Fragment>
+	)
+
 }
 
 const mapStateToProps = state => ({
@@ -106,4 +176,4 @@ const mapStateToProps = state => ({
 	// profile: state.profile
 });
 
-export default connect(mapStateToProps)(CourseLessons);
+export default connect(mapStateToProps, { getCoursesOwned, getCourse, finishLessonAction })(CourseLessons);

@@ -9,7 +9,8 @@ import {
   LOAD_CHECKOUT,
   CREATE_COURSE,
   UPDATE_COURSE,
-  RESET_MESSAGE
+  RESET_MESSAGE,
+  FINISH_LESSON
 } from './types';
 
 export const getCourses = (courses) => async dispatch => {
@@ -48,7 +49,9 @@ export const getCoursesOwned = (userId) => async dispatch => {
 
     const res = await axios.post(`/api/getCoursesOwned`, body, {
       headers: {
-        Accept: 'application/json', "Content-Type": "application/json"
+        Accept: 'application/json', 
+        "Content-Type": "application/json"
+        // Authorization: `Bearer ${token}`
       }
     });
 
@@ -187,7 +190,7 @@ export const updateCourseAction = ({ id, courseName, courseIntro, courseTag, cou
 
 export const loadCheckout = (userId) => async dispatch => {
   try {
-    // console.log("inside loadCheckout action");
+    console.log("inside loadCheckout action");
     const body = JSON.stringify({ userId });
     const res = await axios.post("/api/loadCheckout", body, {
       headers: {
@@ -234,6 +237,31 @@ export const courseAccess = (courseTag, userId) => async dispatch => {
   } catch (error) {
 
   }
-
-
 }
+
+export const finishLessonAction = (lesson, courseId, token) => async dispatch => {
+  try {
+    console.log("clicking lesson finished " + lesson);
+
+    const body = JSON.stringify({ lesson, courseId });
+    console.log(body);
+    const res = await axios.post("/api/finishLesson", body, {
+      headers: {
+        Accept: 'application/json', 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log(res.data);
+
+    dispatch({
+      type: FINISH_LESSON,
+      payload: res.data
+    });
+
+  } catch (error) {
+    
+  }
+}
+

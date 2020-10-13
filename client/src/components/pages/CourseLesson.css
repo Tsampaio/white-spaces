@@ -40,6 +40,7 @@
     background-color: rgb(232, 232, 232);
     margin: 0;
     padding: 10px 20px;
+    text-align: center;
 }
 
 .lessonsCtn {
@@ -66,6 +67,10 @@
     padding: 5px 20px;
 }
 
+.lessonLink:hover {
+    text-decoration: none;
+}
+
 .lessonActive p {
     font-weight: bold;
 }
@@ -81,9 +86,20 @@
 .lessonComplete {
     width: 20px;
     height: 20px;
-    border: 2px solid orange;
-    border-radius: 50%;
     margin-right: 20px;
+    
+}
+
+.lessonComplete:hover {
+    cursor: pointer;
+}
+
+.lessonComplete i {
+    font-size: 20px;
+}
+
+.lessonComplete i.complete {
+    color: orange;
 }
 
 .currentLessonTitle {
@@ -109,4 +125,14 @@
 
 iframe {
     width: 100%;
+}
+
+.courseLinksCtn {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.courseMainVideoCtn {
+    flex: 1 1;
 }
