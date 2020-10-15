@@ -152,6 +152,16 @@
     justify-content: center;
     align-items: center;
 }
+
+.closeOverlay {
+    color: #fff;
+    font-size: 50px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+
 .imagePreviewOverlay .ReactCrop {
     width: 50%;
 }

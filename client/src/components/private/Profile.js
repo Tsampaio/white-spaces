@@ -25,7 +25,12 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   const [cropState, setCropState] = useState({
     src: null,
     crop: {
-      aspect: 1 / 1
+      aspect: 1,
+      height: 297,
+      unit: "px",
+      width: 297,
+      x: 0,
+      y: 0
     }
   });
 
@@ -60,7 +65,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
     console.log("before check membership ");
-    if( auth && auth.user && auth.user.membership && auth.user.membership.customerId ) {
+    if (auth && auth.user && auth.user.membership && auth.user.membership.customerId) {
       checkMembership(auth.token);
     }
 
@@ -75,13 +80,13 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   const updateUserDetails = (event) => {
     setUserDetails({
       ...userDetails,
-      [event.target.name]: event.target.value 
+      [event.target.name]: event.target.value
     })
   }
 
   const submitUserDetails = (event) => {
     event.preventDefault();
-    if(userDetails.newPassword !== userDetails.newPasswordConfirm) {
+    if (userDetails.newPassword !== userDetails.newPasswordConfirm) {
       setUserDetails({
         ...userDetails,
         error: "Passwords do not match"
@@ -96,6 +101,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() });
   //let imageRef = null;
   let imageRef = useRef();
+  let fileRef = useRef();
 
   let userPic = null;
   const images = require.context('../../images/', true);
@@ -106,23 +112,27 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     // import Pic from `/${auth.user._id}.jpg`;
     // userPic = <img src={`/${auth.user._id}.jpg`} />
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({loaded: true})} />
+    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({ loaded: true })} />
   } else {
     img = images(`./default.png`);
-    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({loaded: true})} />
+    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({ loaded: true })} />
   }
 
   const onSelectFile = e => {
+    console.log("INSIDE onSelectFile");
+
+    setPage({ ...page, showImagePreview: true })
     if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
+      console.log(reader.result);
       reader.addEventListener('load', () => {
-          
-          setCropState({
-            ...cropState,
-            src: reader.result
-          })
-          setPage({ ...page, showImagePreview: true })
-        }
+
+        setCropState({
+          ...cropState,
+          src: reader.result
+        })
+        // setPage({ ...page, showImagePreview: true })
+      }
       );
       reader.readAsDataURL(e.target.files[0]);
     }
@@ -150,7 +160,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   const makeClientCrop = async (crop) => {
     console.log(imageRef.current);
     if (imageRef.current && crop.width && crop.height) {
-      console.log(crop );
+      console.log(crop);
       const croppedImageUrl = await getCroppedImg(
         imageRef.current,
         crop,
@@ -264,13 +274,25 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     )
   })
 
+  const closeImagePreview = () => {
+    setPage({ ...page, showImagePreview: false })
+    console.log(fileRef.current);
+    fileRef.current.value = null;
+    setCropState({
+      ...cropState,
+      crop: {
+        aspect: 1 / 1
+      }
+    })
+  }
 
   if (active == 'notActive' && !auth.loading) {
     console.log("inside redirect");
     return <Redirect to="/activate" />
   }
 
-  console.log(userDetails)
+  console.log(page);
+  console.log(cropState)
 
   return (
     <Fragment>
@@ -281,54 +303,55 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
             <ProfileSidebar />
             <div className="col-xl-10 col-lg-9 col-md-8 userRightCol">
               <div className="userDetails">
-                  {!page.loaded && (
-                    <div className="preLoaderProfilePic">
-                      <div className="spinner-border " role="status">
-                        <span className="sr-only">Loading...</span>
-                      </div>
+                {!page.loaded && (
+                  <div className="preLoaderProfilePic">
+                    <div className="spinner-border " role="status">
+                      <span className="sr-only">Loading...</span>
                     </div>
-                  )}
-                  <div className="uploadButtonCtn">
-                    <label htmlFor="file">{userPic}</label>
-                    <input type="file" id="file" accept="image/*" onChange={onSelectFile} />
                   </div>
-                  
-                  { page.showImagePreview && (<div className="imagePreviewOverlay">
-                    <h2>Crop your Image</h2>
-                    {cropState.src && (
-                      <ReactCrop
-                        src={cropState.src}
-                        crop={cropState.crop}
-                        ruleOfThirds
-                        onImageLoaded={onImageLoaded}
-                        onComplete={onCropComplete}
-                        onChange={onCropChange}
-                      />
-                    )}
-                    {cropState.croppedImageUrl && (
-                      <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
-                    )}
-                    {cropState.src ? (
-                      <form onSubmit={handleSubmit}>
-                        <button type="submit" className="uploadButton">Save image</button>
-                      </form>
-                      ) : null
-                    }
-                  </div>)
+                )}
+                <div className="uploadButtonCtn">
+                  <label htmlFor="file">{userPic}</label>
+                  <input ref={fileRef} type="file" id="file" accept="image/*" onChange={onSelectFile} />
+                </div>
+
+                {page.showImagePreview && (<div className="imagePreviewOverlay">
+                  <i className="fa fa-times-circle closeOverlay" onClick={closeImagePreview}></i>
+                  <h2>Crop your Image</h2>
+                  {cropState.src && (
+                    <ReactCrop
+                      src={cropState.src}
+                      crop={cropState.crop}
+                      ruleOfThirds
+                      onImageLoaded={onImageLoaded}
+                      onComplete={onCropComplete}
+                      onChange={onCropChange}
+                    />
+                  )}
+                  {cropState.croppedImageUrl && (
+                    <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
+                  )}
+                  {cropState.src ? (
+                    <form onSubmit={handleSubmit}>
+                      <button type="submit" className="uploadButton">Save image</button>
+                    </form>
+                  ) : null
+                  }
+                </div>)
                 }
-                
+
                 <h3>Upload a new profile image</h3>
                 <form onSubmit={submitUserDetails}>
                   <label htmlFor="">Full Name</label>
-                  <input type="text" placeholder="My name" value={userDetails.name || ""} name="name" onChange={updateUserDetails}/>
+                  <input type="text" placeholder="My name" value={userDetails.name || ""} name="name" onChange={updateUserDetails} />
                   <label htmlFor="">New Password</label>
-                  <input type="password" name="newPassword" onChange={updateUserDetails}/>
+                  <input type="password" name="newPassword" onChange={updateUserDetails} />
                   <label htmlFor="">Confirm Password</label>
-                  <input type="password" name="newPasswordConfirm" onChange={updateUserDetails}/>
-                  
+                  <input type="password" name="newPasswordConfirm" onChange={updateUserDetails} />
+
                   <hr />
                   <label htmlFor="">To save changes, enter current password</label>
-                  <input type="password" name="password" onChange={updateUserDetails}/>
+                  <input type="password" name="password" onChange={updateUserDetails} />
                   <p className="formError">{auth && auth.message}</p>
                   <button className="saveChanges" type="submit">Save Changes</button>
                 </form>
