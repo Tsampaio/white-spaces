@@ -47,6 +47,10 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     error: ''
   })
 
+  const [imageUpload, setImageUpload] = useState({
+    error: ''
+  })
+
   useEffect(() => {
     // loaderDelay();
   }, []);
@@ -58,9 +62,6 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   }
 
   useEffect(() => {
-    //     console.log(auth);
-    // console.log(active == 'notActive');
-    // console.log(!auth.loading)
 
     store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
@@ -96,8 +97,8 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     updateUserAction(auth && auth.token, userDetails);
   }
 
-  const imageMaxSize = 1000000000 // bytes
-  const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif';
+  const imageMaxSize = 2000000 // bytes
+  const acceptedFileTypes = 'image/png, image/jpg, image/jpeg, image/gif';
   const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() });
   //let imageRef = null;
   let imageRef = useRef();
@@ -120,6 +121,17 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
 
   const onSelectFile = e => {
     console.log("INSIDE onSelectFile");
+    console.log(e.target.files[0].size);
+    console.log(e.target.files[0].type);
+    console.log(acceptedFileTypesArray)
+
+    if( e.target.files[0].size > imageMaxSize) {
+      setImageUpload({ error: 'Image size should be less than 2 MB'});
+      return
+    } else if(!acceptedFileTypesArray.includes(e.target.files[0].type)) {
+      setImageUpload({ error: 'Image should be of the type JPG, JPEG, PNG or GIF'});
+      return
+    }
 
     setPage({ ...page, showImagePreview: true })
     if (e.target.files && e.target.files.length > 0) {
@@ -223,7 +235,6 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   }
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     const config = {
@@ -242,37 +253,6 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     console.log("res.data");
     console.log(res.data);
   }
-
-
-  const coursesimage = require.context('../../images/courses', true);
-
-  const allCourses = auth && auth.coursesOwned.map((course, index) => {
-    let img = "";
-    if (course && course.hasThumbnail) {
-      img = coursesimage(`./${course.tag}.jpg`);
-    } else {
-      img = coursesimage(`./default-course.jpg`);
-    }
-
-    return (
-      <div className="col-4" key={index}>
-        <div className="cardBorder">
-          <div className="courseThumbnail courseFeatured1">
-            <Link to={`/courses/${course.tag}/lessons/1`}>
-              <img src={img} alt="javascript" />
-            </Link>
-          </div>
-          <div className="courseTitleCtn">
-            <Link to={`/courses/${course.tag}/lessons/1`}>{course.name}</Link>
-          </div>
-          <div className="separator"></div>
-          <div className="priceCtn">
-            <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">${course.price}</span>
-          </div>
-        </div>
-      </div>
-    )
-  })
 
   const closeImagePreview = () => {
     setPage({ ...page, showImagePreview: false })
@@ -303,6 +283,9 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
             <ProfileSidebar />
             <div className="col-xl-10 col-lg-9 col-md-8 userRightCol">
               <div className="userDetails">
+                {imageUpload.error && 
+                  <h1>{imageUpload.error}</h1>
+                }
                 {!page.loaded && (
                   <div className="preLoaderProfilePic">
                     <div className="spinner-border " role="status">
