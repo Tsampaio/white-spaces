@@ -62,26 +62,26 @@ exports.getCoursesOwned = async (req, res, next) => {
     const user = await User.findById(req.body.userId);
     // console.log(user );
 
-    if( user && user.courses.length > 0 ) {
-    Promise.all(user.courses.map(async (course) => {
-      // console.log( await Course.findById( course ));
-      return await Course.findById(course);
-    })
-    ).then(values => {
-      allCourses = values;
-      // console.log(values)
+    if (user && user.courses.length > 0) {
+      Promise.all(user.courses.map(async (course) => {
+        // console.log( await Course.findById( course ));
+        return await Course.findById(course);
+      })
+      ).then(values => {
+        allCourses = values;
+        // console.log(values)
 
+        return res.status(200).json({
+          status: 'success',
+          courses: allCourses
+        });
+      });
+    } else {
       return res.status(200).json({
         status: 'success',
-        courses: allCourses
+        courses: []
       });
-    });
-  } else {
-    return res.status(200).json({
-      status: 'success',
-      courses: []
-    });
-  }
+    }
 
   } catch (error) {
     console.log(error)
@@ -95,6 +95,32 @@ exports.getCourse = async (req, res, next) => {
     // console.log("this is courseTag ", courseTag);
     const course = await Course.findOne({ tag: courseTag });
     // console.log("this is course ", course);
+
+    const userClasses = course.classes.map((theClass) => {
+
+      return theClass.watched.find((watched, i) => {
+        // lessonCounter = i;
+        return JSON.stringify(watched.user) === JSON.stringify(req.user._id);
+      })
+    });
+
+    for(let i=0; i < userClasses.length; i++) {
+      if( !userClasses[i]) {
+        course.classes[i].watched = { complete: false }
+      } else {
+        course.classes[i].watched = userClasses[i];
+      }
+
+    }
+
+    console.log("USER WATCHED");
+    console.log(course.classes[0].watched);
+    console.log(course.classes[1].watched);
+    console.log(course.classes[2].watched);
+    // course.classes[req.body.lesson].watched.find((theLesson, i) => {
+    //   lessonCounter = i;
+    //   return JSON.stringify(theLesson.user) === JSON.stringify(req.user._id);
+    // });
 
     res.status(200).json({
       status: 'success',
@@ -305,20 +331,22 @@ exports.finishLesson = async (req, res) => {
     console.log("FOUND THE USER")
     console.log(foundUserLesson);
 
-    if( foundUserLesson ) {
+    if (foundUserLesson) {
       // foundUserLesson.complete = !foundUserLesson.complete
       course.classes[req.body.lesson].watched[lessonCounter].complete = !course.classes[req.body.lesson].watched[lessonCounter].complete;
     } else {
-      course.classes[req.body.lesson].watched = [ ...course.classes[req.body.lesson].watched, { user: req.user._id, complete: true} ];
+      course.classes[req.body.lesson].watched = [...course.classes[req.body.lesson].watched, { user: req.user._id, complete: true }];
     }
+    console.log("before save");
+    console.log(course.classes[req.body.lesson].watched[lessonCounter]);
 
     await course.save({ validateBeforeSave: false });
 
     res.status(200).json({
       lesson: req.body.lesson,
-      watched: course.classes[req.body.lesson].watched
+      watched: course.classes[req.body.lesson].watched[lessonCounter]
     })
-    
+
   } catch (error) {
     console.log(error)
   }

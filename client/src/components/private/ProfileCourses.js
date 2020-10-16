@@ -93,7 +93,7 @@ function ProfileCourses({ auth, active, checkMembership, cancelMembership, membe
     console.log("inside redirect");
     return <Redirect to="/activate" />
   }
-
+  console.log(allCourses);
   return (
     <Fragment>
       <SecondHeader />
@@ -107,7 +107,11 @@ function ProfileCourses({ auth, active, checkMembership, cancelMembership, membe
                 <h1>My Courses</h1>
                 <div className="row">
                   
-                  {allCourses}
+                  {allCourses.length > 0 ? allCourses : 
+                    <div className="col-12">
+                      <h2>No courses owned...</h2>
+                    </div>
+                  }
                 </div>
 
               </div>

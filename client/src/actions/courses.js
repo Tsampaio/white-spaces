@@ -65,20 +65,22 @@ export const getCoursesOwned = (userId) => async dispatch => {
   }
 }
 
-export const getCourse = (courseTag) => async dispatch => {
+export const getCourse = (courseTag, token) => async dispatch => {
   // if(localStorage.token) {
   //     setAuthToken(localStorage.token);
   // }
 
   try {
     console.log("inside getCourse");
+    console.log(token)
 
     const body = JSON.stringify({ courseTag });
     console.log(body);
     const res = await axios.post(`/api/getCourse`, body, {
       headers: {
-        Accept: 'application/json',
-        "Content-Type": "application/json"
+        Accept: 'application/json', 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
       }
     });
 
@@ -261,7 +263,7 @@ export const finishLessonAction = (lesson, courseId, token) => async dispatch =>
     });
 
   } catch (error) {
-    
+    console.log(error);
   }
 }
 

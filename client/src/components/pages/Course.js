@@ -16,11 +16,8 @@ const Course = ({ course, addCheckout, auth, payment }) => {
   })
 
   useEffect( () => {
-    store.dispatch(getCourse(courseTag));
     
       setPage({ loaded: true });
-    
-    
     console.log( "after page loaded");
   }, []);
 
@@ -30,6 +27,10 @@ const Course = ({ course, addCheckout, auth, payment }) => {
     }
 
   }, [auth && auth.membership && auth.membership.active]);
+
+  useEffect(() => {
+    store.dispatch(getCourse(courseTag, auth && auth.token));
+  }, [auth && auth.token])
 
   const { courseTag } = useParams();
   console.log(courseTag);

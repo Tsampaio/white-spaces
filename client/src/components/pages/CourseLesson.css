@@ -123,6 +123,11 @@
     padding: 0 20px;
 }
 
+.vp-center {
+    align-items: start;
+    color: blue !important;
+}
+
 iframe {
     width: 100%;
 }

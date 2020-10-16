@@ -15,7 +15,7 @@ const Home = (props) => {
                 <CourseCard />
                 <CourseCard />
                 <CourseCard />
-              </div>  
+              </div>
             </div>
           </div>
           <div className="homeCounter">

@@ -37,7 +37,7 @@ export default function (state = initialState, action) {
     case FINISH_LESSON:
       // console.log(payload);
       const updatedClasses = state.data.classes;
-      updatedClasses[payload.lesson].watched = payload.watched; 
+      updatedClasses[payload.lesson].watched[0] = payload.watched; 
 
       return {
         ...state,

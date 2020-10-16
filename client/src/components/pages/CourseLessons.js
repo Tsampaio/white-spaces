@@ -18,7 +18,6 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 	useEffect(() => {
 		let isSubscribed = true;
 		if (isSubscribed) {
-			getCourse(courseTag);
 			setPage({ loaded: true });
 		}
 
@@ -28,6 +27,7 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 	useEffect(() => {
 		let isSubscribed = true;
 		if (isSubscribed) {
+			
 			setCoursesOwned();
 		}
 
@@ -42,6 +42,10 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 		return () => (isSubscribed = false);
 	}, [auth.coursesOwned])
 
+
+	useEffect(() => {
+		getCourse(courseTag, auth.token);
+	}, [auth.token])
 	// useEffect(() => {
 	// 	console.log("calling redirect user")
 	// 	if ( (page.loaded && auth && auth.user && auth.user.role !== "admin" && !checkCourseAccess) || (auth && auth.membership && auth.membership.active)) {
@@ -123,6 +127,7 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 			let totalLessonsWatched = 0;
 
 			for (let i = 0; i < course.data.classes.length; i++) {
+				 console.log(course.data.classes[i]);
 				if (course.data.classes[i].watched[0].complete) {
 					totalLessonsWatched += 1;
 				}
