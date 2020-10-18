@@ -259,8 +259,63 @@
     color: #212529;
 }
 
+@media only screen and (min-width: 1025px) {
+    .userLeftCol {
+        max-width: 300px;
+    }
+}
+
+@media only screen and (max-width: 1300px) {
+    .userBillingCtn {
+        overflow: scroll;
+    }
+
+    .billingScroll {
+        min-width: 900px;
+    }
+
+    ::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 10px;
+    }
+      
+    ::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        background-color: rgba(0,0,0,.5);
+        box-shadow: 0 0 1px rgba(255,255,255,.5);
+        -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    }
+}
+
 @media only screen and (max-width: 1024px) {
     .myCoursesCtn .courseTitleCtn a {
         font-size: 14px;
     }
+    
+}
+
+@media only screen and (max-width: 992px) {
+    .userLeftCol {
+        display: none !important;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    
+}
+
+
+@media only screen and (max-width: 500px) {
+    .profileCtn {
+        padding-bottom: 30px;
+    }
+    
+    .billingCtn {
+        padding: 10px;
+    }
+
+    .myCoursesCtn .cardBorder {
+        margin-bottom: 30px;
+    }
+
 }

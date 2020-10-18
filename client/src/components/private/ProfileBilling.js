@@ -289,10 +289,10 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
     const newDate = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
     return (
       <div key={bill._id} className="row billingRow">
-        <div className="col-3"><h4>{newDate}</h4></div>
+        <div className="col-2"><h4>{newDate}</h4></div>
         <div className="col-3"><h4>{bill.productName}</h4></div>
         <div className="col-3"><h4>{bill._id}</h4></div>
-        <div className="col-3"><h4>${bill.price}</h4></div>
+        <div className="col-2"><h4>${bill.price}</h4></div>
       </div>
     )
   });
@@ -314,7 +314,7 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
         <div className="container-fluid">
           <div className="row">
             <ProfileSidebar />
-            <div className="col-lg-10 billingCtn">
+            <div className="col-lg-9 col-md-12 col-sm-12 billingCtn">
               <div className="card">
                 <div className="card-header">
                   Membership Details
@@ -343,14 +343,19 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
               </div>
 
               <h2><b>Billing History</b></h2>
-              <div className="row userBillingHistoryTitle">
-                <div className="col-3"><h4>Date - dd/mm/yyyy</h4></div>
-                <div className="col-3"><h4>Product Name</h4></div>
-                <div className="col-3"><h4>Order Number</h4></div>
-                <div className="col-3"><h4>Sale Price</h4></div>
+              <div className="userBillingCtn">
+                <div className="billingScroll">
+                  <div className="row userBillingHistoryTitle">
+                    <div className="col-2"><h4>Date - dd/mm/yyyy</h4></div>
+                    <div className="col-3"><h4>Product Name</h4></div>
+                    <div className="col-3"><h4>Order Number</h4></div>
+                    <div className="col-2"><h4>Sale Price</h4></div>
+                  </div>
+                  <hr />
+                
+                  {userBilling}
+                </div>
               </div>
-              <hr />
-              {userBilling}
 
 
             </div>

@@ -281,7 +281,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
         <div className="container-fluid">
           <div className="row">
             <ProfileSidebar />
-            <div className="col-xl-10 col-lg-9 col-md-8 userRightCol">
+            <div className="col-xl-10 col-lg-9 col-md-12 col-sm-12 userRightCol">
               <div className="userDetails">
                 {imageUpload.error && 
                   <h1>{imageUpload.error}</h1>

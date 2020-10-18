@@ -58,7 +58,7 @@ const Courses = ({ courses }) => {
     let img = `/images/${course.tag}.jpg`;
     if (course.tag != "monthly-plan") {
       return (
-        <div className="col-lg-3 col-md-4" key={index}>
+        <div className="offset-1 col-10 offset-md-0 col-md-4 col-lg-3" key={index}>
           <div className="cardBorder">
             <div className="courseThumbnail courseFeatured1">
               <Link to={`/courses/${course.tag}`}>

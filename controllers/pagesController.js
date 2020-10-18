@@ -114,9 +114,9 @@ exports.getCourse = async (req, res, next) => {
     }
 
     console.log("USER WATCHED");
-    console.log(course.classes[0].watched);
-    console.log(course.classes[1].watched);
-    console.log(course.classes[2].watched);
+    // console.log(course.classes[0].watched);
+    // console.log(course.classes[1].watched);
+    // console.log(course.classes[2].watched);
     // course.classes[req.body.lesson].watched.find((theLesson, i) => {
     //   lessonCounter = i;
     //   return JSON.stringify(theLesson.user) === JSON.stringify(req.user._id);

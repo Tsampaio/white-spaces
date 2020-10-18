@@ -14,6 +14,10 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
     open: false,
   });
 
+  const [mobileMenu, setMobileMenu] = useState({
+    open: false,
+  });
+
   const dropMenu = React.useRef();
   const profileIcon = React.useRef();
 
@@ -56,13 +60,13 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
   }, [auth && auth.isAuthenticated]);
 
 
-  const handleDropdown = () => {
-    if (!dropDown.open) {
-      setDropdown({
+  const handleDropdown = (state, myFunc) => {
+    if (!state.open) {
+      myFunc({
         open: true
       })
     } else {
-      setDropdown({
+      myFunc({
         open: false
       })
     }
@@ -84,56 +88,78 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
   }
 
   return (
-    <div className="secondHeader">
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12 mainNav">
-            <Link to="/">
-              <img src={logo} alt="Telmo Academy Logo" className="logo logo-light" />
-            </Link>
-            <ul>
-              <li><Link to='/'>HOME</Link></li>
-              <li><Link to='/courses'>COURSES</Link></li>
-              {/* Add when all finished
+    <>
+      <div className="secondHeader">
+        <div className="container">
+          <div className="row">
+            <div className="col-sm-12 mainNav">
+              <Link to="/">
+                <img src={logo} alt="Telmo Academy Logo" className="logo logo-light" />
+              </Link>
+              <div className="mobileMenu" onClick={() => handleDropdown(mobileMenu, setMobileMenu)}>
+                <i className="fas fa-bars"></i>
+              </div>
+              <ul className="desktopMenu">
+                <li><Link to='/'>HOME</Link></li>
+                <li><Link to='/courses'>COURSES</Link></li>
+                {/* Add when all finished
             { auth && auth.membership && !auth.membership.active && (
               <li><Link to='/membership'>PRICING</Link></li>
 
             )} */}
-              <li><Link to='/membership'>PRICING</Link></li>
-              {isAuthenticated ? (
+                <li><Link to='/membership'>PRICING</Link></li>
+                {isAuthenticated ? (
 
-                <div ref={dropMenu} className={dropDown.open ? "navDropDown" : "hideDropDown"}>
-                  <li><Link to='/profile'><i className="fa fa-user"></i> Profile</Link></li>
-                  <li><Link to='/profile/courses'><i className="fa fa-play-circle"></i> My Courses</Link></li>
-                  { auth && auth.user && auth.user.role === "admin" ? <li><Link to='/admin/courses'><i className="fas fa-user-shield"></i> Admin</Link></li> : ""}
-                  <li><Link to='/logout'><i className="fa fa-door-open"></i> Logout</Link></li>
-                </div>
+                  <div ref={dropMenu} className={dropDown.open ? "navDropDown" : "hideDropDown"}>
+                    <li><Link to='/profile'><i className="fa fa-user"></i> Profile</Link></li>
+                    <li><Link to='/profile/courses'><i className="fa fa-play-circle"></i> My Courses</Link></li>
+                    { auth && auth.user && auth.user.role === "admin" ? <li><Link to='/admin/courses'><i className="fas fa-user-shield"></i> Admin</Link></li> : ""}
+                    <li><Link to='/logout'><i className="fa fa-door-open"></i> Logout</Link></li>
+                  </div>
 
-              ) : (
-                  <Fragment>
-                    <li><Link to='/login'>Login</Link></li>
-                    <li><Link to='/Register'>Register</Link></li>
-                  </Fragment>
-                )}
-              {
-                isAuthenticated ? (
-                  <li>
-                    <Link className="checkoutLink" to="/cart/checkout">
-                      <i className="fa fa-shopping-cart"></i>
-                      {payment && payment.checkout && payment.checkout.length > 0 ? (
-                        <span className="checkoutNumber">{payment && payment.checkout && payment.checkout.length}</span>
-                      ) : null
-                      }
-                    </Link>
-                  </li>
-                ) : null
-              }
-              {isAuthenticated ? <li ref={profileIcon} className="userAvatarNavCtn" onClick={handleDropdown}>{userPic}<span className="userBorder"></span></li> : ""}
+                ) : (
+                    <Fragment>
+                      <li><Link to='/login'>Login</Link></li>
+                      <li><Link to='/Register'>Register</Link></li>
+                    </Fragment>
+                  )}
+                {
+                  isAuthenticated ? (
+                    <li>
+                      <Link className="checkoutLink" to="/cart/checkout">
+                        <i className="fa fa-shopping-cart"></i>
+                        {payment && payment.checkout && payment.checkout.length > 0 ? (
+                          <span className="checkoutNumber">{payment && payment.checkout && payment.checkout.length}</span>
+                        ) : null
+                        }
+                      </Link>
+                    </li>
+                  ) : null
+                }
+                {isAuthenticated ? <li ref={profileIcon} className="userAvatarNavCtn" onClick={() => handleDropdown(dropDown, setDropdown)}>{userPic}<span className="userBorder"></span></li> : ""}
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div>        
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-sm-12">
+            <ul className={`navMenu ${mobileMenu.open ? "navMenuActive" : ""}`}>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/courses">Courses</Link></li>
+              <li><Link to="/membership">Pricing</Link></li>
+              <li><Link to="/profile">Profile</Link></li>
+              <li><Link to="/profile/billing">Billing</Link></li>
+              <li><Link to="/profile/courses">My Courses</Link></li>
             </ul>
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
 
