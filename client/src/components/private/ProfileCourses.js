@@ -1,7 +1,5 @@
 import React, { useEffect, Fragment, useState, useRef } from 'react';
-import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import SecondHeader from '../partials/SecondHeader';
 import { Redirect, Link } from 'react-router-dom';
@@ -88,12 +86,13 @@ function ProfileCourses({ auth, active, checkMembership, cancelMembership, membe
     )
   })
 
-
   if (active == 'notActive' && !auth.loading) {
     console.log("inside redirect");
     return <Redirect to="/activate" />
+  } else if( auth && !auth.isAuthenticated && !auth.loading) {
+    return <Redirect to="/" />
   }
-  console.log(allCourses);
+
   return (
     <Fragment>
       <SecondHeader />

@@ -182,7 +182,9 @@ exports.protect = async (req, res, next) => {
     token = req.cookies.jwt;
   } else {
     return res.status(200).json({
+      status: 'guest',
       message: 'Failed to authenticate'
+      
     });
   }
 

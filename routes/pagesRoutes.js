@@ -5,7 +5,8 @@ const { protect } = require('../controllers/authController');
 
 const router = express.Router();
 // console.log("inside routes")
-router.post('/getCourse', protect, pagesController.getCourse);
+router.post('/getCourse', pagesController.getCourse);
+router.post('/getLessonsWatched', protect, pagesController.getLessonsWatched);
 router.post('/getCourses', pagesController.getCourses);
 router.post('/getCoursesOwned', pagesController.getCoursesOwned);
 router.post('/createCourse', pagesController.createCourse);

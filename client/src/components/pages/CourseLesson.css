@@ -123,8 +123,8 @@
     padding: 0 20px;
 }
 
-.vp-center {
-    align-items: start;
+.videoIframe .vp-center {
+    align-items: start !important;
     color: blue !important;
 }
 
@@ -138,6 +138,105 @@ iframe {
     flex-direction: column;
 }
 
+.courseLinksCtn.backup {
+    position: absolute;
+}
+
+.courseLinksCtn h1 {
+    text-align: center;
+}
+
 .courseMainVideoCtn {
     flex: 1 1;
+}
+
+@media only screen and (max-width: 1280px) {
+    iframe {
+        height: 600px;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    iframe {
+        height: 400px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .courseLesson h1 {
+        font-size: 35px;
+    }
+
+    .courseLinksCtn {
+        width: 70px;
+        background-color: rgb(209, 171, 102);
+        transition: all 0.5s ease-in-out;
+    }
+
+    .courseLinksCtn.active {
+        width: 200px;
+    }
+
+    .courseLinksCtn h1 {
+        background-color: rgb(209, 171, 102);
+        cursor: pointer;
+    }
+    .courseLinksCtn h1 i {
+        color: #000;
+        font-size: 30px;
+    }
+
+    .courseLinksCtn h1 span {
+        display: none;
+    }
+    
+    .courseLinksCtn.active h1 span {
+        display: block;
+        font-size: 20px;
+    }
+
+    .courseCurriculum span,
+    .lessonLink {
+        display: none;
+    }
+
+    .courseLinksCtn.active .courseCurriculum span,
+    .courseLinksCtn.active .lessonLink {
+        display: block;
+    }
+
+    .lessonsCtn,
+    .lesson,
+    .courseCurriculum {
+        background-color: orange;
+    }
+
+    .lessonComplete > i {
+        display: none;
+    }
+
+    .courseLinksCtn.active {
+        position: absolute;
+        height: 100%;
+    }
+
+    .courseLinksCtn.active + .courseLinksCtn.backup {
+        display: block;
+    }
+
+    .courseLinksCtn.active .lessonComplete > i {
+        display: block;
+    }
+
+    .courseLinksCtn.active .lessonLink {
+        font-size: 14px;
+        padding: 5px;
+    }
+
+}  
+
+@media only screen and (max-width: 500px) {
+    iframe {
+        height: 160px;
+    }
 }

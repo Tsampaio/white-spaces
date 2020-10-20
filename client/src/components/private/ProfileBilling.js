@@ -253,38 +253,7 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
     console.log(res.data);
   }
 
-
-  const coursesimage = require.context('../../images/courses', true);
-
-  const allCourses = auth && auth.coursesOwned.map((course, index) => {
-    let img = "";
-    if (course && course.hasThumbnail) {
-      img = coursesimage(`./${course.tag}.jpg`);
-    } else {
-      img = coursesimage(`./default-course.jpg`);
-    }
-
-    return (
-      <div className="col-4" key={index}>
-        <div className="cardBorder">
-          <div className="courseThumbnail courseFeatured1">
-            <Link to={`/courses/${course.tag}/lessons/1`}>
-              <img src={img} alt="javascript" />
-            </Link>
-          </div>
-          <div className="courseTitleCtn">
-            <Link to={`/courses/${course.tag}/lessons/1`}>{course.name}</Link>
-          </div>
-          <div className="separator"></div>
-          <div className="priceCtn">
-            <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">${course.price}</span>
-          </div>
-        </div>
-      </div>
-    )
-  });
-
-  const userBilling = payment && payment.billing.map((bill) => {
+  const userBilling = payment && payment.billing && payment.billing.map((bill) => {
     const date = new Date(bill.date);
     const newDate = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
     return (
@@ -301,8 +270,10 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
   const newUntilDate = `${untilDate.getDate()}/${untilDate.getMonth()+1}/${untilDate.getFullYear()}`;
 
   if (active == 'notActive' && !auth.loading) {
-    // console.log("inside redirect");
+    console.log("inside redirect");
     return <Redirect to="/activate" />
+  } else if( auth && !auth.isAuthenticated && !auth.loading) {
+    return <Redirect to="/" />
   }
 
   // console.log(cropState.croppedImageUrl);

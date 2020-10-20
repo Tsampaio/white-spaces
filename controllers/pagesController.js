@@ -96,6 +96,24 @@ exports.getCourse = async (req, res, next) => {
     const course = await Course.findOne({ tag: courseTag });
     // console.log("this is course ", course);
 
+    res.status(200).json({
+      status: 'success',
+      course: course
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.getLessonsWatched = async (req, res, next) => {
+  try {
+    // console.log("inside getCourse Controller");
+    const { courseTag } = req.body;
+    // console.log("this is courseTag ", courseTag);
+    const course = await Course.findOne({ tag: courseTag });
+    // console.log("this is course ", course);
+
     const userClasses = course.classes.map((theClass) => {
 
       return theClass.watched.find((watched, i) => {
@@ -113,14 +131,8 @@ exports.getCourse = async (req, res, next) => {
 
     }
 
-    console.log("USER WATCHED");
-    // console.log(course.classes[0].watched);
-    // console.log(course.classes[1].watched);
-    // console.log(course.classes[2].watched);
-    // course.classes[req.body.lesson].watched.find((theLesson, i) => {
-    //   lessonCounter = i;
-    //   return JSON.stringify(theLesson.user) === JSON.stringify(req.user._id);
-    // });
+    console.log('my course is');
+    console.log(course);
 
     res.status(200).json({
       status: 'success',
@@ -130,7 +142,6 @@ exports.getCourse = async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
-
 }
 
 exports.updateCourse = async (req, res, next) => {

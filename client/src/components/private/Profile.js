@@ -13,13 +13,6 @@ import store from '../../store';
 import './Profile.css';
 import ProfileSidebar from './ProfileSidebar';
 
-// import {
-//   base64StringtoFile,
-//   downloadBase64File,
-//   extractImageFileExtensionFromBase64,
-//   image64toCanvasRef
-// } from '../utils/imageUtils';
-// import e from 'express';
 
 function Profile({ auth, active, checkMembership, updateUserAction, cancelMembership, membershipResubscribe }) {
   const [cropState, setCropState] = useState({
@@ -269,10 +262,12 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   if (active == 'notActive' && !auth.loading) {
     console.log("inside redirect");
     return <Redirect to="/activate" />
+  } else if( auth && !auth.isAuthenticated && !auth.loading) {
+    return <Redirect to="/" />
   }
 
   console.log(page);
-  console.log(cropState)
+  // console.log(cropState)
 
   return (
     <Fragment>

@@ -1,5 +1,6 @@
 import {
   GET_ONE_COURSE,
+  GET_LESSONS_WATCHED,
   GET_COURSES,
   UPDATE_COURSE,
   FINISH_LESSON
@@ -44,6 +45,14 @@ export default function (state = initialState, action) {
         data: {
           ...state.data,
           classes: updatedClasses
+        }
+      }
+    case GET_LESSONS_WATCHED:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          classes: payload.course.classes
         }
       }
     default:

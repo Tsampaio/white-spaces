@@ -4,11 +4,22 @@ import './CourseLesson.css';
 import store from '../../store';
 import { useParams, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { getCourse, getCoursesOwned, finishLessonAction } from '../../actions/courses';
+import { getCourse, getCoursesOwned, finishLessonAction, lessonsWatchedAction } from '../../actions/courses';
 
-const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonAction }) => {
+const CourseLessons = ({ 
+	course, 
+	auth, 
+	getCoursesOwned, 
+	getCourse, 
+	finishLessonAction, 
+	lessonsWatchedAction }) => {
+
 	const [page, setPage] = useState({
 		loaded: false
+	});
+
+	const [mobileMenu, setMobileMenu] = useState({
+		open: false
 	});
 
 	let { courseTag, lesson } = useParams();
@@ -19,6 +30,7 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 		let isSubscribed = true;
 		if (isSubscribed) {
 			setPage({ loaded: true });
+			getCourse(courseTag);
 		}
 
 		return () => (isSubscribed = false);
@@ -44,8 +56,8 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 
 
 	useEffect(() => {
-		getCourse(courseTag, auth.token);
-	}, [auth.token])
+		lessonsWatchedAction(courseTag, auth.token);
+	}, [auth && auth.token])
 	// useEffect(() => {
 	// 	console.log("calling redirect user")
 	// 	if ( (page.loaded && auth && auth.user && auth.user.role !== "admin" && !checkCourseAccess) || (auth && auth.membership && auth.membership.active)) {
@@ -58,20 +70,20 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 
 	}
 
-	const totalLessons = course && course.data && course.data.classes.length;
+	const totalLessons = course && course.data && course.data.classes && course.data.classes.length;
 	// console.log(totalLessons);
 
 	// console.log(course);
 	// console.log(lesson)
 
 	const checkLesson = (theClass, i) => {
-		console.log("INSIDE Checking Lesson");
-		console.log(theClass.watched)
+		// console.log("INSIDE Checking Lesson");
+		// console.log(theClass.watched)
 		for (let y = 0; y <= theClass.watched.length; y++) {
-			console.log("Are there classes");
-			console.log(theClass.watched.length > 0)
+			// console.log("Are there classes");
+			// console.log(theClass.watched.length > 0)
 			if (theClass.watched.length > 0 && JSON.stringify(theClass.watched[y].user) === JSON.stringify(auth && auth.user && auth.user._id)) {
-				console.log("We found a CLASS");
+				// console.log("We found a CLASS");
 				return theClass.watched[y].complete ?
 					<i className="fas fa-check-circle complete"></i>
 					: <i className="far fa-circle"></i>
@@ -82,14 +94,14 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 		}
 	}
 
-	let classes = course && course.data && course.data.classes.map((theClass, i) => {
+	let classes = course && course.data && course.data.classes && course.data.classes.map((theClass, i) => {
 		return (
 			<div className="lesson" key={i}>
 				<div className="lessonComplete" onClick={() => finishLessonAction(i, course && course.data && course.data._id, auth && auth.token)}>
 					{/* {	theClass.watched.complete ? 
 						<i className="fas fa-check-circle complete"></i>
 					 : <i className="far fa-circle"></i>
-					} */}
+					}  */}
 					{console.log("CHECKING LESSON")}
 					{checkLesson(theClass, i)}
 
@@ -118,7 +130,7 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 		return theCourse.tag === courseTag
 	});
 
-	console.log(checkCourseAccess);
+	// console.log(checkCourseAccess);
 
 	const percentageWatched = () => {
 		if (course && course.data && course.data.classes) {
@@ -127,14 +139,20 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 			let totalLessonsWatched = 0;
 
 			for (let i = 0; i < course.data.classes.length; i++) {
-				 console.log(course.data.classes[i]);
+				//  console.log(course.data.classes[i]);
 				if (course.data.classes[i].watched[0].complete) {
 					totalLessonsWatched += 1;
 				}
 			}
 
-			return (totalLessonsWatched * 100 / totalLessons).toFixed(2);
+			return (totalLessonsWatched * 100 / totalLessons).toFixed(0);
 		}
+	}
+
+	const openMobileMenu = () => {
+		setMobileMenu({
+			open: !mobileMenu.open
+		})
 	}
 
 	const redirectUser = () => {
@@ -148,24 +166,27 @@ const CourseLessons = ({ course, auth, getCoursesOwned, getCourse, finishLessonA
 			<SecondHeader />
 			<div className="container-fluid courseLesson">
 				<div className="row">
-					<div className="courseLinksCtn">
-						<h1>{course && course.data && course.data.name}</h1>
+					<div className={mobileMenu.open ? 'courseLinksCtn active' : 'courseLinksCtn'}>
+						<h1 onClick={openMobileMenu}><i class="far fa-play-circle"></i><span>{course && course.data && course.data.name}</span></h1>
 
-						<h5 className="courseCurriculum">{percentageWatched()}% complete</h5>
+						<h5 className="courseCurriculum">{percentageWatched()}% <span>complete</span></h5>
 						<div className="lessonsCtn">
 							{classes}
 						</div>
 					</div>
+					<div className="courseLinksCtn backup">
+
+					</div>
 					<div className="courseMainVideoCtn">
 						{lessonContinue()}
 						<div className="currentLessonTitle">
-							<i className="fas fa-play-circle"></i>
-							<p>{course && course.data && course.data.classes[lesson - 1].title}</p>
+							<i class="fas fa-chalkboard-teacher"></i>
+							<p>{course && course.data && course.data.classes && course.data.classes[lesson - 1].title}</p>
 						</div>
 
 						<div className="videoIframe">
 							{/* <iframe src={course && course.data && course.data.classes[lesson - 1].url} width="800" height="600" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe> */}
-							<iframe src={course && course.data && course.data.classes[lesson - 1].url} width="1024" height="768" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
+							<iframe id="iframe1" style={{display: 'flex'}} src={course && course.data && course.data.classes && course.data.classes[lesson - 1].url} width="1024" height="768" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
 						</div>
 					</div>
 				</div>
@@ -181,4 +202,8 @@ const mapStateToProps = state => ({
 	// profile: state.profile
 });
 
-export default connect(mapStateToProps, { getCoursesOwned, getCourse, finishLessonAction })(CourseLessons);
+export default connect(mapStateToProps, 
+	{ getCoursesOwned, 
+		getCourse, 
+		finishLessonAction,
+		lessonsWatchedAction })(CourseLessons);

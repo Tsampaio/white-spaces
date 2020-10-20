@@ -2,6 +2,7 @@ import axios from 'axios';
 import {
   COURSE_ACCESS,
   GET_ONE_COURSE,
+  GET_LESSONS_WATCHED,
   GET_COURSES,
   GET_COURSES_OWNED,
   ADD_CHECKOUT,
@@ -65,22 +66,20 @@ export const getCoursesOwned = (userId) => async dispatch => {
   }
 }
 
-export const getCourse = (courseTag, token) => async dispatch => {
+export const getCourse = (courseTag) => async dispatch => {
   // if(localStorage.token) {
   //     setAuthToken(localStorage.token);
   // }
 
   try {
     console.log("inside getCourse");
-    console.log(token)
 
     const body = JSON.stringify({ courseTag });
     console.log(body);
     const res = await axios.post(`/api/getCourse`, body, {
       headers: {
         Accept: 'application/json', 
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json"
       }
     });
 
@@ -94,6 +93,32 @@ export const getCourse = (courseTag, token) => async dispatch => {
   } catch (err) {
     // const errors = err.response.data.message;
     console.log(err);
+  }
+}
+
+export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
+  try {
+    console.log("inside lessonsWatchedAction");
+    console.log(token)
+
+    const body = JSON.stringify({ courseTag });
+    console.log(body);
+    const res = await axios.post(`/api/getLessonsWatched`, body, {
+      headers: {
+        Accept: 'application/json', 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log(res.data);
+
+    dispatch({
+      type: GET_LESSONS_WATCHED,
+      payload: res.data
+    });
+  } catch(error) {
+    console.log(error);
   }
 }
 
