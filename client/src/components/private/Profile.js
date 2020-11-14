@@ -118,11 +118,11 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     console.log(e.target.files[0].type);
     console.log(acceptedFileTypesArray)
 
-    if( e.target.files[0].size > imageMaxSize) {
-      setImageUpload({ error: 'Image size should be less than 2 MB'});
+    if (e.target.files[0].size > imageMaxSize) {
+      setImageUpload({ error: 'Image size should be less than 2 MB' });
       return
-    } else if(!acceptedFileTypesArray.includes(e.target.files[0].type)) {
-      setImageUpload({ error: 'Image should be of the type JPG, JPEG, PNG or GIF'});
+    } else if (!acceptedFileTypesArray.includes(e.target.files[0].type)) {
+      setImageUpload({ error: 'Image should be of the type JPG, JPEG, PNG or GIF' });
       return
     }
 
@@ -262,7 +262,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   if (active == 'notActive' && !auth.loading) {
     console.log("inside redirect");
     return <Redirect to="/activate" />
-  } else if( auth && !auth.isAuthenticated && !auth.loading) {
+  } else if (auth && !auth.isAuthenticated && !auth.loading) {
     return <Redirect to="/" />
   }
 
@@ -270,75 +270,67 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
   // console.log(cropState)
 
   return (
-    <Fragment>
-      <SecondHeader />
-      <div className="profileCtn">
-        <div className="container-fluid">
-          <div className="row">
-            <ProfileSidebar />
-            <div className="col-xl-10 col-lg-9 col-md-12 col-sm-12 userRightCol">
-              <div className="userDetails">
-                {imageUpload.error && 
-                  <h1>{imageUpload.error}</h1>
-                }
-                {!page.loaded && (
-                  <div className="preLoaderProfilePic">
-                    <div className="spinner-border " role="status">
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  </div>
-                )}
-                <div className="uploadButtonCtn">
-                  <label htmlFor="file">{userPic}</label>
-                  <input ref={fileRef} type="file" id="file" accept="image/*" onChange={onSelectFile} />
-                </div>
 
-                {page.showImagePreview && (<div className="imagePreviewOverlay">
-                  <i className="fa fa-times-circle closeOverlay" onClick={closeImagePreview}></i>
-                  <h2>Crop your Image</h2>
-                  {cropState.src && (
-                    <ReactCrop
-                      src={cropState.src}
-                      crop={cropState.crop}
-                      ruleOfThirds
-                      onImageLoaded={onImageLoaded}
-                      onComplete={onCropComplete}
-                      onChange={onCropChange}
-                    />
-                  )}
-                  {cropState.croppedImageUrl && (
-                    <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
-                  )}
-                  {cropState.src ? (
-                    <form onSubmit={handleSubmit}>
-                      <button type="submit" className="uploadButton">Save image</button>
-                    </form>
-                  ) : null
-                  }
-                </div>)
-                }
-
-                <h3>Upload a new profile image</h3>
-                <form onSubmit={submitUserDetails}>
-                  <label htmlFor="">Full Name</label>
-                  <input type="text" placeholder="My name" value={userDetails.name || ""} name="name" onChange={updateUserDetails} />
-                  <label htmlFor="">New Password</label>
-                  <input type="password" name="newPassword" onChange={updateUserDetails} />
-                  <label htmlFor="">Confirm Password</label>
-                  <input type="password" name="newPasswordConfirm" onChange={updateUserDetails} />
-
-                  <hr />
-                  <label htmlFor="">To save changes, enter current password</label>
-                  <input type="password" name="password" onChange={updateUserDetails} />
-                  <p className="formError">{auth && auth.message}</p>
-                  <button className="saveChanges" type="submit">Save Changes</button>
-                </form>
-              </div>
+    <div className="col-xl-10 col-lg-9 col-md-12 col-sm-12 userRightCol">
+      <div className="userDetails">
+        {imageUpload.error &&
+          <h1>{imageUpload.error}</h1>
+        }
+        {!page.loaded && (
+          <div className="preLoaderProfilePic">
+            <div className="spinner-border " role="status">
+              <span className="sr-only">Loading...</span>
             </div>
           </div>
+        )}
+        <div className="uploadButtonCtn">
+          <label htmlFor="file">{userPic}</label>
+          <input ref={fileRef} type="file" id="file" accept="image/*" onChange={onSelectFile} />
         </div>
+
+        {page.showImagePreview && (<div className="imagePreviewOverlay">
+          <i className="fa fa-times-circle closeOverlay" onClick={closeImagePreview}></i>
+          <h2>Crop your Image</h2>
+          {cropState.src && (
+            <ReactCrop
+              src={cropState.src}
+              crop={cropState.crop}
+              ruleOfThirds
+              onImageLoaded={onImageLoaded}
+              onComplete={onCropComplete}
+              onChange={onCropChange}
+            />
+          )}
+          {cropState.croppedImageUrl && (
+            <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
+          )}
+          {cropState.src ? (
+            <form onSubmit={handleSubmit}>
+              <button type="submit" className="uploadButton">Save image</button>
+            </form>
+          ) : null
+          }
+        </div>)
+        }
+
+        <h3>Upload a new profile image</h3>
+        <form onSubmit={submitUserDetails}>
+          <label htmlFor="">Full Name</label>
+          <input type="text" placeholder="My name" value={userDetails.name || ""} name="name" onChange={updateUserDetails} />
+          <label htmlFor="">New Password</label>
+          <input type="password" name="newPassword" onChange={updateUserDetails} />
+          <label htmlFor="">Confirm Password</label>
+          <input type="password" name="newPasswordConfirm" onChange={updateUserDetails} />
+
+          <hr />
+          <label htmlFor="">To save changes, enter current password</label>
+          <input type="password" name="password" onChange={updateUserDetails} />
+          <p className="formError">{auth && auth.message}</p>
+          <button className="saveChanges" type="submit">Save Changes</button>
+        </form>
       </div>
-    </Fragment >
+    </div>
+
   );
 };
 

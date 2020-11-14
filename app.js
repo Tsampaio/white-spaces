@@ -21,11 +21,11 @@ connectDB();
 
 //test middleware
 app.use((req, res, next) => {
-    // console.log("Middleware");
+    console.log("Middleware");
     next();
 });
 
-app.get('/', (req, res) => {
+app.get('/test', (req, res) => {
     res.send({
         name: 'Telmo'     
     });

@@ -117,7 +117,6 @@ export const logout = () => async dispatch => {
       payload: { message: false } 
     });
 
-
     // dispatch(loadUser());
   } catch (err) {
     const errors = err.response.data.errors;

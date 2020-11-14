@@ -1,7 +1,6 @@
 import React, { useEffect, Fragment, useState, useRef } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import PropTypes from 'prop-types';
-import SecondHeader from '../partials/SecondHeader';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
@@ -89,36 +88,23 @@ function ProfileCourses({ auth, active, checkMembership, cancelMembership, membe
   if (active == 'notActive' && !auth.loading) {
     console.log("inside redirect");
     return <Redirect to="/activate" />
-  } else if( auth && !auth.isAuthenticated && !auth.loading) {
+  } else if (auth && !auth.isAuthenticated && !auth.loading) {
     return <Redirect to="/" />
   }
 
   return (
-    <Fragment>
-      <SecondHeader />
-      <div className="profileCtn">
-        <div className="container-fluid">
-          <div className="row">
-            <ProfileSidebar />
-            <div className="col-lg-9 col-md-8">
-            
-              <div className="myCoursesCtn">
-                <h1>My Courses</h1>
-                <div className="row">
-                  
-                  {allCourses.length > 0 ? allCourses : 
-                    <div className="col-12">
-                      <h2>No courses owned...</h2>
-                    </div>
-                  }
-                </div>
-
-              </div>
+    <div className="col-lg-9 col-md-8">
+      <div className="myCoursesCtn">
+        <h1>My Courses</h1>
+        <div className="row">
+          {allCourses.length > 0 ? allCourses :
+            <div className="col-12">
+              <h2>No courses owned...</h2>
             </div>
-          </div>
+          }
         </div>
       </div>
-    </Fragment >
+    </div>
   );
 };
 

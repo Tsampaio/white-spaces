@@ -3,7 +3,7 @@ const User = require('./../models/userModel');
 const { promisify } = require('util');
 
 exports.getCourses = async (req, res, next) => {
-  // console.log("inside pagesController");
+  console.log("inside pagesController");
   try {
 
     let courses;
@@ -34,8 +34,10 @@ exports.getCourses = async (req, res, next) => {
       });
 
     } else {
-
+      console.log("trying to find courses");
       allCourses = await Course.find();
+      
+      // console.log(allcourses);
       return res.status(200).json({
         status: 'success',
         courses: allCourses

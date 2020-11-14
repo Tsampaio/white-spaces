@@ -30,7 +30,7 @@ import CourseCreate from './components/pages/CourseCreate';
 import CourseUpdate from './components/pages/CourseUpdate';
 import auth from './reducers/auth';
 import ProfileBilling from './components/private/ProfileBilling';
-import ProfileCourses from './components/private/ProfileCourses';
+import ProfileCtn from './components/private/ProfileCtn';
 
 function App() {
   useEffect( () => {
@@ -62,9 +62,8 @@ function App() {
           <Route exact path="/admin/courses" component={Admin} />
           <Route exact path="/admin/courses/create" component={CourseCreate} />
           <Route exact path="/admin/courses/update/:courseTag" component={CourseUpdate} />
-          <Route exact path="/profile" component={Profile} />
-          <Route exact path="/profile/billing" component={ProfileBilling} />
-          <Route exact path="/profile/courses" component={ProfileCourses} />
+          <Route exact path="/profile" component={ProfileCtn} />
+          <Route exact path="/profile/:page" component={ProfileCtn} />
         </Switch>
           <Footer />
       </BrowserRouter>
