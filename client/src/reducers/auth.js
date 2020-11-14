@@ -20,6 +20,7 @@ import {
   CANCEL_MEMBERSHIP,
   RESUBSCRIBE_MEMBERSHIP
 } from '../actions/types';
+import { USER_DETAILS_REQUEST } from '../contants/userConstants';
 
 const initialState = {
 	// token: localStorage.getItem('token'),
@@ -41,6 +42,11 @@ export default function( state = initialState, action ) {
   // console.log( type );
   // console.log( payload );
   switch(type) {
+      case USER_DETAILS_REQUEST:
+        return {
+          ...state,
+          loading: true
+        }
       case USER_LOADED:
         return {
             ...state,

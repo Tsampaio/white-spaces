@@ -1,31 +1,21 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import store from '../../store';
 import { getCourses } from '../../actions/courses';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import SecondHeader from '../partials/SecondHeader';
+import Loader from '../utils/Loader';
 import './Courses.css';
 
-const Courses = ({ courses }) => {
-
-  const [page, setPage] = useState({
-    loaded: false
-  })
+const Courses = () => {
+  const dispatch = useDispatch();
+  const courses = useSelector(state => state.courses);
+  const { loading } = courses
 
   const [coursesThumbnail, setCoursesThumbnail] = useState([]);
 
   useEffect(() => {
-    store.dispatch(getCourses());
-    // loaderDelay();
+    dispatch(getCourses());
   }, []);
-
-  // useEffect(() => {
-
-  //     setPage({loaded: true})
-
-
-  //   loadMyThumbNail();
-  // }, [courses.all])
 
   console.log(courses);
   const images = require.context('../../images/courses', true);
@@ -37,14 +27,6 @@ const Courses = ({ courses }) => {
   //   });
   //   setCoursesThumbnail(allThumbnails);
   // };
-
-  const loaderDelay = () => {
-    // setTimeout(() => {
-    //   setPage({loaded: true})
-    // }, 500);
-    setPage({ loaded: true })
-
-  }
 
   const allCourses = courses && courses.all.map((course, index) => {
 
@@ -62,17 +44,7 @@ const Courses = ({ courses }) => {
           <div className="cardBorder">
             <div className="courseThumbnail courseFeatured1">
               <Link to={`/courses/${course.tag}`}>
-                {!page.loaded && (
-                  <div className="preLoaderThumbnail">
-                    <div className="spinner-border " role="status">
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  </div>)
-                }
-
-                <img src={img} alt="courseThumbnail" onLoad={() => setPage({ loaded: true })} />
-
-
+                <img src={img} alt="courseThumbnail" />
               </Link>
             </div>
             <div className="courseTitleCtn">
@@ -88,15 +60,13 @@ const Courses = ({ courses }) => {
     }
   })
 
-  console.log(page);
-
   return (
     <Fragment>
       <SecondHeader />
       <div className="main-container">
         <div className="courses container">
           <div className="row">
-            {allCourses}
+            {loading ? <Loader /> : allCourses}
           </div>
         </div>
       </div>
@@ -104,9 +74,4 @@ const Courses = ({ courses }) => {
   )
 }
 
-const mapStateToProps = state => ({
-  courses: state.courses
-  // profile: state.profile
-});
-
-export default connect(mapStateToProps)(Courses);
+export default Courses;

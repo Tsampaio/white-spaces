@@ -17,6 +17,7 @@ import {
   EMAIL_ACTIVATION,
   ACCOUNT_ACTIVATION
 } from './types';
+import { USER_DETAILS_REQUEST } from '../contants/userConstants';
 
 //Register User
 export const register = ({ name, email, password, passwordConfirm }) => async dispatch => {
@@ -82,6 +83,11 @@ export const loadUser = () => async dispatch => {
   try {
     const res = await axios.post('/api/users/loadUser');
     console.log(res.data);
+
+    dispatch({
+      type: USER_DETAILS_REQUEST
+    });
+
     // console.log("Loading User");
     if (res.data.token) {
       dispatch({

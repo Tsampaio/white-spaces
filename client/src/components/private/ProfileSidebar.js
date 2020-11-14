@@ -2,16 +2,13 @@ import React, { useState } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Loader from '../utils/Loader';
 import './Profile.css';
 
 function ProfileSidebar( ) {
 
-  const [page, setPage] = useState({
-    loaded: false,
-    showImagePreview: false
-  });
-
   const auth = useSelector(state => state.auth);
+  const { loading } = auth;
 
   let userPic = null;
   const images = require.context('../../images/', true);
@@ -20,22 +17,15 @@ function ProfileSidebar( ) {
 
   if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({loaded: true})} />
+    userPic = <img src={img} className="userAvatar" />
   } else {
     img = images(`./default.png`);
-    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({loaded: true})} />
+    userPic = <img src={img} className="userAvatar" />
   }
 
   return (
     <div className="col-xl-2 col-lg-3 col-md-4 userLeftCol">
-      {!page.loaded && 
-        <div className="preLoaderProfilePic">
-          <div className="spinner-border " role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
-        </div>
-      }
-      {userPic}
+      { loading ? <Loader /> : userPic}
       <h3>{auth && auth.user && auth.user.name}</h3>
       <h4>{auth && auth.user && auth.user.email}</h4>
 

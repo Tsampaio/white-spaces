@@ -5,8 +5,10 @@ import {
   UPDATE_COURSE,
   FINISH_LESSON
 } from '../actions/types';
+import { COURSE_LIST_REQUEST } from '../contants/courseConstants';
 
 const initialState = {
+  loading: true,
   data: null,
   all: [],
   message: ""
@@ -16,6 +18,12 @@ export default function (state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
+    case COURSE_LIST_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        all: []
+      }
     case GET_ONE_COURSE:
       console.log("inside reducer get one course");
       return {
@@ -27,6 +35,7 @@ export default function (state = initialState, action) {
       console.log(payload);
       return {
         ...state,
+        loading: false,
         all: payload.courses
       }
     case UPDATE_COURSE:

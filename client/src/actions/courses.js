@@ -13,13 +13,15 @@ import {
   RESET_MESSAGE,
   FINISH_LESSON
 } from './types';
+import { COURSE_LIST_REQUEST } from '../contants/courseConstants';
 
 export const getCourses = (courses) => async dispatch => {
-  // if(localStorage.token) {
-  //     setAuthToken(localStorage.token);
-  // }
 
   try {
+    dispatch({
+			type: COURSE_LIST_REQUEST
+    });
+    
     console.log("inside actions getCourses");
 
     const body = JSON.stringify({ courses });

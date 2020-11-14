@@ -5,13 +5,14 @@ import { Redirect, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { checkMembership } from '../../actions/membership';
+import Loader from '../utils/Loader';
 import './Profile.css';
 
 function ProfileCourses() {
 
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
-  const { active } = auth;
+  const { active, loading } = auth;
 
   const [page, setPage] = useState({
     loaded: false
@@ -37,10 +38,6 @@ function ProfileCourses() {
 
     // console.log(auth);
   }, [auth && auth.user && auth.user._id]);
-
-
-
-  const images = require.context('../../images/', true);
 
   let img;
 
@@ -86,7 +83,7 @@ function ProfileCourses() {
       <div className="myCoursesCtn">
         <h1>My Courses</h1>
         <div className="row">
-          {allCourses.length > 0 ? allCourses :
+          {loading ? <Loader /> : allCourses.length > 0 ? allCourses :
             <div className="col-12">
               <h2>No courses owned...</h2>
             </div>
