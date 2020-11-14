@@ -2,23 +2,16 @@ import React, { useEffect, Fragment, useState, useRef } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import PropTypes from 'prop-types';
 import { Redirect, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
-import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
-import store from '../../store';
-import ProfileSidebar from './ProfileSidebar';
+import { checkMembership } from '../../actions/membership';
 import './Profile.css';
 
-// import {
-//   base64StringtoFile,
-//   downloadBase64File,
-//   extractImageFileExtensionFromBase64,
-//   image64toCanvasRef
-// } from '../utils/imageUtils';
-// import e from 'express';
+function ProfileCourses() {
 
-function ProfileCourses({ auth, active, checkMembership, cancelMembership, membershipResubscribe }) {
-
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const { active } = auth;
 
   const [page, setPage] = useState({
     loaded: false
@@ -35,15 +28,11 @@ function ProfileCourses({ auth, active, checkMembership, cancelMembership, membe
   }
 
   useEffect(() => {
-    //     console.log(auth);
-    // console.log(active == 'notActive');
-    // console.log(!auth.loading)
-
-    store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
+    dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
     console.log("before check membership ");
     if (auth && auth.user && auth.user.membership && auth.user.membership.customerId) {
-      checkMembership(auth.token);
+      dispatch(checkMembership(auth.token));
     }
 
     // console.log(auth);
@@ -114,9 +103,4 @@ ProfileCourses.propTypes = {
   // profile: PropTypes.object.isRequired
 }
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-  active: state.auth.active
-});
-
-export default connect(mapStateToProps, { checkMembership, cancelMembership, membershipResubscribe })(ProfileCourses);
+export default ProfileCourses;

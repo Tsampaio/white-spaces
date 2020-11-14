@@ -4,8 +4,6 @@ import Profile from './Profile';
 import ProfileBilling from './ProfileBilling';
 import ProfileCourses from './ProfileCourses';
 import SecondHeader from '../partials/SecondHeader';
-import { useParams } from 'react-router-dom';
-
 
 const ProfileCtn = ({match}) => {
   console.log(match);

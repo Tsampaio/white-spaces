@@ -1,258 +1,35 @@
-import React, { useEffect, Fragment, useState, useRef } from 'react';
-import ReactCrop from 'react-image-crop';
+import React, { useEffect, useState, useRef } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import SecondHeader from '../partials/SecondHeader';
 import { Redirect, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
 import { getBilling } from '../../actions/payments';
 import store from '../../store';
-import ProfileSidebar from './ProfileSidebar';
 import './Profile.css';
 
-function ProfileBilling({ auth, active, payment, checkMembership, cancelMembership, membershipResubscribe, getBilling }) {
-  const [cropState, setCropState] = useState({
-    src: null,
-    crop: {
-      aspect: 1 / 1
-    }
-  });
-
-  const [page, setPage] = useState({
-    loaded: false
-  });
-
+function ProfileBilling() {
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const payment = useSelector(state => state.payment);
+  const { active } = auth;
+  
   useEffect(() => {
-    // loaderDelay();
-  }, []);
 
-  const loaderDelay = () => {
-    setTimeout(() => {
-      setPage({ loaded: true })
-    }, 500);
-  }
-
-  useEffect(() => {
-    //     console.log(auth);
-    // console.log(active == 'notActive');
-    // console.log(!auth.loading)
-
-    store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
+    dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
     // console.log("before check membership ");
     if (auth && auth.user && auth.user.membership && auth.user.membership.customerId) {
-      checkMembership(auth.token);
+      dispatch(checkMembership(auth.token));
     }
 
-    getBilling();
+    dispatch(getBilling());
 
     // console.log(auth);
   }, [auth && auth.user && auth.user._id]);
-
-  const imageMaxSize = 1000000000 // bytes
-  const acceptedFileTypes = 'image/x-png, image/png, image/jpg, image/jpeg, image/gif';
-  const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() });
-  //let imageRef = null;
-  let imageRef = useRef();
-
-  let userPic = null;
-  const images = require.context('../../images/', true);
-
-  let img;
-
-  if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
-    // import Pic from `/${auth.user._id}.jpg`;
-    // userPic = <img src={`/${auth.user._id}.jpg`} />
-    img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img} className="userAvatar" />
-  } else {
-    img = images(`./default.png`);
-    userPic = <img src={img} className="userAvatar" />
-  }
-
-  // const verifyFile = (files) => {
-  //   if (files && files.length > 0) {
-  //     const currentFile = files[0]
-  //     const currentFileType = currentFile.type
-  //     const currentFileSize = currentFile.size
-  //     if (currentFileSize > imageMaxSize) {
-  //       alert("This file is not allowed. " + currentFileSize + " bytes is too large")
-  //       return false
-  //     }
-  //     if (!acceptedFileTypesArray.includes(currentFileType)) {
-  //       alert("This file is not allowed. Only images are allowed.")
-  //       return false
-  //     }
-  //     return true
-  //   }
-  // }
-
-  // const handleOnDrop = (files, rejectedFiles) => {
-  //   if (rejectedFiles && rejectedFiles.length > 0) {
-  //     verifyFile(rejectedFiles)
-  //   }
-
-  //   if (files && files.length > 0) {
-  //     const isVerified = this.verifyFile(files)
-  //     if (isVerified) {
-  //       // imageBase64Data 
-  //       const currentFile = files[0]
-  //       const myFileItemReader = new FileReader()
-  //       myFileItemReader.addEventListener("load", () => {
-  //         // console.log(myFileItemReader.result)
-  //         const myResult = myFileItemReader.result;
-  //         setCropState({
-  //           ...cropState,
-  //           imgSrc: myResult,
-  //           imgSrcExt: extractImageFileExtensionFromBase64(myResult)
-  //         })
-  //       }, false)
-  //       myFileItemReader.readAsDataURL(currentFile)
-  //     }
-  //   }
-  // }
-
-  const onSelectFile = e => {
-    if (e.target.files && e.target.files.length > 0) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () =>
-        setCropState({
-          ...cropState,
-          src: reader.result
-        })
-      );
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
-
-  const onImageLoaded = async image => {
-    // console.log(image);
-    imageRef.current = image;
-
-  };
-
-  const onCropComplete = crop => {
-    makeClientCrop(crop);
-  };
-
-  const onCropChange = (crop, percentCrop) => {
-    // You could also use percentCrop:
-    // console.log("inside onCropChange");
-    setCropState({
-      ...cropState,
-      crop
-    });
-  };
-
-  const makeClientCrop = async (crop) => {
-    console.log(imageRef.current);
-    if (imageRef.current && crop.width && crop.height) {
-      const croppedImageUrl = await getCroppedImg(
-        imageRef.current,
-        crop,
-        'newFile.jpeg'
-      );
-      console.log(croppedImageUrl);
-      setCropState({
-        ...cropState,
-        croppedImageUrl: croppedImageUrl
-      });
-    }
-  }
-
-  const getCroppedImg = (image, crop, fileName) => {
-    console.log(image);
-    console.log(crop);
-    const canvas = document.createElement('canvas');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    const ctx = canvas.getContext('2d');
-
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height
-    );
-
-    // return new Promise((resolve, reject) => {
-    //   canvas.toBlob(blob => {
-    //     blob.name = fileName;
-    //     resolve(blob);
-    //   }, 'image/jpeg', 1);
-    // });
-
-    const reader = new FileReader()
-    canvas.toBlob(blob => {
-      reader.readAsDataURL(blob)
-      reader.onloadend = () => {
-        dataURLtoFile(reader.result, `${auth.user._id}.jpg`);
-      }
-    })
-
-    // return new Promise((resolve, reject) => {
-    //   canvas.toBlob(blob => {
-    //     if (!blob) {
-    //       //reject(new Error('Canvas is empty'));
-    //       console.error('Canvas is empty');
-    //       return;
-    //     }
-    //     blob.name = fileName;
-    //     window.URL.revokeObjectURL(this.fileUrl);
-    //     this.fileUrl = window.URL.createObjectURL(blob);
-    //     resolve(this.fileUrl);
-    //   }, 'image/jpeg');
-    // });
-  }
-
-  const dataURLtoFile = (dataurl, filename) => {
-    let arr = dataurl.split(','),
-      mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]),
-      n = bstr.length,
-      u8arr = new Uint8Array(n);
-
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    let croppedImage = new File([u8arr], filename, { type: mime });
-    setCropState({
-      ...cropState,
-      croppedImage: croppedImage
-    })
-  }
-
-  const handleSubmit = async (e) => {
-
-    e.preventDefault();
-
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }
-
-    const formData = new FormData();
-    formData.append('file', cropState.croppedImage);
-    formData.append('userId', auth.user._id);
-
-    console.log(formData);
-
-    const res = await axios.post("/api/users/profilePic", formData, config);
-    console.log("res.data");
-    console.log(res.data);
-  }
-
+ 
   const userBilling = payment && payment.billing && payment.billing.map((bill) => {
     const date = new Date(bill.date);
     const newDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -276,14 +53,12 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
     return <Redirect to="/" />
   }
 
-  // console.log(cropState.croppedImageUrl);
-
   return (
     <div className="col-lg-9 col-md-12 col-sm-12 billingCtn">
       <div className="card">
         <div className="card-header">
           Membership Details
-                      </div>
+        </div>
         <div className="card-body">
           {auth && auth.membership && !auth.membership.active && (
             <h3><b>Membership Status:</b> Not active</h3>
@@ -295,11 +70,11 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
             </>
           )}
           {auth && auth.membership.status === "Active" && (
-            <button className="cancelMembership" onClick={() => cancelMembership(auth && auth.token)}>Cancel Membership</button>
+            <button className="cancelMembership" onClick={() => dispatch(cancelMembership(auth && auth.token))}>Cancel Membership</button>
           )}
           {auth && auth.membership.status === "Canceled" && auth && auth.user &&
             auth.user.membership && auth.user.membership.billingHistory && auth.user.membership.billingHistory.length > 0 && (
-              <button onClick={() => membershipResubscribe(auth && auth.token)} className="actionButton">Resubscribe</button>
+              <button onClick={() => dispatch(membershipResubscribe(auth && auth.token))} className="actionButton">Resubscribe</button>
             )}
           {auth && auth.membership && auth.membership.status === "Failed" && (
             <Link to="/membership">Add a new payment method</Link>
@@ -317,7 +92,6 @@ function ProfileBilling({ auth, active, payment, checkMembership, cancelMembersh
             <div className="col-2"><h4>Sale Price</h4></div>
           </div>
           <hr />
-
           {userBilling}
         </div>
       </div>
@@ -331,11 +105,4 @@ ProfileBilling.propTypes = {
   // profile: PropTypes.object.isRequired
 }
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-  active: state.auth.active,
-  payment: state.payment
-});
-
-export default connect(mapStateToProps,
-  { checkMembership, cancelMembership, membershipResubscribe, getBilling })(ProfileBilling);
+export default ProfileBilling;

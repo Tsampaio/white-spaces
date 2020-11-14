@@ -1,25 +1,17 @@
-import React, { useEffect, Fragment, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import { NavLink } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import './Profile.css';
 
-function ProfileSidebar({ auth }) {
+function ProfileSidebar( ) {
 
   const [page, setPage] = useState({
     loaded: false,
     showImagePreview: false
   });
 
-  useEffect(() => {
-    // loaderDelay();
-  }, []);
-
-  // const loaderDelay = () => {
-  //   setTimeout(() => {
-  //     setPage({ ...page, loaded: true })
-  //   }, 500);
-  // }
+  const auth = useSelector(state => state.auth);
 
   let userPic = null;
   const images = require.context('../../images/', true);
@@ -63,8 +55,4 @@ function ProfileSidebar({ auth }) {
   );
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
-});
-
-export default connect(mapStateToProps)(ProfileSidebar);
+export default ProfileSidebar;

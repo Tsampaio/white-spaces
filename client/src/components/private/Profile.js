@@ -3,18 +3,15 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import SecondHeader from '../partials/SecondHeader';
-import { Redirect, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { updateUserAction } from '../../actions/auth';
-import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
+import { checkMembership } from '../../actions/membership';
 import store from '../../store';
 import './Profile.css';
-import ProfileSidebar from './ProfileSidebar';
 
-
-function Profile({ auth, active, checkMembership, updateUserAction, cancelMembership, membershipResubscribe }) {
+function Profile( ) {
   const [cropState, setCropState] = useState({
     src: null,
     crop: {
@@ -26,6 +23,10 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
       y: 0
     }
   });
+
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const { active } = auth;
 
   const [page, setPage] = useState({
     loaded: false,
@@ -44,10 +45,6 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     error: ''
   })
 
-  useEffect(() => {
-    // loaderDelay();
-  }, []);
-
   const loaderDelay = () => {
     setTimeout(() => {
       setPage({ ...page, loaded: true })
@@ -60,7 +57,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
     // console.log(auth.user.name);
     console.log("before check membership ");
     if (auth && auth.user && auth.user.membership && auth.user.membership.customerId) {
-      checkMembership(auth.token);
+      dispatch(checkMembership(auth.token));
     }
 
     setUserDetails({
@@ -87,7 +84,7 @@ function Profile({ auth, active, checkMembership, updateUserAction, cancelMember
       })
     }
 
-    updateUserAction(auth && auth.token, userDetails);
+    dispatch(updateUserAction(auth && auth.token, userDetails));
   }
 
   const imageMaxSize = 2000000 // bytes
@@ -340,9 +337,4 @@ Profile.propTypes = {
   // profile: PropTypes.object.isRequired
 }
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-  active: state.auth.active
-});
-
-export default connect(mapStateToProps, { checkMembership, cancelMembership, membershipResubscribe, updateUserAction })(Profile);
+export default Profile;
