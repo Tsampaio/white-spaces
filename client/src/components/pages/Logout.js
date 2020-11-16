@@ -4,15 +4,16 @@ import { connect } from 'react-redux';
 import store from '../../store';
 import { logout } from '../../actions/auth';
 
-const Logout =  ({ isAuthenticated }) => {
+const Logout =  ({ history }) => {
 
   useEffect( () => {
     store.dispatch(logout());
+    history.push('/');
   }, []);
 
-  if(!isAuthenticated) {
-    return <Redirect to="/" /> 
-  }
+  // if(!isAuthenticated) {
+  //   return <Redirect to="/" /> 
+  // }
   return (
     <h1>Logout</h1>
   )

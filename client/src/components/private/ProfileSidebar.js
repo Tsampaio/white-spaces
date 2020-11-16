@@ -25,13 +25,12 @@ function ProfileSidebar( ) {
 
   return (
     <div className="col-xl-2 col-lg-3 col-md-4 userLeftCol">
-      { loading ? <Loader /> : userPic}
+      { loading ? <Loader /> : userPic }
       <h3>{auth && auth.user && auth.user.name}</h3>
       <h4>{auth && auth.user && auth.user.email}</h4>
 
       <ul className="profileLinks">
         <li>
-          {/* <i className="fa fa-user"></i> */}
           <NavLink exact to="/profile" activeClassName="activeProfilePage"><i className="fa fa-user"></i>USER PROFILE</NavLink>
         </li>
         <li>

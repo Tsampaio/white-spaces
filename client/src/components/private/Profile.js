@@ -1,14 +1,12 @@
-import React, { useEffect, Fragment, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { updateUserAction } from '../../actions/auth';
 import { checkMembership } from '../../actions/membership';
-import store from '../../store';
 import './Profile.css';
 
 function Profile( ) {
@@ -53,7 +51,7 @@ function Profile( ) {
 
   useEffect(() => {
 
-    store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
+    dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
     console.log("before check membership ");
     if (auth && auth.user && auth.user.membership && auth.user.membership.customerId) {
@@ -143,7 +141,6 @@ function Profile( ) {
   const onImageLoaded = async image => {
     console.log(image);
     imageRef.current = image;
-
   };
 
   const onCropComplete = crop => {
@@ -256,12 +253,12 @@ function Profile( ) {
     })
   }
 
-  if (active == 'notActive' && !auth.loading) {
-    console.log("inside redirect");
-    return <Redirect to="/activate" />
-  } else if (auth && !auth.isAuthenticated && !auth.loading) {
-    return <Redirect to="/" />
-  }
+  // if (active == 'notActive' && !auth.loading) {
+  //   console.log("inside redirect");
+  //   return <Redirect to="/activate" />
+  // } else if (auth && !auth.isAuthenticated && !auth.loading) {
+  //   return <Redirect to="/" />
+  // }
 
   console.log(page);
   // console.log(cropState)

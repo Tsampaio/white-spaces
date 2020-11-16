@@ -1,20 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
-import axios from 'axios';
 import PropTypes from 'prop-types';
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { checkMembership, cancelMembership, membershipResubscribe } from '../../actions/membership';
 import { getBilling } from '../../actions/payments';
-import store from '../../store';
 import './Profile.css';
 
 function ProfileBilling() {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
   const payment = useSelector(state => state.payment);
-  const { active } = auth;
   
   useEffect(() => {
 
@@ -45,13 +42,6 @@ function ProfileBilling() {
 
   const untilDate = new Date(auth && auth.membership.paidThroughDate);
   const newUntilDate = `${untilDate.getDate()}/${untilDate.getMonth() + 1}/${untilDate.getFullYear()}`;
-
-  if (active == 'notActive' && !auth.loading) {
-    console.log("inside redirect");
-    return <Redirect to="/activate" />
-  } else if (auth && !auth.isAuthenticated && !auth.loading) {
-    return <Redirect to="/" />
-  }
 
   return (
     <div className="col-lg-9 col-md-12 col-sm-12 billingCtn">

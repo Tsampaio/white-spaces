@@ -1,20 +1,26 @@
 import React, {useEffect} from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
 import { activateEmailAction } from '../../actions/auth';
 
-const ActivateEmail = ({ message, activateEmailAction, active }) => {
+const ActivateEmail = ({history}) => {
   const { token } = useParams();
-  
+
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const { message, active } = auth;
+
   console.log("This is my token " + token);
   useEffect( () => {
-    activateEmailAction(token);
     console.log(message);
-  });
 
-  if(active) {
-    return <Redirect to="/" /> 
-  }
+    if (active == 'notActive' && !auth.loading) {
+      dispatch(activateEmailAction(token));
+      
+    } else if (auth && !auth.isAuthenticated && !auth.loading) {
+      history.push("/");
+    }
+  }, [auth, active]);
 
   return (
     <div>
@@ -23,9 +29,4 @@ const ActivateEmail = ({ message, activateEmailAction, active }) => {
   )
 }
 
-const mapStateToProps = state => ({
-  message: state.auth.message,
-  active: state.auth.active
-})
-
-export default connect(mapStateToProps, {activateEmailAction})(ActivateEmail);
+export default ActivateEmail;
