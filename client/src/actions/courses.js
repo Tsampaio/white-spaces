@@ -10,10 +10,10 @@ import {
   LOAD_CHECKOUT,
   CREATE_COURSE,
   UPDATE_COURSE,
-  RESET_MESSAGE,
   FINISH_LESSON
 } from './types';
 import { COURSE_LIST_REQUEST } from '../contants/courseConstants';
+import { RESET_MESSAGE } from '../contants/authConstants';
 
 export const getCourses = (courses) => async dispatch => {
 
@@ -236,9 +236,9 @@ export const loadCheckout = (userId) => async dispatch => {
       payload: res.data
     });
 
-    dispatch({
-      type: RESET_MESSAGE
-    });
+    // dispatch({
+    //   type: RESET_MESSAGE
+    // });
   } catch (error) {
 
   }

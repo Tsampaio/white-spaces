@@ -11,19 +11,27 @@ module.exports = class Email {
   }
 
   newTransport() {
+    return nodemailer.createTransport({
+      service: 'SendinBlue', // no need to set host or port etc.
+      auth: {
+        user: process.env.SENDINBLUE_USERNAME,
+        pass: process.env.SENDINBLUE_PASSWORD
+      }
+    });
+
     // if (process.env.NODE_ENV === 'production') {
-      // Sendgrid
-      return nodemailer.createTransport({
-        service: 'SendGrid',
-        auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD
-        }
-      });
+    // Sendgrid
+    return nodemailer.createTransport({
+      service: 'SendGrid',
+      auth: {
+        user: process.env.SENDGRID_USERNAME,
+        pass: process.env.SENDGRID_PASSWORD
+      }
+    });
     // }
 
     return nodemailer.createTransport({
-      host: config.get('EMAIL_HOST'), 
+      host: config.get('EMAIL_HOST'),
       port: config.get('EMAIL_PORT'),
       auth: {
         user: config.get('EMAIL_USERNAME'),
@@ -63,7 +71,7 @@ module.exports = class Email {
   }
 
   async sendWelcome() {
-    await this.send('welcome', 'Welcome to Telmo Academy Family!');
+    await this.send('welcome', 'Welcome to Telmo Academy!');
   }
 
   async sendThankYou(course) {

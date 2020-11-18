@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import { getCoursesOwned } from '../../actions/courses';
 import { resetPaymentResult } from '../../actions/payments';
@@ -39,7 +39,7 @@ const CheckoutSuccess = ({auth, payment}) => {
   }
 
   return (
-    <Fragment>
+    <>
       <SecondHeader />
       <div className="container checkoutSuccessCtn">
         <div className="row">
@@ -51,7 +51,7 @@ const CheckoutSuccess = ({auth, payment}) => {
           </div>
         </div>
       </div>
-    </Fragment>
+    </>
   )
 }
 

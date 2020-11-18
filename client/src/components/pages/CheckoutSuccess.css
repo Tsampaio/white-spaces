@@ -11,6 +11,14 @@
     margin-bottom: 30px;
 }
 
+.checkoutSuccess h4 {
+    margin-bottom: 30px;
+}
+
+.checkoutSuccess h5 {
+    margin-top: 30px;
+}
+
 .checkoutSuccessBtn {
     background-color: #00FF84;
     color: #000;

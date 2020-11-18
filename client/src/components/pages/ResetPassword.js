@@ -1,18 +1,33 @@
-import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Redirect } from 'react-router-dom';
 import { reset_pass } from '../../actions/auth';
 import SecondHeader from '../partials/SecondHeader';
 import './ResetPassword.css';
 
-const ResetPassword = ({ reset_pass, message, isAuthenticated }) => {
+const ResetPassword = ({history}) => {
   const [formData, setFormData] = useState({
     password: '',
     passwordConfirm: '',
     error: ''
   });
 
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const { message, isAuthenticated } = auth;
+
   let { token } = useParams();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      history.push("/");
+    } else if(message === 'Password reseted') {
+      setTimeout(() => {
+        return <Redirect to="/profile" />
+      }, 3000);
+    }
+    
+  }, [isAuthenticated, message])
 
   const { password, passwordConfirm, error } = formData;
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,7 +37,7 @@ const ResetPassword = ({ reset_pass, message, isAuthenticated }) => {
     if (password !== passwordConfirm) {
       setFormData({ ...formData, error: 'Passwords are not the same' });
     } else {
-      reset_pass({ password, passwordConfirm, token });
+      dispatch(reset_pass({ password, passwordConfirm, token }));
       setFormData({ ...formData, error: '' });
     }
 
@@ -31,10 +46,14 @@ const ResetPassword = ({ reset_pass, message, isAuthenticated }) => {
 
   if (isAuthenticated) {
     return <Redirect to="/" />
+  } else if(message === 'Password reseted') {
+    setTimeout(() => {
+      return <Redirect to="/profile" />
+    }, 3000);
   }
 
   return (
-    <Fragment>
+    <>
       <SecondHeader />
       <div className="forgotPasswordCtn">
         {/* <h1 className="large text-primary">Forgot Password</h1>
@@ -52,7 +71,7 @@ const ResetPassword = ({ reset_pass, message, isAuthenticated }) => {
                   <div className="form-group">
                     <input type="password" placeholder="Confirm Password" name="passwordConfirm" required onChange={e => onChange(e)} />
                   </div>
-                  <input type="submit" className="btn btn-primary" value="Update Password" />
+                  <input type="submit" className="btn btn-success" value="Update Password" />
                 </form>
                 {error && (
                   <h1 className="passwordUpdateMessage">{error}</h1>
@@ -65,9 +84,7 @@ const ResetPassword = ({ reset_pass, message, isAuthenticated }) => {
           </div>
         </div>
       </div>
-
-
-    </Fragment>
+    </>
   )
 }
 
@@ -76,4 +93,4 @@ const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated
 });
 
-export default connect(mapStateToProps, { reset_pass })(ResetPassword);
+export default ResetPassword;

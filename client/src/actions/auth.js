@@ -2,7 +2,6 @@ import axios from 'axios';
 import {
   UPDATE_USER,
   UPDATE_USER_ERROR,
-  RESET_MESSAGE,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   LOGIN_SUCCESS,
@@ -13,11 +12,16 @@ import {
   LOGOUT,
   LOGOUT_FAIL,
   FORGOT_PASSWORD,
-  RESET_PASSWORD,
   EMAIL_ACTIVATION,
   ACCOUNT_ACTIVATION
 } from './types';
 import { USER_DETAILS_REQUEST } from '../contants/userConstants';
+import { 
+  RESET_PASSWORD, 
+  RESET_PASSWORD_FAIL, 
+  ACCOUNT_ACTIVATION_FAIL,
+  RESET_MESSAGE,
+} from '../contants/authConstants';
 
 //Register User
 export const register = ({ name, email, password, passwordConfirm }) => async dispatch => {
@@ -59,12 +63,12 @@ export const login = ({ email, password }) => async dispatch => {
   const body = JSON.stringify({ email, password });
 
   try {
-    const res = await axios.post("/api/users/login", body, config);
+    const { data } = await axios.post("/api/users/login", body, config);
     console.log("res.data");
-    console.log(res.data);
+    console.log(data);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: res.data
+      payload: data
     });
 
   } catch (error) {
@@ -152,7 +156,7 @@ export const fgt_pass = ({ email }) => async dispatch => {
     //console.log(res.data);
     dispatch({ 
       type: FORGOT_PASSWORD,
-      payload: "We have sent you an email, with a Link to reset your password"
+      payload: "We have sent you an email, to reset your password"
     });
 
 
@@ -180,27 +184,35 @@ export const reset_pass = ({ password, passwordConfirm, token }) => async dispat
     }
     const body = JSON.stringify({ password, passwordConfirm });
 
-    const res = await axios.patch(`/api/users/resetPassword/${token}`, body, config);
+    const { data } = await axios.patch(`/api/users/resetPassword/${token}`, body, config);
 
-    //console.log(res.data);
-    dispatch({ type: RESET_PASSWORD });
+    console.log(data);
+    dispatch({ 
+      type: RESET_PASSWORD,
+      payload: data.message
+    });
 
 
     // dispatch(loadUser());
-  } catch (err) {
-    const errors = err.response.data.errors;
-    console.log(errors);
+  } catch (error) {
+    const errors = error.response.data;
+
+    dispatch({
+      type: RESET_PASSWORD_FAIL,
+      payload: errors.message
+    })
+    
   }
 }
 
 export const activateEmail = ({ email }) => async dispatch => {
   try {
     console.log(email);
-    const res = await axios.post(`/api/users/activateAccount/${email}`);
-    console.log(res.data);
+    const { data } = await axios.post(`/api/users/activateAccount/${email}`);
+    console.log(data);
     dispatch({
       type: EMAIL_ACTIVATION,
-      payload: res.data
+      payload: data
     });
 
   } catch (error) {
@@ -213,6 +225,7 @@ export const activateEmailAction = (token) => async dispatch => {
   try {
     console.log(token);
     const res = await axios.post(`/api/users/activate/${token}`);
+    console.log("-------------------MY DATA");
     console.log(res.data);
     dispatch({
       type: ACCOUNT_ACTIVATION,
@@ -220,7 +233,13 @@ export const activateEmailAction = (token) => async dispatch => {
     });
 
   } catch (error) {
-    console.log(error);
+    const errors = error.response.data;
+    console.log("///////// Errors");
+    console.log(errors);
+    dispatch({
+      type: ACCOUNT_ACTIVATION_FAIL,
+      payload: errors
+    })
   }
 }
 

@@ -75,7 +75,7 @@ const Register = ({ register, isAuthenticated }) => {
 					<div className="row">
 						<div className="col-6 offset-3">
 							<div className="card registerCard">
-								<p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
+								<h1 className="loginTitle"><i className="fas fa-user"></i> Create Your Account</h1>
 								<form className="form" onSubmit={e => onSubmit(e)}>
 									<div className="form-group">
 										<input type="text" placeholder="Name" name="name" required

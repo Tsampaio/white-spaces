@@ -1,31 +1,54 @@
-import React, {useState} from 'react';
-import { connect} from 'react-redux';
-import { Redirect, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { activateEmail } from '../../actions/auth';
+import SecondHeader from '../partials/SecondHeader';
+import { RESET_MESSAGE } from '../../contants/authConstants';
+const Activate = ({ history }) => {
 
-const Activate = ({isAuthenticated, user, message}) => {
-  
-  if( !isAuthenticated ) {
-    return <Redirect to="/" /> 
+  // if (!isAuthenticated) {
+  //   return <Redirect to="/" />
+  // }
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const { isAuthenticated, user, message, loading } = auth;
+
+  // useEffect(() => {
+  //   if(!isAuthenticated && !loading ) {
+  //     history.push('/');
+  //   }
+  // }, [isAuthenticated, loading])
+
+  useEffect(() => {
+    if(user && !loading) {
+      dispatch({ type: RESET_MESSAGE });
+    } else {
+      history.push('/');
+    }
+  }, [])
+
+  const email = user && user.email;
+
+  const sendEmail = () => {
+    dispatch(activateEmail({ email }))
   }
 
-  const email = user.email
-
   return (
-    <div>
-      <h1>Please confirm Email Address</h1>
-      <button className="btn btn-success" onClick={activateEmail({email})}>Resend Email Activation</button>
-      {message && (
-        <h1>{message}</h1>
-      )}
-    </div>
+    <>
+      <SecondHeader />
+      <div className="container checkoutSuccessCtn">
+        <div className="row">
+          <div className="col-12 checkoutSuccess">
+            <h1>Please confirm Email Address</h1>
+            <h4>To activate your account</h4>
+            <button className="btn btn-success" onClick={sendEmail}>Resend Email Activation</button>
+            {message && (
+              <h5>{message}</h5>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  user: state.auth.user,
-  message: state.auth.message
-})
-
-export default connect(mapStateToProps)(Activate);
+export default Activate;

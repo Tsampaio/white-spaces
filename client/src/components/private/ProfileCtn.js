@@ -13,11 +13,11 @@ const ProfileCtn = ({match, history}) => {
   const { active } = auth;
 
   useEffect(() => {
-    if (active == 'notActive' && !auth.loading) {
+    if (active === 'notActive' && !auth.loading) {
       console.log("inside redirect");
       history.push("/activate");
     } else if (auth && !auth.isAuthenticated && !auth.loading) {
-      history.push("/");
+      history.push("/login");
     }
   }, [auth, active]);
 

@@ -1,7 +1,6 @@
 import {
   UPDATE_USER,
   UPDATE_USER_ERROR,
-  RESET_MESSAGE,
   REGISTER_SUCCESS,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -11,16 +10,22 @@ import {
   LOGOUT,
   LOGOUT_FAIL,
   FORGOT_PASSWORD,
-  RESET_PASSWORD,
   EMAIL_ACTIVATION,
   ACCOUNT_ACTIVATION,
   GET_COURSES_OWNED,
   COURSE_ACCESS,
   CHECK_MEMBERSHIP,
   CANCEL_MEMBERSHIP,
-  RESUBSCRIBE_MEMBERSHIP
+  RESUBSCRIBE_MEMBERSHIP,
+  AUTH_ERROR
 } from '../actions/types';
 import { USER_DETAILS_REQUEST } from '../contants/userConstants';
+import { 
+  RESET_PASSWORD, 
+  RESET_PASSWORD_FAIL, 
+  ACCOUNT_ACTIVATION_FAIL,
+  RESET_MESSAGE 
+} from '../contants/authConstants';
 
 const initialState = {
 	// token: localStorage.getItem('token'),
@@ -40,7 +45,12 @@ export default function( state = initialState, action ) {
   const { type, payload } = action;
   // console.log("inside auth reducers");
   // console.log( type );
-  // console.log( payload );
+  if(payload) {
+  
+    console.log("-------------CHANGING MESSAGE----------")
+    console.log(type)
+    console.log( payload.message );
+  }
   switch(type) {
       case USER_DETAILS_REQUEST:
         return {
@@ -54,8 +64,7 @@ export default function( state = initialState, action ) {
             user: payload.user,
             token: payload.token,
             active: payload.active,
-            loading: false,
-            message: ""
+            loading: false
         }
       case USER_GUEST:
         return {
@@ -77,7 +86,8 @@ export default function( state = initialState, action ) {
           token: payload.token,
           message: payload.message,
           user: payload.user,
-          active: payload.user.active
+          active: payload.user.active,
+          loading: false
         }
       case LOGIN_FAIL:
         return {
@@ -90,7 +100,7 @@ export default function( state = initialState, action ) {
           message: ""
         }
       // case REGISTER_FAIL:
-      // case AUTH_ERROR:
+      case AUTH_ERROR:
       case LOGOUT_FAIL:
       case LOGOUT:
         return {
@@ -109,10 +119,16 @@ export default function( state = initialState, action ) {
       case RESET_PASSWORD:
         return {
           ...state,
-          message: 'Password Reseted'
+          message: payload
+        }
+      case RESET_PASSWORD_FAIL:
+        return {
+          ...state,
+          message: payload
         }
       case EMAIL_ACTIVATION:
       case ACCOUNT_ACTIVATION:
+      case ACCOUNT_ACTIVATION_FAIL:
         return {
           ...state,
           message: payload.message
