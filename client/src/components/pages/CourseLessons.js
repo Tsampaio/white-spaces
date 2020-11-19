@@ -18,10 +18,6 @@ const CourseLessons = ({
 		loaded: false
 	});
 
-	const [mobileMenu, setMobileMenu] = useState({
-		open: false
-	});
-
 	let { courseTag, lesson } = useParams();
 
 	lesson = parseInt(lesson);
@@ -149,11 +145,6 @@ const CourseLessons = ({
 		}
 	}
 
-	const openMobileMenu = () => {
-		setMobileMenu({
-			open: !mobileMenu.open
-		})
-	}
 
 	const redirectUser = () => {
 		if (auth && auth.user && auth.user.role !== "admin" && !checkCourseAccess && !auth.membership.active && page.loaded) {
@@ -166,8 +157,8 @@ const CourseLessons = ({
 			<SecondHeader />
 			<div className="container-fluid courseLesson">
 				<div className="row">
-					<div className={mobileMenu.open ? 'courseLinksCtn active' : 'courseLinksCtn'}>
-						<h1 onClick={openMobileMenu}><i class="far fa-play-circle"></i><span>{course && course.data && course.data.name}</span></h1>
+					<div className="courseLinksCtn">
+						<h1><i class="far fa-play-circle"></i><span>{course && course.data && course.data.name}</span></h1>
 
 						<h5 className="courseCurriculum">{percentageWatched()}% <span>complete</span></h5>
 						<div className="lessonsCtn">

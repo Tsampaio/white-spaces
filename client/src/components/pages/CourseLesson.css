@@ -6,6 +6,8 @@
 
 .courseLesson > .row {
     flex: 1 1;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .vp-center {
@@ -138,6 +140,10 @@ iframe {
     flex-direction: column;
 }
 
+.courseLinksCtn > h1 i {
+    margin-right: 10px;
+}
+
 .courseLinksCtn.backup {
     position: absolute;
 }
@@ -158,85 +164,62 @@ iframe {
 
 @media only screen and (max-width: 1024px) {
     iframe {
-        height: 400px;
+        height: 530px;
+    }
+
+    .courseMainVideoCtn {
+        width: 100%;
+        height: 350px;
+    }
+
+    .courseMainVideoCtn > a {
+        display: none;
+    }
+
+    .courseLinksCtn {
+        width: 100%;
+        order: 1;
     }
 }
 
 @media only screen and (max-width: 768px) {
-    .courseLesson h1 {
-        font-size: 35px;
+
+    .videoIframe {
+        padding: 0;
     }
 
-    .courseLinksCtn {
-        width: 70px;
-        background-color: rgb(209, 171, 102);
-        transition: all 0.5s ease-in-out;
+    .courseMainVideoCtn {
+        height: auto;
     }
 
-    .courseLinksCtn.active {
-        width: 200px;
+    .lessonsCtn {
+        padding: 20px 0;
     }
 
-    .courseLinksCtn h1 {
-        background-color: rgb(209, 171, 102);
-        cursor: pointer;
-    }
-    .courseLinksCtn h1 i {
-        color: #000;
-        font-size: 30px;
+    .currentLessonTitle {
+        padding: 30px 20px 15px;
     }
 
-    .courseLinksCtn h1 span {
-        display: none;
+    .courseLinksCtn > h1 {
+        font-size: 22px;
     }
-    
-    .courseLinksCtn.active h1 span {
-        display: block;
-        font-size: 20px;
-    }
-
-    .courseCurriculum span,
-    .lessonLink {
-        display: none;
-    }
-
-    .courseLinksCtn.active .courseCurriculum span,
-    .courseLinksCtn.active .lessonLink {
-        display: block;
-    }
-
-    .lessonsCtn,
-    .lesson,
-    .courseCurriculum {
-        background-color: orange;
-    }
-
-    .lessonComplete > i {
-        display: none;
-    }
-
-    .courseLinksCtn.active {
-        position: absolute;
-        height: 100%;
-    }
-
-    .courseLinksCtn.active + .courseLinksCtn.backup {
-        display: block;
-    }
-
-    .courseLinksCtn.active .lessonComplete > i {
-        display: block;
-    }
-
-    .courseLinksCtn.active .lessonLink {
-        font-size: 14px;
-        padding: 5px;
-    }
-
 }  
 
 @media only screen and (max-width: 500px) {
     iframe {
-        height: 160px;
+        height: 210px;
     }
+
+    .courseLinksCtn {
+        margin-top: 10px;
+    }
+
+    .courseLinksCtn > h1 {
+        font-size: 20px;
+    }
+
+    .courseCurriculum {
+        font-size: 18px;
+    }
+    
 }
