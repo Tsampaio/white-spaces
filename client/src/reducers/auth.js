@@ -108,7 +108,7 @@ export default function( state = initialState, action ) {
             token: null,
             isAuthenticated: false,
             user: null,
-            message: payload.message
+            message: null
         }
       case FORGOT_PASSWORD:
       case UPDATE_USER_ERROR:
@@ -131,6 +131,7 @@ export default function( state = initialState, action ) {
       case ACCOUNT_ACTIVATION_FAIL:
         return {
           ...state,
+          active: "active",
           message: payload.message
         }
       case GET_COURSES_OWNED:

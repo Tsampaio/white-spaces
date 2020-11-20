@@ -38,7 +38,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
         })
       } 
       
-      if(dropMobileMenu.current && !dropMenu.current.contains(event.target) && !burgerMenuIcon.current.contains(event.target)){
+      if(dropMobileMenu.current && dropMenu.current && !dropMenu.current.contains(event.target) && !burgerMenuIcon.current.contains(event.target)){
         console.log("inside dropMobileMenu");
         setMobileMenu({
           open: false

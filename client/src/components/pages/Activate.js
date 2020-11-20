@@ -21,10 +21,10 @@ const Activate = ({ history }) => {
   useEffect(() => {
     if(user && !loading) {
       dispatch({ type: RESET_MESSAGE });
-    } else {
+    } else if (!loading && !user) {
       history.push('/');
     }
-  }, [])
+  }, [user, loading])
 
   const email = user && user.email;
 

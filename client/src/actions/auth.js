@@ -123,8 +123,7 @@ export const logout = () => async dispatch => {
 
     //console.log(res.data);
     dispatch({ 
-      type: LOGOUT,
-      payload: { message: false } 
+      type: LOGOUT
     });
 
     // dispatch(loadUser());
