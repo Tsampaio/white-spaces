@@ -19,7 +19,10 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
   });
 
   const dropMenu = React.useRef();
+  const dropMobileMenu = React.useRef();
+
   const profileIcon = React.useRef();
+  const burgerMenuIcon = React.useRef();
 
   useEffect(() => {
     /**
@@ -27,11 +30,19 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
      */
     function handleClickOutside(event) {
       if (dropMenu.current && !dropMenu.current.contains(event.target) && !profileIcon.current.contains(event.target)) {
+        console.log("dropMenu");
         // alert("You clicked outside of me!");
         // console.log("outside");
-        setDropdown(false)
-      } else {
-        // console.log("inside");
+        setDropdown({
+          open: false
+        })
+      } 
+      
+      if(dropMobileMenu.current && !dropMenu.current.contains(event.target) && !burgerMenuIcon.current.contains(event.target)){
+        console.log("inside dropMobileMenu");
+        setMobileMenu({
+          open: false
+        })
       }
     }
 
@@ -61,15 +72,19 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
 
 
   const handleDropdown = (state, myFunc) => {
-    if (!state.open) {
-      myFunc({
-        open: true
-      })
-    } else {
-      myFunc({
-        open: false
-      })
-    }
+    // if (!state.open) {
+    //   myFunc({
+    //     open: true
+    //   })
+    // } else {
+    //   myFunc({
+    //     open: false
+    //   })
+    // }
+    console.log("calling handleDropdown")
+    myFunc({
+      open: !state.open
+    })
   }
 
   const images = require.context('../../images/', true);
@@ -97,7 +112,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
                 <img src={logo} alt="Telmo Academy Logo" className="logo logo-light" />
               </Link>
               <div className="mobileMenu" onClick={() => handleDropdown(mobileMenu, setMobileMenu)}>
-                <i className="fas fa-bars"></i>
+                <i ref={burgerMenuIcon} className="fas fa-bars"></i>
               </div>
               <ul className="desktopMenu">
                 <li><Link to='/'>HOME</Link></li>
@@ -147,7 +162,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
       <div className="container-fluid">
         <div className="row">
           <div className="col-sm-12">
-            <ul className={`navMenu ${mobileMenu.open ? "navMenuActive" : ""}`}>
+            <ul ref={dropMobileMenu} className={`navMenu ${mobileMenu.open ? "navMenuActive" : ""}`}>
               <li><Link to="/">Home</Link></li>
               <li><Link to="/courses">Courses</Link></li>
               <li><Link to="/membership">Pricing</Link></li>
