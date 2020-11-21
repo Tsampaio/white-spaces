@@ -21,15 +21,11 @@ import MembershipSuccess from './components/pages/MembershipSuccess';
 import CheckoutSuccess from './components/pages/CheckoutSuccess';
 import FGT_PASSWORD from './components/pages/ForgotPassword';
 import RST_PASSWORD from './components/pages/ResetPassword';
-import Profile from './components/private/Profile';
 import Activate from './components/pages/Activate';
 import ActivateEmail from './components/pages/ActivateEmail';
-import PrivateRoute from './components/private/PrivateRoute';
-import Admin from './components/pages/Admin';
-import CourseCreate from './components/pages/CourseCreate';
+import Admin from './components/admin/AdminCtn';
+import CourseCreate from './components/admin/CourseCreate';
 import CourseUpdate from './components/pages/CourseUpdate';
-import auth from './reducers/auth';
-import ProfileBilling from './components/private/ProfileBilling';
 import ProfileCtn from './components/private/ProfileCtn';
 
 function App() {
@@ -59,9 +55,10 @@ function App() {
           <Route path="/logout" component={Logout} />
           <Route path="/forgotPassword" component={FGT_PASSWORD} />
           <Route path="/resetPassword/:token" component={RST_PASSWORD} />
-          <Route exact path="/admin/courses" component={Admin} />
-          <Route exact path="/admin/courses/create" component={CourseCreate} />
-          <Route exact path="/admin/courses/update/:courseTag" component={CourseUpdate} />
+          <Route exact path="/admin/:page" component={Admin} />
+          <Route exact path="/admin/:page/:subPage" component={Admin} />
+          <Route exact path="/admin/:page/:subPage/:courseTag" component={Admin} />
+          <Route exact path="/featureCourses" component={Admin} />
           <Route exact path="/profile" component={ProfileCtn} />
           <Route exact path="/profile/:page" component={ProfileCtn} />
         </Switch>

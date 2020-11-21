@@ -1,0 +1,321 @@
+.profileCtn {
+  display: flex;
+  flex: 1 1;
+  background-color: #f5f5f8;
+}
+
+.profileCtn .container-fluid {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileCtn .row {
+  flex: 1 1;
+}
+
+.userAvatar {
+  width: 150px;
+  border-radius: 50%;
+}
+
+.userLeftCol {
+  text-align: center;
+  background-color: white;
+  padding: 50px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userLeftCol h1 {
+  font-size: 24px;
+  margin-top: 20px;
+  
+}
+
+.userLeftCol h3 {
+  font-size: 18px;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.userLeftCol h4 {
+  font-size: 14px;
+}
+
+.userRightCol {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userRightCol h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#file {
+  display: none;
+}
+
+.uploadButtonCtn {
+  display: inline-block;
+  margin-top: 30px;
+}
+
+.uploadButtonCtn img {
+  cursor: pointer;
+}
+
+.uploadButton {
+  display: inline-block;
+  background-color: #00FF84;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.profileLinks {
+  list-style: none;
+  text-align: left;
+  margin-top: 100px;
+  align-self: flex-start;
+}
+
+.profileLinks li {
+  margin-bottom: 20px;
+}
+
+.profileLinks i {
+  margin-right: 20px;
+  color: #8592a6;
+  height: 10px;
+  width: 25px;
+  font-size: 20px;
+}
+
+.profileLinks li a {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 14px;
+  color: #8592a6;
+  line-height: 35px;
+}
+
+.userDetails {
+  background-color: white;
+  text-align: center;
+  padding: 30px 40px;
+  width: 550px;
+}
+
+.userDetails form {
+  text-align: left;
+}
+
+.userDetails label {
+  display: inline-block;
+}
+
+.userDetails input {
+  width: 100%;
+
+  background: transparent;
+  border: 1px solid #cbcbd0;
+  box-shadow: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  height: 40px;
+  margin-bottom: 14px;
+}
+
+.userDetails h3 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.userDetails img {
+  width: 100px;
+  margin-right: 20px;
+}
+
+.imagePreviewOverlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0,0,0, 0.85);
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.closeOverlay {
+  color: #fff;
+  font-size: 50px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.imagePreviewOverlay .ReactCrop {
+  width: 50%;
+}
+
+.imagePreviewOverlay img {
+  width: 100%;
+  margin: 0 auto;
+
+}
+
+.imagePreviewOverlay h2 {
+  color: #fff;
+  margin-bottom: 40px;
+}
+
+.imagePreviewOverlay h2,
+.imagePreviewOverlay form {
+  width: 100%;
+  text-align: center;
+}
+
+.imagePreviewOverlay button {
+  display: inline-block;
+  margin: 0 auto;
+  margin-top: 40px;
+}
+
+.saveChanges {
+  padding: 6px 20px;
+  border: 1px solid black;
+}
+
+.formError {
+  color: red
+}
+
+.billingCtn {
+  padding: 50px;
+}
+
+.billingCtn .card-header {
+  font-size: 20px;
+}
+
+.billingCtn h2 {
+  font-size: 20px;
+  margin-top: 50px;
+}
+
+.billingCtn h3 {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.billingCtn .actionButton {
+  border: none;
+}
+
+.billingCtn h4 {
+  font-size: 16px;
+}
+
+.userBillingHistoryTitle {
+  margin-top: 50px;
+}
+
+.billingRow {
+  padding: 10px 0;
+}
+
+.cancelMembership {
+  padding: 6px 20px;
+  border: 1px solid black;
+}
+
+.myCoursesCtn {
+  max-width: 1200px;
+  padding: 50px;
+}
+
+.myCoursesCtn h1 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 50px;
+}
+
+.myCoursesCtn h2 {
+  font-size: 18px;
+  /* font-weight: bold;
+  margin-bottom: 50px; */
+}
+
+.profileLinks li .activeProfilePage,
+.profileLinks li .activeProfilePage i {
+  color: #212529;
+}
+
+/* @media only screen and (min-width: 1025px) {
+  .userLeftCol {
+      max-width: 300px;
+  }
+} */
+
+@media only screen and (max-width: 1300px) {
+  .userBillingCtn {
+      overflow: scroll;
+  }
+
+  .billingScroll {
+      min-width: 900px;
+  }
+
+  ::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 10px;
+  }
+    
+  ::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: rgba(0,0,0,.5);
+      box-shadow: 0 0 1px rgba(255,255,255,.5);
+      -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .myCoursesCtn .courseTitleCtn a {
+      font-size: 14px;
+  }
+  
+}
+
+@media only screen and (max-width: 992px) {
+  .userLeftCol {
+      display: none !important;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  
+}
+
+
+@media only screen and (max-width: 500px) {
+  .profileCtn {
+      padding-bottom: 30px;
+  }
+  
+  .billingCtn {
+      padding: 10px;
+  }
+
+  .myCoursesCtn .cardBorder {
+      margin-bottom: 30px;
+  }
+
+}

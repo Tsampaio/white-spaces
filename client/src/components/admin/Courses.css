@@ -1,0 +1,29 @@
+html,body {
+  height: 100%;
+}
+
+.adminCtn {
+  flex: 1 1;
+  background-color: #f4f4f4;
+}
+
+.adminCtn .row {
+  min-height: calc(100vh - 200px);
+}
+
+.adminCtn .col-3,
+.adminCtn .col-9 {
+  flex: 1 1;
+}
+
+.adminCourseTop {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.adminCourseTop .row {
+  width: 100%;
+}
