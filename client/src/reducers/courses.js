@@ -5,7 +5,12 @@ import {
   UPDATE_COURSE,
   FINISH_LESSON
 } from '../actions/types';
-import { COURSE_LIST_REQUEST, SAVE_FEATURED_COURSES_REQUEST, SAVE_FEATURED_COURSES_SUCCESS } from '../contants/courseConstants';
+import {
+  COURSE_LIST_REQUEST,
+  SAVE_FEATURED_COURSES_REQUEST,
+  SAVE_FEATURED_COURSES_SUCCESS,
+  SAVE_FEATURED_COURSES_FAIL
+} from '../contants/courseConstants';
 
 const initialState = {
   loading: true,
@@ -49,7 +54,7 @@ export default function (state = initialState, action) {
     case FINISH_LESSON:
       // console.log(payload);
       const updatedClasses = state.data.classes;
-      updatedClasses[payload.lesson].watched[0] = payload.watched; 
+      updatedClasses[payload.lesson].watched[0] = payload.watched;
 
       return {
         ...state,
@@ -66,16 +71,21 @@ export default function (state = initialState, action) {
           classes: payload.course.classes
         }
       }
-    case SAVE_FEATURED_COURSES_REQUEST: 
+    case SAVE_FEATURED_COURSES_REQUEST:
       return {
         ...state,
         loading: true
       }
-    case SAVE_FEATURED_COURSES_SUCCESS: 
+    case SAVE_FEATURED_COURSES_SUCCESS:
       return {
         ...state,
         loading: false,
         all: payload
+      }
+    case SAVE_FEATURED_COURSES_FAIL:
+      return {
+        ...state,
+        message: payload
       }
     default:
       return state;

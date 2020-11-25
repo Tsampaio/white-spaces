@@ -37,7 +37,7 @@ exports.getCourses = async (req, res, next) => {
     } else {
       console.log("trying to find courses");
       allCourses = await Course.find();
-      
+
       // console.log(allcourses);
       return res.status(200).json({
         status: 'success',
@@ -125,8 +125,8 @@ exports.getLessonsWatched = async (req, res, next) => {
       })
     });
 
-    for(let i=0; i < userClasses.length; i++) {
-      if( !userClasses[i]) {
+    for (let i = 0; i < userClasses.length; i++) {
+      if (!userClasses[i]) {
         course.classes[i].watched = { complete: false }
       } else {
         course.classes[i].watched = userClasses[i];
@@ -368,49 +368,56 @@ exports.finishLesson = async (req, res) => {
 
 exports.saveFeaturedCourses = async (req, res) => {
   try {
-    console.log(req.body);
-    
-    const fetchCourses = async (courses) => {
-      const requests = courses.map( async (course, i) => {
-  
-        return new Promise(async (resolve, reject) => {
-          const courseFound = await Course.findById(course.id);
-          courseFound.featured = course.featured;
-          console.log("promise course found");
-          console.log(courseFound);
+    // console.log(req.body);
 
-          // await courseFound.save({ validateBeforeSave: false });
-          resolve(courseFound);
-          
-        });
-      })
-      return Promise.all(requests) // Waiting for all the requests to get resolved.
+    if (req.user.role === 'admin') {
+      const fetchCourses = async (courses) => {
+        const requests = courses.map(async (course, i) => {
+
+          return new Promise(async (resolve, reject) => {
+            const courseFound = await Course.findById(course.id);
+            courseFound.featured = course.featured;
+            courseFound.featuredPosition = course.newIndex;
+            // console.log("promise course found");
+            // console.log(courseFound);
+
+            // await courseFound.save({ validateBeforeSave: false });
+            resolve(courseFound);
+
+          });
+        })
+        return Promise.all(requests) // Waiting for all the requests to get resolved.
+      }
+
+      fetchCourses(req.body)
+        .then(async (courseFound) => {
+          // console.log("THIS IS !!!!!");
+          // console.log(courseFound);
+          for (let i = 0; i < courseFound.length; i++) {
+            await courseFound[i].save({ validateBeforeSave: false });
+          }
+
+        }).then(async () => {
+          let allCourses = await Course.find();
+          // console.log("All courses is ");
+          // console.log(allCourses)
+          // console.log("featured courses saved");
+          res.status(200).json({
+            courses: allCourses
+          })
+        }
+        );
+
+    } else {
+      throw new Error('You are not an admin');
     }
 
-    fetchCourses(req.body)
-    .then( async (courseFound) => {
-      console.log("THIS IS !!!!!");
-      console.log(courseFound);
-      for(let i=0; i < courseFound.length; i++ ) {
-        await courseFound[i].save({ validateBeforeSave: false });
-      }
-      
-    }).then( async () => {
-        let allCourses = await Course.find();
-        console.log("All courses is ");
-        console.log(allCourses)
-        console.log("featured courses saved");
-        res.status(200).json({
-          courses: allCourses
-        })
-      }
-    );
 
-    
-
-    
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    })
   }
 }
 

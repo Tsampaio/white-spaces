@@ -13,6 +13,7 @@ import {
   FINISH_LESSON
 } from './types';
 import { COURSE_LIST_REQUEST, 
+  SAVE_FEATURED_COURSES_FAIL, 
   SAVE_FEATURED_COURSES_REQUEST, 
   SAVE_FEATURED_COURSES_SUCCESS 
 } from '../contants/courseConstants';
@@ -321,7 +322,13 @@ export const saveFeaturedCoursesAction = (data, token) => async dispatch => {
     });
 
   } catch (error) {
-    console.log(error);
+    const errors = error.response.data;
+    console.log("SAVING FAIL");
+    console.log(errors);
+    dispatch({
+      type: SAVE_FEATURED_COURSES_FAIL,
+      payload: errors.message
+    })
   }
 }
 

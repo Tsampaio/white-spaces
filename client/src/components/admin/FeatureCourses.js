@@ -12,7 +12,11 @@ const FeatureCourses = () => {
   
   const courses = useSelector(state => state.courses);
   const courseLoading = courses.loading;
-  const { featured } = courses;
+  const { message } = courses;
+
+  courses.all.length > 0 && courses.all.sort((a, b) => {
+    return a.featuredPosition - b.featuredPosition;
+  })
   
   const [data, setData] = useState(courses.all);
 
@@ -147,21 +151,21 @@ const FeatureCourses = () => {
 
     setData(newData);
 
-    console.log(dropzoneRef.current.dataset.id);
-    console.log(dropzoneRef.current.querySelectorAll(".example-draggable")[0]);
-    console.log(dropzoneRef.current.querySelectorAll(".example-draggable"));
+    // console.log(dropzoneRef.current.dataset.id);
+    // console.log(dropzoneRef.current.querySelectorAll(".example-draggable")[0]);
+    // console.log(dropzoneRef.current.querySelectorAll(".example-draggable"));
 
-    const allFeatureCourses = [];
-      let featureCourseNodes = dropzoneRef.current.querySelectorAll(".example-draggable");
-      console.log(featureCourseNodes);
-      for(let i=0; i < featureCourseNodes.length; i++) {
-        console.log("THIS IS");
-        console.log(featureCourseNodes[i]);
-        console.log(JSON.parse(featureCourseNodes[i].dataset.item));
-        allFeatureCourses.push(JSON.parse(featureCourseNodes[i].dataset.item));
-      }
+    // const allFeatureCourses = [];
+    //   let featureCourseNodes = dropzoneRef.current.querySelectorAll(".example-draggable");
+    //   console.log(featureCourseNodes);
+    //   for(let i=0; i < featureCourseNodes.length; i++) {
+    //     console.log("THIS IS");
+    //     console.log(featureCourseNodes[i]);
+    //     console.log(JSON.parse(featureCourseNodes[i].dataset.item));
+    //     allFeatureCourses.push(JSON.parse(featureCourseNodes[i].dataset.item));
+    //   }
 
-    console.log(allFeatureCourses);
+    // console.log(allFeatureCourses);
   }
 
   const dragOverItem = (e) => {
@@ -299,6 +303,9 @@ const FeatureCourses = () => {
         To-do
         {allCourses}
         <button onClick={saveFeaturedCourses}>Save Feature courses</button>
+        { message ? ( 
+          <h3>{message}</h3> 
+        ) : null}
       </div>
       <div>
         <h2>Featured Courses</h2>
