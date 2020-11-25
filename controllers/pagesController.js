@@ -1,5 +1,6 @@
 const Course = require('./../models/courseModel');
 const User = require('./../models/userModel');
+const FeaturedCourses = require('./../models/courseModel');
 const { promisify } = require('util');
 
 exports.getCourses = async (req, res, next) => {
@@ -362,6 +363,54 @@ exports.finishLesson = async (req, res) => {
 
   } catch (error) {
     console.log(error)
+  }
+}
+
+exports.saveFeaturedCourses = async (req, res) => {
+  try {
+    console.log(req.body);
+    
+    const fetchCourses = async (courses) => {
+      const requests = courses.map( async (course, i) => {
+  
+        return new Promise(async (resolve, reject) => {
+          const courseFound = await Course.findById(course.id);
+          courseFound.featured = course.featured;
+          console.log("promise course found");
+          console.log(courseFound);
+
+          // await courseFound.save({ validateBeforeSave: false });
+          resolve(courseFound);
+          
+        });
+      })
+      return Promise.all(requests) // Waiting for all the requests to get resolved.
+    }
+
+    fetchCourses(req.body)
+    .then( async (courseFound) => {
+      console.log("THIS IS !!!!!");
+      console.log(courseFound);
+      for(let i=0; i < courseFound.length; i++ ) {
+        await courseFound[i].save({ validateBeforeSave: false });
+      }
+      
+    }).then( async () => {
+        let allCourses = await Course.find();
+        console.log("All courses is ");
+        console.log(allCourses)
+        console.log("featured courses saved");
+        res.status(200).json({
+          courses: allCourses
+        })
+      }
+    );
+
+    
+
+    
+  } catch (error) {
+    console.log(error);
   }
 }
 

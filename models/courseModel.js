@@ -5,6 +5,14 @@ const courseSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  featured: {
+    type: Boolean,
+    default: false
+  },
+  featuredPosition: {
+    type: Number,
+    default: 0
+  },
   intro: {
     type: String
   },

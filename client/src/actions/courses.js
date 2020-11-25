@@ -12,16 +12,19 @@ import {
   UPDATE_COURSE,
   FINISH_LESSON
 } from './types';
-import { COURSE_LIST_REQUEST } from '../contants/courseConstants';
+import { COURSE_LIST_REQUEST, 
+  SAVE_FEATURED_COURSES_REQUEST, 
+  SAVE_FEATURED_COURSES_SUCCESS 
+} from '../contants/courseConstants';
 import { RESET_MESSAGE } from '../contants/authConstants';
 
 export const getCourses = (courses) => async dispatch => {
 
   try {
     dispatch({
-			type: COURSE_LIST_REQUEST
+      type: COURSE_LIST_REQUEST
     });
-    
+
     console.log("inside actions getCourses");
 
     const body = JSON.stringify({ courses });
@@ -52,7 +55,7 @@ export const getCoursesOwned = (userId) => async dispatch => {
 
     const res = await axios.post(`/api/getCoursesOwned`, body, {
       headers: {
-        Accept: 'application/json', 
+        Accept: 'application/json',
         "Content-Type": "application/json"
         // Authorization: `Bearer ${token}`
       }
@@ -80,7 +83,7 @@ export const getCourse = (courseTag) => async dispatch => {
     console.log(body);
     const res = await axios.post(`/api/getCourse`, body, {
       headers: {
-        Accept: 'application/json', 
+        Accept: 'application/json',
         "Content-Type": "application/json"
       }
     });
@@ -107,7 +110,7 @@ export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
     console.log(body);
     const res = await axios.post(`/api/getLessonsWatched`, body, {
       headers: {
-        Accept: 'application/json', 
+        Accept: 'application/json',
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       }
@@ -119,7 +122,7 @@ export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
       type: GET_LESSONS_WATCHED,
       payload: res.data
     });
-  } catch(error) {
+  } catch (error) {
     console.log(error);
   }
 }
@@ -276,7 +279,7 @@ export const finishLessonAction = (lesson, courseId, token) => async dispatch =>
     console.log(body);
     const res = await axios.post("/api/finishLesson", body, {
       headers: {
-        Accept: 'application/json', 
+        Accept: 'application/json',
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       }
@@ -293,4 +296,33 @@ export const finishLessonAction = (lesson, courseId, token) => async dispatch =>
     console.log(error);
   }
 }
+
+export const saveFeaturedCoursesAction = (data, token) => async dispatch => {
+  try {
+    console.log(data);
+    dispatch({
+      type: SAVE_FEATURED_COURSES_REQUEST
+    });
+
+    console.log(data);
+    const res = await axios.post("/api/saveFeaturedCourses", data, {
+      headers: {
+        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log(res.data);
+
+    dispatch({
+      type: SAVE_FEATURED_COURSES_SUCCESS,
+      payload: res.data.courses
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 

@@ -15,6 +15,7 @@ router.post('/updateCourse', pagesController.updateCourse);
 router.post('/courseThumbnail', pagesController.courseThumbnail);
 router.post('/courseAccess', pagesController.courseAccess);
 router.post('/finishLesson', protect, pagesController.finishLesson);
+router.post('/saveFeaturedCourses', protect, pagesController.saveFeaturedCourses);
 
 
 module.exports = router;

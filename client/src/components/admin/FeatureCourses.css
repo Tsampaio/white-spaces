@@ -18,6 +18,9 @@
   margin-top: 10px;
   padding: 10px;
   cursor: pointer;
+  width: 300px;
+  display: inline-block;
+  margin-right: 10px;
 }
 
 .example-dropzone {
@@ -25,7 +28,7 @@
   flex-basis: 100%;
   flex-grow: 1;
   padding: 10px;
-  min-height: 300px;
+  min-height: 600px;
 }
 
 /* ------------- */

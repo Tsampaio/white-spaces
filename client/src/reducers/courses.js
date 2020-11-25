@@ -5,7 +5,7 @@ import {
   UPDATE_COURSE,
   FINISH_LESSON
 } from '../actions/types';
-import { COURSE_LIST_REQUEST } from '../contants/courseConstants';
+import { COURSE_LIST_REQUEST, SAVE_FEATURED_COURSES_REQUEST, SAVE_FEATURED_COURSES_SUCCESS } from '../contants/courseConstants';
 
 const initialState = {
   loading: true,
@@ -16,6 +16,8 @@ const initialState = {
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
+
+  console.log(type);
 
   switch (type) {
     case COURSE_LIST_REQUEST:
@@ -63,6 +65,17 @@ export default function (state = initialState, action) {
           ...state.data,
           classes: payload.course.classes
         }
+      }
+    case SAVE_FEATURED_COURSES_REQUEST: 
+      return {
+        ...state,
+        loading: true
+      }
+    case SAVE_FEATURED_COURSES_SUCCESS: 
+      return {
+        ...state,
+        loading: false,
+        all: payload
       }
     default:
       return state;
