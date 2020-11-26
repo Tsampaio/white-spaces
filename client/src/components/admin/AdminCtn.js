@@ -6,6 +6,7 @@ import CourseUpdate from './CourseUpdate';
 import FeatureCourses from './FeatureCourses';
 import SecondHeader from '../partials/SecondHeader';
 import { useSelector } from 'react-redux';
+import AllUsers from './AllUsers';
 
 const AdminCtn = ({match, history}) => {
   console.log(match);
@@ -33,6 +34,7 @@ const AdminCtn = ({match, history}) => {
             { match.params.page === "courses" ? (match.params.subPage === "create" ? <CourseCreate /> : null) : null }
             { match.params.page === "courses" ? (match.params.subPage === "update" ? <CourseUpdate /> : null) : null }
             { match.params.page === "featureCourses" ? <FeatureCourses /> : null }
+            { match.params.page === "users" ? <AllUsers /> : null }
             
           </div>
         </div>

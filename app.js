@@ -35,6 +35,7 @@ app.get('/test', (req, res) => {
 app.use('/api', require('./routes/pagesRoutes'));
 app.use('/api', require('./routes/braintree'));
 app.use('/api', require('./routes/membershipRoutes'));
+app.use('/api', require('./routes/adminRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 
 

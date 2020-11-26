@@ -37,7 +37,7 @@ function AdminSidebar( ) {
           <NavLink to="/admin/featureCourses" activeClassName="activeProfilePage"><i className="fa fa-graduation-cap"></i>FEATURE COURSES</NavLink>
         </li>
         <li>
-          <NavLink to="/profile/billing" activeClassName="activeProfilePage"><i className="far fa-credit-card"></i>BILLING</NavLink>
+          <NavLink to="/admin/users" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Users</NavLink>
         </li>
       </ul>
     </div>

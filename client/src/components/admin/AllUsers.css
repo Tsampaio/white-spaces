@@ -1,0 +1,25 @@
+.allUsersCtn {
+  flex: 1;
+  padding: 0 50px;
+}
+
+.allUsersCtn tr {
+  border-bottom: 1px solid black;
+}
+
+.allUsersCtn td {
+  padding: 15px 0;
+}
+
+.allUsersCtn th {
+  cursor: pointer;
+}
+
+.allUsersCtn td:first-child,
+.allUsersCtn th:first-child{
+  padding-left: 50px;
+}
+
+.allUsersTableDiv {
+  display: inline-block;
+}
