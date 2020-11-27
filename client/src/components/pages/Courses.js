@@ -9,13 +9,22 @@ import './Courses.css';
 const Courses = () => {
   const dispatch = useDispatch();
   const courses = useSelector(state => state.courses);
-  const { loading } = courses
+  const { loading, all } = courses;
 
   const [coursesThumbnail, setCoursesThumbnail] = useState([]);
+
+  const [stateCourses, setStateCourses] = useState([]);
 
   useEffect(() => {
     dispatch(getCourses());
   }, []);
+
+  useEffect(() => {
+    if(!loading){
+      setStateCourses(all);
+    }
+
+  }, [loading]);
 
   console.log(courses);
   const images = require.context('../../images/courses', true);
@@ -28,7 +37,7 @@ const Courses = () => {
   //   setCoursesThumbnail(allThumbnails);
   // };
 
-  const allCourses = courses && courses.all.map((course, index) => {
+  const allCourses = stateCourses.map((course, index) => {
 
     // if( course && course.hasThumbnail) {
     //   img = images(`./${course.tag}.jpg`);
@@ -59,12 +68,39 @@ const Courses = () => {
       )
     }
   })
+  
+  const findCourse = (e) => {
+    console.log(e.target.value);
+    const text = e.target.value.toLowerCase();
+    console.log(text);
+    const filteredCourses = courses && courses.all.filter((course) => {
+      console.log(course.name)
+      return course.name.toLowerCase().indexOf(text) > -1;
+    }) 
+
+    console.log(filteredCourses);
+    setStateCourses(filteredCourses);
+  }
 
   return (
     <Fragment>
       <SecondHeader />
       <div className="main-container">
         <div className="courses container">
+          <div className="row">
+            <div className="col-12">
+              <div>
+                Filter:
+                <select>
+                  <option>All</option>
+                  <option>JavaScript</option>
+                  <option>React</option>
+                </select>
+              </div>
+              <input type="text" placeholder="Find a course" onChange={findCourse}/>
+            </div>
+
+          </div>
           <div className="row">
             {loading ? <Loader /> : allCourses}
           </div>
