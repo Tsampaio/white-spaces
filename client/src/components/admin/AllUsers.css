@@ -1,6 +1,6 @@
 .allUsersCtn {
   flex: 1;
-  padding: 0 50px;
+  padding-top: 50px;
 }
 
 .allUsersCtn tr {
@@ -17,9 +17,18 @@
 
 .allUsersCtn td:first-child,
 .allUsersCtn th:first-child{
-  padding-left: 50px;
+  padding-left: 20px;
 }
 
 .allUsersTableDiv {
   display: inline-block;
+}
+
+.allUsersTable {
+  padding: 30px 50px;
+  background-color: #fff;
+}
+
+.allUsersTable input {
+  margin-right: 10px;
 }

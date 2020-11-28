@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import SecondHeader from '../partials/SecondHeader';
 import Loader from '../utils/Loader';
+import { Form } from 'react-bootstrap';
 import './Courses.css';
 
 const Courses = () => {
@@ -88,21 +89,16 @@ const Courses = () => {
       <div className="main-container">
         <div className="courses container">
           <div className="row">
-            <div className="col-12">
-              <div>
-                Filter:
-                <select>
-                  <option>All</option>
-                  <option>JavaScript</option>
-                  <option>React</option>
-                </select>
-              </div>
-              <input type="text" placeholder="Find a course" onChange={findCourse}/>
+            <div className="col-3 my-4">
+              {/* <input type="text" placeholder="Find a course" /> */}
+              <Form.Control type="text" placeholder="Find a course" onChange={findCourse}/>
             </div>
 
           </div>
           <div className="row">
-            {loading ? <Loader /> : allCourses}
+            {loading ? <Loader /> : allCourses.length < 1 ? (
+              <div className="col-6"><h2>No Courses found</h2></div>
+            ) : allCourses}
           </div>
         </div>
       </div>
