@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { allUsersAction } from '../../actions/admin';
+import { saveUsersAction } from '../../actions/admin';
+import ModalWindow from '../utils/ModalWindow';
+import { Button, Modal } from 'react-bootstrap';
 import './AllUsers.css'
 
 const AllUsers = () => {
@@ -16,8 +19,14 @@ const AllUsers = () => {
 
   const [stateUsers, setStateUsers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [bulkSelect, setBulkSelect] = useState(false)
-
+  const [userSelected, setUserSelected] = useState(false);
+  const [show, setShow] = useState(false);
+  const [modalText, setModalText] = useState({
+    title: "",
+    action: "",
+    users: [],
+  });
+  
   const [test, setTest] = useState({
     loading: true
   })
@@ -32,17 +41,17 @@ const AllUsers = () => {
     }
   }, [loading]);
 
-  // useEffect(() => {
-  //   const findSelected = stateUsers.find(user => {
-  //     return user.selected
-  //   });
-  //   console.log(findSelected);
-    
-  //   setBulkSelect(Boolean(findSelected));
-  // }, [bulkSelect])
+  useEffect(() => {
+    const findSelected = stateUsers.find(user => {
+      return user.selected
+    });
+    console.log(findSelected);
+
+    setUserSelected(Boolean(findSelected));
+  }, [stateUsers])
 
   const selectUsers = (usersSelected) => {
-    if(usersSelected === "all") {
+    if (usersSelected === "all") {
       const selectAllUsers = stateUsers.map((user) => {
         return {
           ...user,
@@ -53,12 +62,12 @@ const AllUsers = () => {
       setStateUsers(selectAllUsers);
       setSelectAll(!selectAll);
     } else {
-      const  selectAllCopy = [...stateUsers];
+      const selectAllCopy = [...stateUsers];
       selectAllCopy[usersSelected].selected = !selectAllCopy[usersSelected].selected;
 
       setStateUsers(selectAllCopy);
     }
-    
+
   }
 
   const allUsers = stateUsers.map((user, i) => {
@@ -70,7 +79,7 @@ const AllUsers = () => {
     return (
       <tr key={user._id}>
         <td>
-          <input 
+          <input
             type="checkbox"
             checked={user.selected}
             value={user.selected}
@@ -127,8 +136,43 @@ const AllUsers = () => {
     setTest({ loading: false })
   }
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleChange = (e) => {
+    console.log(e.target.value);
+
+    const selectedUsers = stateUsers.filter((user) => {
+      return user.selected
+    });
+
+    console.log(selectedUsers)
+
+    if( selectedUsers.length > 0 ) {
+      let title = "";
+      // let users = selectedUsers.map(user => {
+      //   return user._id;
+      // })
+      if( e.target.value === "activate" ) {
+        title = "Activate Users"
+      }
+
+      setModalText({
+        title: title,
+        action: e.target.value,
+        users: selectedUsers
+      });
+      handleShow();
+    }
+  }
+
+  const saveChanges = () => {
+    console.log("inside save changes");
+    dispatch(saveUsersAction(modalText));
+  }
+
   console.log(selectAll);
-  console.log(stateUsers);
+  console.log(modalText);
   return (
     <div className="allUsersCtn container">
       <div className="row">
@@ -137,20 +181,20 @@ const AllUsers = () => {
           <table style={{ width: "100%" }}>
             <thead>
               <tr>
-                
                 <th>
-                  <input 
-                    type="checkbox" 
-                    onChange={() => selectUsers("all")} 
+                  <input
+                    type="checkbox"
+                    onChange={() => selectUsers("all")}
                   />
-                  { bulkSelect ? (
-                    <select>
+                  {userSelected ? (
+                    <select onChange={handleChange}>
+                      <option value="false" selected disabled hidden>Bulk Actions</option>
                       <option value="activate">Activate</option>
                       <option value="delete">Delete</option>
                     </select>
                   ) : (
-                    <span onClick={() => orderBy("name")}>Name</span>
-                  )}
+                      <span onClick={() => orderBy("name")}>Name</span>
+                    )}
                 </th>
                 <th onClick={() => orderBy("email")}>Email</th>
                 <th onClick={() => orderBy("active")}>Active</th>
@@ -165,6 +209,27 @@ const AllUsers = () => {
           </table>
         </div>
       </div>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{modalText.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Are you sure you want to {modalText.action} the following users?</p>
+          { modalText.users.map(user => {
+            return <p><b>{user.name}</b></p>;
+          })}          
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={saveChanges}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   )
 }

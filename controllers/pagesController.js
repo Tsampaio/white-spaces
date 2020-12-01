@@ -405,8 +405,7 @@ exports.saveFeaturedCourses = async (req, res) => {
           res.status(200).json({
             courses: allCourses
           })
-        }
-        );
+        });
 
     } else {
       throw new Error('You are not an admin');

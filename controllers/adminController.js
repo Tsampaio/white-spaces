@@ -6,7 +6,7 @@ exports.getUsers = async (req, res) => {
 
   try {
 
-    if(req.user.role === 'admin') {
+    if (req.user.role === 'admin') {
       const allUsers = await User.find();
 
       console.log(allUsers);
@@ -17,7 +17,7 @@ exports.getUsers = async (req, res) => {
     } else {
       throw new Error('You are not an admin');
     }
-    
+
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
@@ -25,3 +25,50 @@ exports.getUsers = async (req, res) => {
     })
   }
 };
+
+exports.updateUsers = async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+      const fetchUsers = async (users) => {
+        const requests = users.map(async (user, i) => {
+
+          return new Promise(async (resolve, reject) => {
+            const userFound = await User.findById(user._id);
+
+            if (req.body.action === "activate") {
+              userFound.active = "active"
+            }
+
+            resolve(userFound);
+
+          });
+        })
+        return Promise.all(requests) // Waiting for all the requests to get resolved.
+      }
+
+      fetchUsers(req.body.users)
+        .then(async (userFound) => {
+          // console.log("THIS IS !!!!!");
+          // console.log(courseFound);
+          for (let i = 0; i < userFound.length; i++) {
+            await userFound[i].save({ validateBeforeSave: false });
+          }
+
+          const allUsers = await User.find();
+
+          res.status(200).json({
+            users: allUsers
+          })
+
+        });
+
+    } else {
+      throw new Error('You are not an admin');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    })
+  }
+}
