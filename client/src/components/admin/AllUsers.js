@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { allUsersAction } from '../../actions/admin';
-import { saveUsersAction } from '../../actions/admin';
+import { saveUsersAction, deleteUsersAction } from '../../actions/admin';
 import ModalWindow from '../utils/ModalWindow';
 import { Button, Modal } from 'react-bootstrap';
 import './AllUsers.css'
@@ -155,6 +155,8 @@ const AllUsers = () => {
       // })
       if( e.target.value === "activate" ) {
         title = "Activate Users"
+      } else if( e.target.value === "delete" ) {
+        title = "Delete Users"
       }
 
       setModalText({
@@ -168,7 +170,12 @@ const AllUsers = () => {
 
   const saveChanges = () => {
     console.log("inside save changes");
-    dispatch(saveUsersAction(modalText));
+    if(modalText.action === "activate") {
+      dispatch(saveUsersAction(modalText));
+    } else if(modalText.action === "delete") {
+      dispatch(deleteUsersAction(modalText));
+    }
+    setShow(false);
   }
 
   console.log(selectAll);

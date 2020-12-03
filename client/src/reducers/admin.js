@@ -4,7 +4,10 @@ import {
   USERS_LIST_FAIL,
   ADMIN_UPDATE_USERS_FAIL,
   ADMIN_UPDATE_USERS_SUCCESS,
-  ADMIN_UPDATE_USERS_REQUEST
+  ADMIN_UPDATE_USERS_REQUEST,
+  ADMIN_DELETE_USERS_REQUEST,
+  ADMIN_DELETE_USERS_SUCCESS,
+  ADMIN_DELETE_USERS_FAIL
 } from '../contants/adminConstants';
 
 const initialState = {
@@ -19,12 +22,14 @@ export default function (state = initialState, action) {
   switch (type) {
     case USERS_LIST_REQUEST:
     case ADMIN_UPDATE_USERS_REQUEST:
+    case ADMIN_DELETE_USERS_REQUEST:
       return {
         ...state,
         loading: true
       }
     case USERS_LIST_SUCCESS:
     case ADMIN_UPDATE_USERS_SUCCESS:
+    case ADMIN_DELETE_USERS_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -32,6 +37,7 @@ export default function (state = initialState, action) {
       }
     case USERS_LIST_FAIL:
     case ADMIN_UPDATE_USERS_FAIL:
+    case ADMIN_DELETE_USERS_FAIL:
       return {
         ...state,
         loading: false,

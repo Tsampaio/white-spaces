@@ -72,3 +72,34 @@ exports.updateUsers = async (req, res) => {
     })
   }
 }
+
+exports.deleteUsers = async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+      console.log(req.body.users);
+
+      const allUsers = req.body.users.map(user => {
+        return user._id;
+      })
+
+      console.log(allUsers);
+
+      await User.deleteMany({ _id: { $in: allUsers } })
+      console.log("users deleted");
+
+      const allDbUsers = await User.find();
+
+      res.status(200).json({
+        users: allDbUsers
+      })
+
+    } else {
+      throw new Error('You are not an admin');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    })
+  }
+}

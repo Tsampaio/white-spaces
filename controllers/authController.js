@@ -133,7 +133,7 @@ exports.activate = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
-  // console.log("Inside Login Controller");
+  console.log("Inside Login Controller");
 
   // 1) Check if email and password exist
   if (!email || !password) {

@@ -4,7 +4,10 @@ import {
   USERS_LIST_FAIL,
   ADMIN_UPDATE_USERS_REQUEST,
   ADMIN_UPDATE_USERS_SUCCESS,
-  ADMIN_UPDATE_USERS_FAIL
+  ADMIN_UPDATE_USERS_FAIL,
+  ADMIN_DELETE_USERS_REQUEST,
+  ADMIN_DELETE_USERS_SUCCESS,
+  ADMIN_DELETE_USERS_FAIL
 } from '../contants/adminConstants';
 import axios from 'axios';
 
@@ -67,6 +70,41 @@ export const saveUsersAction = ( modelText ) => async dispatch => {
     console.log(errors);
     dispatch({
       type: USERS_LIST_FAIL,
+      payload: errors.message
+    })
+  }
+}
+
+export const deleteUsersAction = ( modelText ) => async dispatch => {
+  console.log("Inside Delete users action out")
+  console.log(modelText);
+  try {
+    dispatch({
+      type: ADMIN_DELETE_USERS_REQUEST
+    })
+
+    console.log("Inside Delete users action")
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const body = modelText;
+
+    const {data} = await axios.post(`/api/admin/deleteUsers`, body, config);
+
+    console.log(data);
+
+    dispatch({
+      type: ADMIN_DELETE_USERS_SUCCESS,
+      payload: data.users
+    })
+
+  } catch (error) {
+    const errors = error.response.data;
+    console.log(errors);
+    dispatch({
+      type: ADMIN_DELETE_USERS_FAIL,
       payload: errors.message
     })
   }
