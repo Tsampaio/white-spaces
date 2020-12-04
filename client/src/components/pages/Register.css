@@ -30,13 +30,23 @@
 }
 
 .registerError {
+    text-align: center;
     background-color: #ea8383;
     padding: 10px 20px;
     margin-top: 20px;
 }
 
-.registerError h1 {
+.registerSuccess {
+    text-align: center;
+    background-color: #00FF84;
+    padding: 10px 20px;
+    margin-top: 20px;
+}
+
+.registerError h1,
+.registerSuccess h1 {
     font-size: 20px;
+    margin: 0;
 }
 
 .goLogin {

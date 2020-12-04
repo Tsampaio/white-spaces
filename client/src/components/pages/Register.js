@@ -1,13 +1,13 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import SecondHeader from '../partials/SecondHeader';
-import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 // import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import PropTypes from 'prop-types';
 import './Register.css';
 
-const Register = ({ register, isAuthenticated }) => {
+const Register = () => {
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
@@ -15,20 +15,24 @@ const Register = ({ register, isAuthenticated }) => {
 		passwordConfirm: '',
 		randNumber1: Math.floor(Math.random() * 10 + 1),
 		randNumber2: Math.floor(Math.random() * 10 + 1),
-		message: '',
+		formMessage: '',
 		result: 0
 	});
-	const { name, email, password, passwordConfirm, randNumber1, randNumber2, message, result } = formData;
+	const { name, email, password, passwordConfirm, randNumber1, randNumber2, formMessage, result } = formData;
+
+	const dispatch = useDispatch();
+	const auth = useSelector(state => state.auth);
+	const { isAuthenticated, message } = auth;
 
 	useEffect(() => {
-		if( message ) {
-			setTimeout( () => {
+		if (formMessage) {
+			setTimeout(() => {
 				// resetMessage();
-				console.log("message deleted");
-				setFormData({ ...formData, message: ""});
+				console.log("formMessage deleted");
+				setFormData({ ...formData, formMessage: "" });
 			}, 5000);
 		}
-	}, [message])
+	}, [formMessage])
 
 	const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -38,7 +42,7 @@ const Register = ({ register, isAuthenticated }) => {
 		if (password !== passwordConfirm) {
 			// setAlert("Passwords do not match", 'danger', 3000);
 			console.log("passwords")
-			setFormData({ ...formData, message: "Passwords do not match" });
+			setFormData({ ...formData, formMessage: "Passwords do not match" });
 		} else if ((randNumber1 + randNumber2) !== parseInt(result)) {
 			console.log("results")
 			console.log("Random Number 1", randNumber1);
@@ -47,12 +51,19 @@ const Register = ({ register, isAuthenticated }) => {
 			console.log("Result", result);
 			console.log(randNumber1 === result);
 			console.log(randNumber1 !== result);
-			setFormData({ ...formData, message: "You are a robot!" });
+			setFormData({ ...formData, formMessage: "You are a robot!" });
 
 
 		} else {
 			console.log("Inside register action")
-			register({ name, email, password, passwordConfirm });
+			dispatch(register({ name, email, password, passwordConfirm }));
+			setFormData({
+				...formData,
+				name: '',
+				email: '',
+				password: '',
+				passwordConfirm: '',
+			});
 		}
 	}
 
@@ -124,8 +135,14 @@ const Register = ({ register, isAuthenticated }) => {
 									<input type="submit" className="btn btn-success" value="Register" />
 								</form>
 
-								{message && (
+								{formMessage && (
 									<div className="registerError">
+										<h1>{formMessage}</h1>
+									</div>
+								)}
+
+								{message && (
+									<div className="registerSuccess">
 										<h1>{message}</h1>
 									</div>
 								)}
@@ -141,14 +158,4 @@ const Register = ({ register, isAuthenticated }) => {
 	);
 }
 
-Register.propTypes = {
-	// setAlert: PropTypes.func.isRequired,
-	register: PropTypes.func.isRequired,
-	isAuthenticated: PropTypes.bool
-}
-
-const mapStateToProps = state => ({
-	isAuthenticated: state.auth.isAuthenticated
-})
-
-export default connect(mapStateToProps, { register })(Register);
+export default Register;
