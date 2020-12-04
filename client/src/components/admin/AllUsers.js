@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { allUsersAction } from '../../actions/admin';
 import { saveUsersAction, deleteUsersAction } from '../../actions/admin';
-import ModalWindow from '../utils/ModalWindow';
+// import ModalWindow from '../utils/ModalWindow';
 import { Button, Modal } from 'react-bootstrap';
 import './AllUsers.css'
 
@@ -26,9 +26,10 @@ const AllUsers = () => {
     action: "",
     users: [],
   });
-  
-  const [test, setTest] = useState({
-    loading: true
+
+  const [orderState, setOrderState] = useState({
+    orderName: "",
+    asc: false
   })
 
   useEffect(() => {
@@ -71,36 +72,37 @@ const AllUsers = () => {
   }
 
   const allUsers = stateUsers.map((user, i) => {
-
-    const joinedDate = new Date(user.joined);
-    const newJoinedDate = `${joinedDate.getDate()}/${joinedDate.getMonth() + 1}/${joinedDate.getFullYear()}`;
-    console.log("Inside all Users");
-    console.log(newJoinedDate)
-    return (
-      <tr key={user._id}>
-        <td>
-          <input
-            type="checkbox"
-            checked={user.selected}
-            value={user.selected}
-            onChange={() => selectUsers(i)}
-          />
-          <div className="allUsersTableDiv">{user.name}</div>
-        </td>
-        <td>
-          <div className="allUsersTableDiv">{user.email}</div>
-        </td>
-        <td>
-          <div className="allUsersTableDiv">{user.active}</div>
-        </td>
-        <td>
-          <div className="allUsersTableDiv">${user.purchases} USD</div>
-        </td>
-        <td>
-          <div className="allUsersTableDiv">{newJoinedDate}</div>
-        </td>
-      </tr>
-    )
+    if (user.role !== "admin") {
+      const joinedDate = new Date(user.joined);
+      const newJoinedDate = `${joinedDate.getDate()}/${joinedDate.getMonth() + 1}/${joinedDate.getFullYear()}`;
+      console.log("Inside all Users");
+      console.log(newJoinedDate)
+      return (
+        <tr key={user._id}>
+          <td>
+            <input
+              type="checkbox"
+              checked={user.selected}
+              value={user.selected}
+              onChange={() => selectUsers(i)}
+            />
+            <div className="allUsersTableDiv">{user.name}</div>
+          </td>
+          <td>
+            <div className="allUsersTableDiv">{user.email}</div>
+          </td>
+          <td>
+            <div className="allUsersTableDiv">{user.active}</div>
+          </td>
+          <td>
+            <div className="allUsersTableDiv">${user.purchases} USD</div>
+          </td>
+          <td>
+            <div className="allUsersTableDiv">{newJoinedDate}</div>
+          </td>
+        </tr>
+      )
+    }
   })
 
   const orderBy = (order) => {
@@ -109,31 +111,61 @@ const AllUsers = () => {
       // Turn your strings into dates, and then subtract them
       // to get a value that is either negative, positive, or zero.
       if (order === "date") {
-        return new Date(b.joined) - new Date(a.joined);
+        if (orderState.orderName === "date" && orderState.asc) {
+          return new Date(a.joined) - new Date(b.joined);
+        } else {
+          return new Date(b.joined) - new Date(a.joined);
+        }
       } else if (order === "purchases") {
-        return b.purchases - a.purchases;
+        if (orderState.orderName === "purchases" && orderState.asc) {
+          return a.purchases - b.purchases;
+        } else {
+          return b.purchases - a.purchases;
+        }
       } else if (order === "email") {
-        if (a.email < b.email) { return -1; }
-        if (a.email > b.email) { return 1; }
+        if (orderState.orderName === "email" && orderState.asc) {
+          if (a.email > b.email) { return -1; }
+          if (a.email < b.email) { return 1; }
+        } else {
+          if (a.email < b.email) { return -1; }
+          if (a.email > b.email) { return 1; }
+        }
         return 0;
       } else if (order === "name") {
         let nameA = a.name.toLowerCase();
         let nameB = b.name.toLowerCase();
-        if (nameA < nameB) { return -1; }
-        if (nameA > nameB) { return 1; }
+
+        if (orderState.orderName === "name" && orderState.asc) {
+          if (nameA > nameB) { return -1; }
+          if (nameA < nameB) { return 1; }
+        } else {
+          if (nameA < nameB) { return -1; }
+          if (nameA > nameB) { return 1; }
+        }
+
         return 0;
       } else if (order === "active") {
         let activeA = a.active.toLowerCase();
         let activeB = b.active.toLowerCase();
-        if (activeA < activeB) { return -1; }
-        if (activeA > activeB) { return 1; }
+
+        if (orderState.orderName === "active" && orderState.asc) {
+          if (activeA < activeB) { return -1; }
+          if (activeA > activeB) { return 1; }
+        } else {
+          if (activeA > activeB) { return -1; }
+          if (activeA < activeB) { return 1; }
+        }
         return 0;
       }
 
     });
 
     setStateUsers(users);
-    setTest({ loading: false })
+    // setTest({ loading: false })
+    setOrderState({
+      orderName: order,
+      asc: !orderState.asc
+    })
   }
 
   const handleClose = () => setShow(false);
@@ -148,14 +180,14 @@ const AllUsers = () => {
 
     console.log(selectedUsers)
 
-    if( selectedUsers.length > 0 ) {
+    if (selectedUsers.length > 0) {
       let title = "";
       // let users = selectedUsers.map(user => {
       //   return user._id;
       // })
-      if( e.target.value === "activate" ) {
+      if (e.target.value === "activate") {
         title = "Activate Users"
-      } else if( e.target.value === "delete" ) {
+      } else if (e.target.value === "delete") {
         title = "Delete Users"
       }
 
@@ -170,9 +202,9 @@ const AllUsers = () => {
 
   const saveChanges = () => {
     console.log("inside save changes");
-    if(modalText.action === "activate") {
+    if (modalText.action === "activate") {
       dispatch(saveUsersAction(modalText));
-    } else if(modalText.action === "delete") {
+    } else if (modalText.action === "delete") {
       dispatch(deleteUsersAction(modalText));
     }
     setShow(false);
@@ -212,7 +244,7 @@ const AllUsers = () => {
             <tbody>
               {allUsers}
             </tbody>
-            <h1>{!test.loading ? "Working" : null}</h1>
+            {/* <h1>{!test.loading ? "Working" : null}</h1> */}
           </table>
         </div>
       </div>
@@ -223,9 +255,9 @@ const AllUsers = () => {
         </Modal.Header>
         <Modal.Body>
           <p>Are you sure you want to {modalText.action} the following users?</p>
-          { modalText.users.map(user => {
+          {modalText.users.map(user => {
             return <p><b>{user.name}</b></p>;
-          })}          
+          })}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
