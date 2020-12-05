@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { updateUserAction } from '../../actions/auth';
@@ -101,10 +100,10 @@ function Profile( ) {
     // import Pic from `/${auth.user._id}.jpg`;
     // userPic = <img src={`/${auth.user._id}.jpg`} />
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({ loaded: true })} />
+    userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} />
   } else {
     img = images(`./default.png`);
-    userPic = <img src={img} className="userAvatar" onLoad={() => setPage({ loaded: true })} />
+    userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} />
   }
 
   const onSelectFile = e => {
@@ -327,11 +326,5 @@ function Profile( ) {
 
   );
 };
-
-Profile.propTypes = {
-  // getCurrentProfile: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
-  // profile: PropTypes.object.isRequired
-}
 
 export default Profile;

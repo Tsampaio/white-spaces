@@ -17,10 +17,10 @@ function AdminSidebar( ) {
 
   if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img} className="userAvatar" />
+    userPic = <img src={img.default} className="userAvatar" />
   } else {
     img = images(`./default.png`);
-    userPic = <img src={img} className="userAvatar" />
+    userPic = <img src={img.default} className="userAvatar" />
   }
 
   return (

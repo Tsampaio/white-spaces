@@ -31,7 +31,7 @@ const Courses = () => {
 				<div className="cardBorder">
 					<div className="courseThumbnail courseFeatured1">
 						<Link to={`/admin/courses/update/${course.tag}`}>
-							<img src={img} alt="javascript" />
+							<img src={img.default} alt="javascript" />
 						</Link>
 					</div>
 					<div className="courseTitleCtn">

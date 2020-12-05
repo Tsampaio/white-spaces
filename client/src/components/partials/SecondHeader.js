@@ -87,7 +87,10 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
     })
   }
 
-  const images = require.context('../../images/', true);
+  const images = require.context('../../images/', true, /\.(png|jpe?g|svg)$/);
+
+  console.log("+++++++");
+  console.log(images);
 
   if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
     // import Pic from `/${auth.user._id}.jpg`;
@@ -96,10 +99,11 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
     // console.log("before image");
 
     let img = images(`./${auth && auth.user && auth.user._id}.jpg`);
-    userPic = <img src={img} className="userAvatarNav" />;
+    
+    userPic = <img src={img.default} className="userAvatarNav" />;
   } else {
     let img = images(`./default.png`);
-    userPic = <img src={img} className="userAvatarNav" />
+    userPic = <img src={img.default} className="userAvatarNav" />
   }
 
   return (
