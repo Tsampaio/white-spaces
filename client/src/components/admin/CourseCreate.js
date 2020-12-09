@@ -1,21 +1,28 @@
-import React, { Fragment, useState, useRef } from 'react';
-import { connect } from 'react-redux';
+import React, { useRef, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
 
-import SecondHeader from '../partials/SecondHeader';
-import { createCourse } from '../../actions/courses';
+import { createCourseAction } from '../../actions/courses';
 import './Admin.css'
-import AdminSidebar from '../partials/AdminSidebar';
 import ImageUpload from '../utils/imageUpload';
 
 
-const CourseCreate = ({ course, auth, createCourse }) => {
-	console.log(auth);
+const CourseCreate = () => {
+
+	const dispatch = useDispatch();
+
+	const auth = useSelector(state => state.auth);
+	const course = useSelector(state => state.courses);
 
 	const [courseState, setCourseState] = useState({
 		courseName: "",
 		courseIntro: "",
 		courseTag: "",
-		courseDescription: "",
+		courseDescription: [],
 		coursePrice: "",
 		classes: [{
 			lecture: "",
@@ -24,6 +31,7 @@ const CourseCreate = ({ course, auth, createCourse }) => {
 			duration: 0
 		}],
 	});
+	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
 	const addClass = () => {
 		setCourseState({
@@ -67,10 +75,33 @@ const CourseCreate = ({ course, auth, createCourse }) => {
 		)
 	});
 
-	console.log(courseState)
 
+	const saveBlogDetails = () => {
+		setEditorState(editorState);
+	}
+
+	const createCourse = () => {
+		// editor.save().then((outputData) => {
+		// 	console.log(outputData);
+		// 	setCourseState({
+		// 		...courseState,
+		// 		courseDescription: outputData
+		// 	})
+		// })
+	}
+
+	useEffect(() => {
+		if (courseState.courseDescription.length > 0) {
+			dispatch(createCourseAction(courseState));
+		}
+	}, [courseState.courseDescription]);
+
+	const onEditorStateChange = (editorState) => {
+		setEditorState(editorState);
+	}
+	console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));
 	return (
-		<Fragment>
+		<>
 			<div className="adminCtn">
 				<div className="container-fluid">
 					<div className="row">
@@ -78,31 +109,40 @@ const CourseCreate = ({ course, auth, createCourse }) => {
 						<div className="col-10">
 							<div>
 								<h1>Create your Course</h1>
-								<ImageUpload courseTag={courseState.courseTag}/>
+								<ImageUpload courseTag={courseState.courseTag} />
 								<label>Name</label><input required type="text" name="courseName" onChange={updateCourse} /><br />
 								<label>Course Intro</label><input required type="text" name="courseIntro" onChange={updateCourse} /><br />
 								<label>Course Tag</label><input required type="text" name="courseTag" onChange={updateCourse} /><br />
 
 								<label>Course Description</label><br />
-								<textarea required type="text" name="courseDescription" onChange={updateCourse} rows="15" cols="80" /><br />
+								{/* <textarea id="editorjs" required type="text" name="courseDescription" onChange={updateCourse} rows="15" cols="80" /><br /> */}
+								<Editor
+									editorState={editorState}
+									toolbarClassName="toolbarClassName"
+									wrapperClassName="wrapperClassName"
+									editorClassName="editorClassName"
+									onEditorStateChange={onEditorStateChange}
+								/>
+
 								<label>Course Price</label><input required type="text" name="coursePrice" onChange={updateCourse} /><br />
 								<label>Course Classes</label>
 								{allClasses}
 								<button onClick={addClass}>Add Class</button>
-								<button onClick={() => createCourse(courseState)}>Create Course</button>
+								<button onClick={createCourse}>Create Course</button>
+								<button onClick={saveBlogDetails}>Blog</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</Fragment>
+		</>
 	)
 }
 
-const mapStateToProps = state => ({
-	course: state.courses,
-	auth: state.auth
-});
+// const mapStateToProps = state => ({
+// 	course: state.courses,
+// 	auth: state.auth
+// });
 
 
-export default connect(mapStateToProps, { createCourse })(CourseCreate);
+export default CourseCreate;

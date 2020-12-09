@@ -128,7 +128,8 @@ export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
   }
 }
 
-export const createCourse = ({ courseName, courseIntro, courseTag, courseDescription, coursePrice, classes }) => async dispatch => {
+export const createCourseAction = ({ courseName, courseIntro, courseTag, courseDescription, coursePrice, classes }) => async dispatch => {
+  console.log("Inside Create COURSE ACTION");
   try {
     const body = JSON.stringify({ courseName, courseIntro, courseTag, courseDescription, coursePrice, classes });
 

@@ -4,7 +4,13 @@ import store from '../../store';
 import { useParams, Link } from 'react-router-dom';
 import { getCourse } from '../../actions/courses';
 import { updateCourseAction } from '../../actions/courses';
-import AdminSidebar from '../partials/AdminSidebar';
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import {stateFromHTML} from 'draft-js-import-html';
+
 import './Admin.css'
 
 const CourseUpdate = ({ course, auth, updateCourseAction }) => {
@@ -26,11 +32,20 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 		loaded: false
 	});
 
+	const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
 	const { courseTag } = useParams();
 
 	useEffect( () => {
 		setCourseValues();
+		
 	}, [courseState.loaded]);
+
+	useEffect(() => {
+		if( courseState.courseDescription ) {
+			setEditorState(EditorState.createWithContent(stateFromHTML(courseState.courseDescription)))
+		}
+	}, [courseState.courseDescription])
 	
 	const setCourseValues = async () => {
 		await store.dispatch(getCourse(courseTag));
@@ -104,6 +119,11 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 	console.log( course )
 	console.log(courseState);
 
+	const onEditorStateChange = (editorState) => {
+		setEditorState(editorState);
+	}
+	// console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));
+
 	return (
 		<>
 			<div className="adminCtn">
@@ -117,7 +137,16 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 								<label>Course Tag</label><input required type="text" name="courseTag" onChange={updateCourse} value={courseState.loaded ? courseState.courseTag : ""} size="50"/><br/>
 								
 								<label>Course Description</label><br/>
-								<textarea required type="text" name="courseDescription" onChange={updateCourse} rows="15" cols="80" value={courseState.loaded ? courseState.courseDescription : ""} /><br/>
+								{/* <textarea required type="text" name="courseDescription" onChange={updateCourse} rows="15" cols="80" value={courseState.loaded ? courseState.courseDescription : ""} /><br/> */}
+								
+								<Editor
+									editorState={editorState}
+									toolbarClassName="toolbarClassName"
+									wrapperClassName="wrapperClassName"
+									editorClassName="editorClassName"
+									onEditorStateChange={onEditorStateChange}
+								/>
+								
 								<label>Course Price</label><input required type="number" name="coursePrice" onChange={updateCourse} value={courseState.loaded ? courseState.coursePrice : ""} /><br/>
 								<label>Course Classes</label>
 								{allClasses}

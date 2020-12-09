@@ -259,11 +259,10 @@
   color: #212529;
 }
 
-/* @media only screen and (min-width: 1025px) {
-  .userLeftCol {
-      max-width: 300px;
-  }
-} */
+.rdw-editor-main {
+  background-color: white;
+  padding: 0 30px;
+}
 
 @media only screen and (max-width: 1300px) {
   .userBillingCtn {
