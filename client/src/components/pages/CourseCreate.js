@@ -67,6 +67,14 @@ const CourseCreate = ({ course, auth, createCourse }) => {
 		)
 	});
 
+	const onEditorStateChange = (editorState) => {
+		setEditorState(editorState);
+		setCourseState({
+			...courseState,
+			courseDescription: draftToHtml(convertToRaw(editorState.getCurrentContent()))
+		})
+	}
+
 	console.log(courseState)
 
 	return (

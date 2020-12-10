@@ -14,7 +14,7 @@ const CourseCard = (props) => {
       <div className="cardBorder">
         <div className="courseThumbnail courseFeatured1">
           <Link className="courseTitle" to={`/courses/${props.tag}`}>
-            <img src={img} alt="javascript" />
+            <img src={img.default} alt="javascript" />
           </Link>
         </div>
         <div className="courseTitleCtn">

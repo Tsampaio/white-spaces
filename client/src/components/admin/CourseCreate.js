@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState, convertToRaw } from 'draft-js';
+
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
 
 import { createCourseAction } from '../../actions/courses';
 import './Admin.css'
@@ -98,7 +98,12 @@ const CourseCreate = () => {
 
 	const onEditorStateChange = (editorState) => {
 		setEditorState(editorState);
+		setCourseState({
+			...courseState,
+			courseDescription: draftToHtml(convertToRaw(editorState.getCurrentContent()))
+		})
 	}
+
 	console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));
 	return (
 		<>
@@ -129,7 +134,6 @@ const CourseCreate = () => {
 								{allClasses}
 								<button onClick={addClass}>Add Class</button>
 								<button onClick={createCourse}>Create Course</button>
-								<button onClick={saveBlogDetails}>Blog</button>
 							</div>
 						</div>
 					</div>
@@ -138,11 +142,5 @@ const CourseCreate = () => {
 		</>
 	)
 }
-
-// const mapStateToProps = state => ({
-// 	course: state.courses,
-// 	auth: state.auth
-// });
-
 
 export default CourseCreate;
