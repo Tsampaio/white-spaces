@@ -25,4 +25,5 @@ body {
 
 #root > .container {
   flex: 1;
+  min-height: 567px;
 } 

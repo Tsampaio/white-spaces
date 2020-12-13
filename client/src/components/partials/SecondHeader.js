@@ -162,7 +162,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
           </div>
         </div>
       </div>
-      <div>        
+      <div className="navMenuCtn">        
       <div className="container-fluid">
         <div className="row">
           <div className="col-sm-12">

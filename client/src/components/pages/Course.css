@@ -138,8 +138,8 @@
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  border-top: 1px solid rgb(209, 209, 209);
-  padding: 12px 0;
+  /* border-top: 1px solid rgb(209, 209, 209); */
+  padding: 12px 10px;
 }
 
 .courseClassLecture {
@@ -211,42 +211,55 @@
   color: white;
 }
 
-.buyLifetime {
-  background-color: #00FF84;
-  color: #000;
-  transition: all 0.5s ease-in-out;
+.buyLifetime.membershipPay {
+  margin-top: 0;
+  width: 160px;
 }
 
-.buyLifetime:hover {
-  background-color: #03ce6c;
-  color: #000;
+.purchaseButtons .membershipPay:hover {
+  background-color: #2c9266;
+  color: #fff;
+  text-decoration: none;
 }
 
 .buyButton:hover {
   text-decoration: none;
 }
 
-.membershipButton {
-  background-color: rgb(85, 83, 255);
+#membershipButton {
+  /* background-color: rgb(85, 83, 255);
   display: inline-block;
   padding: 10px 20px;
   color: #fff;
   text-decoration: none;
   font-weight: bold;
   margin-bottom: 20px;
-  width: 60%;
+  width: 60%; */
+  
+  margin-top: 0;
 }
 
-.membershipButton:hover {
+#membershipButton:hover {
   text-decoration: none;
 }
 
 .purchaseButtons {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  
 }
 
 .purchaseButtons h1 {
   font-size: 24px;
+}
+
+.membershipCardCtn {
+  box-shadow: -2px 7px 29px 0px rgba(0,0,0,0.75);
+  border: none;
+}
+
+.card.membershipCardCtn .card-header {
+  background-color: #002333;
+  color: #fff;
 }
 
 .buyMembershipPrice,
@@ -257,6 +270,10 @@
 .curriculumCtn {
   margin-top: 30px;
   margin-bottom: 50px;
+}
+
+.curriculumCtn .card-body {
+  margin-bottom: 30px;
 }
 
 .courseCtn {

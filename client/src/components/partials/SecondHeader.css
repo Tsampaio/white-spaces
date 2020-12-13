@@ -5,6 +5,7 @@
   height: 100px;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .secondHeader ul {
@@ -27,6 +28,10 @@
 
 .secondHeader ul > li a:hover {
  color: #00FF84;
+}
+
+.navMenuCtn {
+  width: 100%;
 }
 
 .logo {

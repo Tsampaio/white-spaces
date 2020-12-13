@@ -15,14 +15,14 @@ const Course = ({ course, addCheckout, auth, payment }) => {
     loaded: false
   })
 
-  useEffect( () => {
+  useEffect(() => {
     store.dispatch(getCourse(courseTag));
     setPage({ loaded: true });
-    console.log( "after page loaded");
+    console.log("after page loaded");
   }, []);
 
-  useEffect( () => {
-    if(auth && auth.membership && auth.membership.active) {
+  useEffect(() => {
+    if (auth && auth.membership && auth.membership.active) {
       setPage({ loaded: true });
     }
 
@@ -38,7 +38,7 @@ const Course = ({ course, addCheckout, auth, payment }) => {
   console.log(auth);
   const description = () => {
 
-    if(course && course.data && course.data.description) {
+    if (course && course.data && course.data.description) {
       return course.data.description
     } else {
       return ""
@@ -46,14 +46,14 @@ const Course = ({ course, addCheckout, auth, payment }) => {
   }
 
   const goCheckout = async () => {
-      const selectedCourse = course && course.data;
-      const userEmail = auth && auth.user && auth.user.email
-      await addCheckout({selectedCourse, userEmail});
+    const selectedCourse = course && course.data;
+    const userEmail = auth && auth.user && auth.user.email
+    await addCheckout({ selectedCourse, userEmail });
   }
 
-  let classes = course && course.data && course.data.classes.map( (theClass, i) => {
+  let classes = course && course.data && course.data.classes.map((theClass, i) => {
     return (
-      <div className="courseClassItems" key={i}>
+      <div className={ i % 2 == 0 ? "courseClassItems bg-light" : "courseClassItems" } key={i}>
         <div className="courseClassLecture"><i className="far fa-file"></i>Lecture {theClass.lecture}</div>
         <div className="courseClassTitle">
           <Link to={`/courses/${course.data.tag}/lessons/1`}>{theClass.title}</Link>
@@ -65,29 +65,29 @@ const Course = ({ course, addCheckout, auth, payment }) => {
 
   const courseId = course && course.data && course.data._id;
 
-  const userGotCourse = auth && auth.coursesOwned.filter( (course) => {
-    console.log( course._id )
+  const userGotCourse = auth && auth.coursesOwned.filter((course) => {
+    console.log(course._id)
     return course._id == courseId
   });
-  console.log( auth && auth.coursesOwned );
-  console.log( userGotCourse);
-  
-  if( payment && payment.addingToCheckout ) {
-    console.log( payment.addingToCheckout );
+  console.log(auth && auth.coursesOwned);
+  console.log(userGotCourse);
+
+  if (payment && payment.addingToCheckout) {
+    console.log(payment.addingToCheckout);
     return <Redirect to="/cart/checkout" />
   }
 
-  if( auth && auth.membership && auth.membership.active) {
+  if (auth && auth.membership && auth.membership.active) {
     console.log("final check");
   }
 
   return (
     <Fragment>
       <SecondHeader />
-      
+
       <div className="courseCtn">
         <div className="container">
-        
+
           <div className="courseCtnHeader">
             <h1 className="coursePageTitle">{course && course.data && course.data.name}</h1>
           </div>
@@ -98,50 +98,56 @@ const Course = ({ course, addCheckout, auth, payment }) => {
             </div>
             <div className="row">
               <div className="col-lg-8 col-sm-12">
-                <h4 className="courseOverview">Overview</h4>
-                <div className="courseDescription">
-                  { parse(description()) }
+                <div className="card">
+                  <div className="card-header" >Description</div>
+                  <div className="courseDescription card-body">
+                    {parse(description())}
+                  </div>
                 </div>
-                <div className="curriculumCtn">
-                  <h4 className="courseOverview">Curriculum</h4>
-                  { classes }
+
+                <div className="curriculumCtn card">
+                  <div className="card-body">
+                    <h4 className="courseOverview">Curriculum</h4>
+                    {classes}
+                  </div>
                 </div>
               </div>
+
               <div className="col-lg-4 offset-sm-2 offset-lg-0 col-sm-8">
-                { (page.loaded && auth && auth.membership && auth.membership.active) ? null : (
-                  <div className="card purchaseButtons">
+                {(page.loaded && auth && auth.membership && auth.membership.active) ? null : (
+                  <div className="card purchaseButtons membershipCardCtn">
                     <div className="card-header">
                       Unlimited access all courses
                     </div>
                     <div className="card-body">
                       <h1>$18/month</h1>
-                      <Link className="membershipButton" to="/checkout"> <span className="buyMembershipPrice">Become Member</span></Link>
+                      <Link className="membershipPay" id="membershipButton" to="/membership"> <span className="buyMembershipPrice">Buy Membership</span></Link>
                     </div>
                   </div>
-                  )
+                )
                 }
 
-                { userGotCourse && userGotCourse.length > 0 || (auth && auth.membership && auth.membership.active) ? (
-                    <div className="card purchaseButtons">
-                      <div className="card-header">
-                        
-                      </div>
-                      <div className="card-body">
-                        <Link className="buyButton" to={`/courses/${course && course.data && course.data.tag}/lessons/1`}><span className="buyCoursePrice">Start Learning</span></Link>
-                      </div>
+                {userGotCourse && userGotCourse.length > 0 || (auth && auth.membership && auth.membership.active) ? (
+                  <div className="card purchaseButtons">
+                    <div className="card-header">
+
                     </div>
-                  ) : null 
+                    <div className="card-body">
+                      <Link className="buyButton" to={`/courses/${course && course.data && course.data.tag}/lessons/1`}><span className="buyCoursePrice">Start Learning</span></Link>
+                    </div>
+                  </div>
+                ) : null
                 }
-                { userGotCourse && userGotCourse.length < 1 && (
+                {userGotCourse && userGotCourse.length < 1 && (
                   <div className="card purchaseButtons">
                     <div className="card-header">
                       Buy Lifetime Access:
                     </div>
                     <div className="card-body">
                       <h1>${course && course.data && course.data.price} USD</h1>
-                      <Link  to="/cart/checkout"></Link>
-                      { auth && auth.isAuthenticated ? 
-                        <button className="buyButton buyLifetime" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
+                      <Link to="/cart/checkout"></Link>
+                      {auth && auth.isAuthenticated ?
+                        <button className="membershipPay buyLifetime" onClick={goCheckout}><span className="buyCoursePrice">Buy Course</span></button>
                         : <button className="buyButton buyLifetime"><Link to="/register" className="buyCoursePrice">Buy Course</Link></button>
                       }
                     </div>
@@ -151,8 +157,8 @@ const Course = ({ course, addCheckout, auth, payment }) => {
               </div>
             </div>
           </div>
-       
-      </div>
+
+        </div>
       </div>
     </Fragment>
   )
@@ -164,4 +170,4 @@ const mapStateToProps = state => ({
   payment: state.payment
 });
 
-export default connect(mapStateToProps, {addCheckout} )(Course);
+export default connect(mapStateToProps, { addCheckout })(Course);
