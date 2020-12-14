@@ -78,19 +78,19 @@ const Membership = ({ register, isAuthenticated }) => {
 								<h3 className="membershipTitle">Annual</h3>
 								<h1 className="membershipPrice">
 									<span className="membershipDollar">$</span>
-									<span className="membershipPriceValue">14<span>.99</span></span>
-									<span>/Month</span>
+									<span className="membershipPriceValue">99<span>.99</span></span>
+									<span>/year</span>
 								</h1>
-								<div>
+								{/* <div>
 									<span className="membershipPriceToPay">$179.88</span>
 									<span className="membershipBilled">BILLED YEARLY</span>
-								</div>
+								</div> */}
 								<ul className="membershipFeatures">
 									<li><i className="fa fa-check"></i>Access all courses from Library</li>
 									<li><i className="fa fa-check"></i>New courses every month</li>
 									<li><i className="fa fa-check"></i>Cancel at any time</li>
-									<li><i className="fa fa-check"></i>Download videos for offline learning</li>
-									<li><i className="fa fa-check"></i>Save 33%</li>
+									<li><i className="fa fa-check"></i>Download courses project files</li>
+									<li><i className="fa fa-check"></i>30% Discount in all courses</li>
 								</ul>
 								<Link className="membershipBuyButton" to="/membership/annual">Start Plan</Link>
 							</div>
@@ -109,8 +109,8 @@ const Membership = ({ register, isAuthenticated }) => {
 									<li><i className="fa fa-check"></i>Access all courses from Library</li>
 									<li><i className="fa fa-check"></i>New courses every month</li>
 									<li><i className="fa fa-check"></i>Cancel at any time</li>
-									<li><i className="fa fa-times"></i><span style={{textDecoration: "line-through"}}>Download videos for offline learning</span></li>
-									<li><i className="fa fa-times"></i><span style={{textDecoration: "line-through"}}>Save 33%</span></li>
+									<li><i className="fa fa-times"></i><span style={{textDecoration: "line-through"}}>Download courses project files</span></li>
+									<li><i className="fa fa-times"></i><span style={{textDecoration: "line-through"}}>30% Discount in all courses</span></li>
 								</ul>
 								<Link className="membershipBuyButton" to="/membership/monthly">Start Plan</Link>
 							</div>

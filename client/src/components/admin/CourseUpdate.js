@@ -11,7 +11,8 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { stateFromHTML } from 'draft-js-import-html';
 
-import './Admin.css'
+import './Admin.css';
+import './CourseUpdate.css';
 
 const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 	console.log(auth);
@@ -97,10 +98,10 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 
 	const updateClass = (e) => {
 
-		const index = e.target.parentElement.firstChild.value;
+		const index = e.target.parentElement.parentElement.firstChild.value;
 		console.log("current index is " + index);
 		const stateRef = { ...courseState };
-
+		console.log(e.target.value);
 		if (e.target.name === ("duration" || "lecture")) {
 			stateRef.classes[index][e.target.name] = parseInt(e.target.value);
 		} else {
@@ -112,12 +113,24 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 	const allClasses = courseState.classes && courseState.classes.length > 0 && courseState.classes.map((theClass, i) => {
 
 		return (
-			<div key={i}>
+			<div key={i} className="card singleClassCtn">
 				<input type="hidden" value={i} />
-				<input type="number" name="lecture" placeholder="lecture" onChange={updateClass} value={courseState.classes[i].lecture} />
-				<input type="text" name="title" placeholder="title" onChange={updateClass} value={courseState.classes[i].title} />
-				<input type="text" name="url" placeholder="url" onChange={updateClass} value={courseState.classes[i].url} />
-				<input type="number" name="duration" placeholder="duration" onChange={updateClass} value={courseState.classes[i].duration} />
+				<div className="card-body">
+					<label htmlFor="classNumber" className="col-2">Class Number</label>
+					<input id="classNumber" type="number" name="lecture" placeholder="lecture" onChange={updateClass} value={courseState.classes[i].lecture} />
+				</div>
+				<div className="card-body">
+					<label htmlFor="classTitle" className="col-2">Class Title</label>
+					<input id="classTitle" type="text" name="title" placeholder="title" onChange={updateClass} value={courseState.classes[i].title} size="50"/>
+				</div>
+				<div className="card-body">
+					<label htmlFor="classVideoUrl" className="col-2">Class Video Url</label>
+					<input id="classVideoDuration" type="text" name="url" placeholder="url" onChange={updateClass} value={courseState.classes[i].url} size="50"/>
+				</div>
+				<div className="card-body">
+					<label htmlFor="classVideoDuration" className="col-2">Class Video Duration</label>
+					<input id="classVideoDuration" type="number" name="duration" placeholder="duration" onChange={updateClass} value={courseState.classes[i].duration} />
+				</div>
 			</div>
 			// value={courseState.classes[i].lecture}
 		)
@@ -167,8 +180,11 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 								/>
 
 								<label>Course Price</label><input required type="number" name="coursePrice" onChange={updateCourse} value={courseState.loaded ? courseState.coursePrice : ""} /><br />
-								<label>Course Classes</label>
+								<div className="card">
+									<div className="card-header">Course Classes</div>
+								</div>
 								{allClasses}
+								
 								<button onClick={addClass}>Add Class</button>
 								<button onClick={updateDescription}>Update Course</button>
 								{course && course.message ?

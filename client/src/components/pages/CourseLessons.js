@@ -136,7 +136,7 @@ const CourseLessons = ({
 
 			for (let i = 0; i < course.data.classes.length; i++) {
 				//  console.log(course.data.classes[i]);
-				if (course.data.classes[i].watched[0].complete) {
+				if (course.data.classes[i].watched.length > 0 && course.data.classes[i].watched[0].complete) {
 					totalLessonsWatched += 1;
 				}
 			}

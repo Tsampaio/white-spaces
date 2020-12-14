@@ -43,7 +43,9 @@ const AllUsers = () => {
   }, [loading]);
 
   useEffect(() => {
+    console.log(stateUsers);
     const findSelected = stateUsers.find(user => {
+      console.log(user);
       return user.selected
     });
     console.log(findSelected);
@@ -51,20 +53,33 @@ const AllUsers = () => {
     setUserSelected(Boolean(findSelected));
   }, [stateUsers])
 
-  const selectUsers = (usersSelected) => {
+  const selectUsers = (usersSelected, event) => {
+    // console.log(stateUsers);
+    console.log(event.target.type)
     if (usersSelected === "all") {
-      const selectAllUsers = stateUsers.map((user) => {
-        return {
-          ...user,
-          selected: !selectAll
-        }
-      })
+      const selectAllUsers = stateUsers.map((user, i) => {
+        // if () {
+          // console.log(user);
+          // console.log(selectAll)
+          return {
+            ...user,
+            selected: !selectAll,
+            key: i
+          }
+        // }
+      });
 
-      setStateUsers(selectAllUsers);
+      const filteredUsers = selectAllUsers.filter(user => {
+        return user.role != "admin";
+      });
+
+      console.log(filteredUsers)
+      setStateUsers(filteredUsers);
       setSelectAll(!selectAll);
     } else {
       const selectAllCopy = [...stateUsers];
-      selectAllCopy[usersSelected].selected = !selectAllCopy[usersSelected].selected;
+      // selectAllCopy[usersSelected].selected = !selectAllCopy[usersSelected].selected;
+      selectAllCopy[usersSelected].selected =  event.target.checked;
 
       setStateUsers(selectAllCopy);
     }
@@ -76,15 +91,15 @@ const AllUsers = () => {
       const joinedDate = new Date(user.joined);
       const newJoinedDate = `${joinedDate.getDate()}/${joinedDate.getMonth() + 1}/${joinedDate.getFullYear()}`;
       console.log("Inside all Users");
-      console.log(newJoinedDate)
+      console.log(user.selected)
       return (
         <tr key={user._id}>
           <td>
             <input
               type="checkbox"
-              checked={user.selected}
+              checked={user.selected == null ? false : user.selected}
               value={user.selected}
-              onChange={() => selectUsers(i)}
+              onChange={(e) => { selectUsers(i, e) }}
             />
             <div className="allUsersTableDiv">{user.name}</div>
           </td>
@@ -210,8 +225,9 @@ const AllUsers = () => {
     setShow(false);
   }
 
-  console.log(selectAll);
-  console.log(modalText);
+  // console.log(selectAll);
+  // console.log(modalText);
+  // console.log(stateUsers)
   return (
     <div className="allUsersCtn container">
       <div className="row">
@@ -223,11 +239,11 @@ const AllUsers = () => {
                 <th>
                   <input
                     type="checkbox"
-                    onChange={() => selectUsers("all")}
+                    onChange={(e) => {selectUsers("all", e)}}
                   />
                   {userSelected ? (
-                    <select onChange={handleChange}>
-                      <option value="false" selected disabled hidden>Bulk Actions</option>
+                    <select defaultValue={'DEFAULT'} onChange={handleChange}>
+                      <option value="DEFAULT" disabled>Bulk Actions</option>
                       <option value="activate">Activate</option>
                       <option value="delete">Delete</option>
                     </select>
