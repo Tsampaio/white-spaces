@@ -4,6 +4,7 @@ import { allUsersAction } from '../../actions/admin';
 import { saveUsersAction, deleteUsersAction } from '../../actions/admin';
 // import ModalWindow from '../utils/ModalWindow';
 import { Button, Modal } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import './AllUsers.css'
 
 const AllUsers = () => {
@@ -101,7 +102,7 @@ const AllUsers = () => {
               value={user.selected}
               onChange={(e) => { selectUsers(i, e) }}
             />
-            <div className="allUsersTableDiv">{user.name}</div>
+            <div className="allUsersTableDiv"><Link to={`/admin/user/${user._id}`}>{user.name}</Link></div>
           </td>
           <td>
             <div className="allUsersTableDiv">{user.email}</div>

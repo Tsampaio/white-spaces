@@ -8,6 +8,8 @@ router.post('/activate/:token', authController.activate);
 router.post('/activateAccount/:email', authController.emailActivation);
 router.post('/login', authController.login);
 router.post('/loadUser', authController.protect, authController.loadUser);
+router.get('/getUserDetails/:id', authController.protect, authController.getUserDetails);
+
 router.get('/logout', authController.logout);
 router.post('/profilePic', authController.profilePic);
 router.post('/udpateUserDb', authController.protect, authController.udpateUserDb);

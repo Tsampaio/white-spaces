@@ -460,4 +460,26 @@ exports.udpateUserDb = async (req, res, next) => {
   }
 }
 
+exports.getUserDetails = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return next(
+        res.status(404).json({
+          status: 'Fail',
+          message: 'There is no user with email address.'
+        })
+      );
+    }
+
+    console.log(user);
+
+    res.json({
+      user: user
+    })
+  } catch (error) {
+    
+  }
+}
+
 

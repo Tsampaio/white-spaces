@@ -1,5 +1,6 @@
 import React, { memo, useEffect } from 'react'
 import AdminSidebar from './AdminSidebar';
+import UserProfile from './UserProfile';
 import Courses from './Courses';
 import CourseCreate from './CourseCreate';
 import CourseUpdate from './CourseUpdate';
@@ -33,6 +34,7 @@ const AdminCtn = ({match, history}) => {
             { (match.params.page === "courses" && !match.params.subPage) ? <Courses /> : null }
             { match.params.page === "courses" ? (match.params.subPage === "create" ? <CourseCreate /> : null) : null }
             { match.params.page === "courses" ? (match.params.subPage === "update" ? <CourseUpdate /> : null) : null }
+            { match.params.page === "user" ? <UserProfile /> : null }
             { match.params.page === "featureCourses" ? <FeatureCourses /> : null }
             { match.params.page === "users" ? <AllUsers /> : null }
             

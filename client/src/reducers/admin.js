@@ -9,11 +9,13 @@ import {
   ADMIN_DELETE_USERS_SUCCESS,
   ADMIN_DELETE_USERS_FAIL
 } from '../contants/adminConstants';
+import { FIND_USER_REQUEST, FIND_USER_SUCCESS } from '../contants/userConstants';
 
 const initialState = {
   loading: true,
   users: [],
-  message: ""
+  message: "",
+  userDetails: {}
 }
 
 export default function (state = initialState, action) {
@@ -23,6 +25,7 @@ export default function (state = initialState, action) {
     case USERS_LIST_REQUEST:
     case ADMIN_UPDATE_USERS_REQUEST:
     case ADMIN_DELETE_USERS_REQUEST:
+    case FIND_USER_REQUEST:
       return {
         ...state,
         loading: true
@@ -42,6 +45,12 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
         message: payload
+      }
+    case FIND_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        userDetails: payload
       }
     default:
       return state;

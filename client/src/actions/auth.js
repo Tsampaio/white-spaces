@@ -15,7 +15,13 @@ import {
   EMAIL_ACTIVATION,
   ACCOUNT_ACTIVATION
 } from './types';
-import { USER_DETAILS_REQUEST } from '../contants/userConstants';
+
+import { 
+  FIND_USER_REQUEST, 
+  FIND_USER_SUCCESS, 
+  USER_DETAILS_REQUEST 
+} from '../contants/userConstants';
+
 import { 
   RESET_PASSWORD, 
   RESET_PASSWORD_FAIL, 
@@ -79,6 +85,32 @@ export const login = ({ email, password }) => async dispatch => {
       type: LOGIN_FAIL,
       payload: error.response.data
     });
+  }
+}
+
+//Load User
+export const getUserDetails = (id) => async dispatch => {
+  try {
+
+    dispatch({
+      type: FIND_USER_REQUEST
+    });
+
+    const res = await axios.get(`/api/users/getUserDetails/${id}`);
+    console.log(res.data);
+
+    dispatch({
+      type: FIND_USER_SUCCESS,
+      payload: res.data.user
+    });
+
+  } catch (err) {
+    dispatch({
+      type: AUTH_ERROR
+    });
+
+    //const errors = err.response.data.message;
+    console.log(err);
   }
 }
 
