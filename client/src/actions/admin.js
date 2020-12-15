@@ -10,6 +10,7 @@ import {
   ADMIN_DELETE_USERS_FAIL
 } from '../contants/adminConstants';
 import axios from 'axios';
+import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS } from '../contants/userConstants';
 
 export const allUsersAction = ( token ) => async dispatch => {
   try {
@@ -107,5 +108,30 @@ export const deleteUsersAction = ( modelText ) => async dispatch => {
       type: ADMIN_DELETE_USERS_FAIL,
       payload: errors.message
     })
+  }
+}
+
+export const getUserPurchases = (id) => async dispatch => {
+  try {
+
+    dispatch({
+      type: FIND_USER_PURCHASES_REQUEST
+    });
+
+    const res = await axios.get(`/api/users/getUserPurchases/${id}`);
+    console.log(res.data);
+
+    dispatch({
+      type: FIND_USER_PURCHASES_SUCCESS,
+      payload: res.data.transactions
+    });
+
+  } catch (err) {
+    dispatch({
+      type: FIND_USER_PURCHASES_FAIL
+    });
+
+    //const errors = err.response.data.message;
+    console.log(err);
   }
 }

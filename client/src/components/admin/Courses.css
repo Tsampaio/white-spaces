@@ -8,7 +8,7 @@ html,body {
 }
 
 .adminCtn .row {
-  min-height: calc(100vh - 200px);
+  /* min-height: calc(100vh - 200px); */
 }
 
 .adminCtn .col-3,

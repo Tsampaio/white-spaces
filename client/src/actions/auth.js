@@ -17,6 +17,7 @@ import {
 } from './types';
 
 import { 
+  FIND_USER_FAIL,
   FIND_USER_REQUEST, 
   FIND_USER_SUCCESS, 
   USER_DETAILS_REQUEST 
@@ -106,7 +107,7 @@ export const getUserDetails = (id) => async dispatch => {
 
   } catch (err) {
     dispatch({
-      type: AUTH_ERROR
+      type: FIND_USER_FAIL
     });
 
     //const errors = err.response.data.message;

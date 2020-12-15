@@ -1,5 +1,6 @@
 const express = require('express');
 const authController = require('./../controllers/authController');
+const { getUserPurchases } = require('./../controllers/authController');
 
 const router = express.Router();
 
@@ -9,6 +10,7 @@ router.post('/activateAccount/:email', authController.emailActivation);
 router.post('/login', authController.login);
 router.post('/loadUser', authController.protect, authController.loadUser);
 router.get('/getUserDetails/:id', authController.protect, authController.getUserDetails);
+router.get('/getUserPurchases/:id', authController.protect, authController.getUserPurchases);
 
 router.get('/logout', authController.logout);
 router.post('/profilePic', authController.profilePic);

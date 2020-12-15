@@ -1,0 +1,18 @@
+
+.adminCtn table {
+  table-layout: fixed ;
+  width: 100% ;
+}
+.adminCtn td {
+  width: 20% ;
+}
+
+.adminCtn td, .adminCtn th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}

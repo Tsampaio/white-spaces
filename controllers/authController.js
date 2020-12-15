@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const Transactions = require('../models/transactionModel');
 const fs = require('fs');
 
 const Email = require('../utils/email');
@@ -185,7 +186,7 @@ exports.protect = async (req, res, next) => {
     return res.status(200).json({
       status: 'guest',
       message: 'Failed to authenticate'
-      
+
     });
   }
 
@@ -437,18 +438,18 @@ exports.udpateUserDb = async (req, res, next) => {
     // 3) If so, update password
     user.name = req.body.name;
 
-    if( req.body.newPassword) {
+    if (req.body.newPassword) {
       console.log("inside password")
       user.password = req.body.newPassword;
       user.passwordConfirm = req.body.newPasswordConfirm;
-      message="Password updated",
-      await user.save();
+      message = "Password updated",
+        await user.save();
     } else {
-      message="Name updated",
-      await user.save({ validateBeforeSave: false });
+      message = "Name updated",
+        await user.save({ validateBeforeSave: false });
     }
-    
-    
+
+
     // User.findByIdAndUpdate will NOT work as intended!
 
     // 4) Log user in, send JWT
@@ -478,8 +479,27 @@ exports.getUserDetails = async (req, res) => {
       user: user
     })
   } catch (error) {
-    
+
   }
 }
+
+exports.getUserPurchases = async (req, res) => {
+  try {
+    const transactions = await Transactions.find();
+    // req.params.id
+
+    const allTransactions = transactions.filter((trs) => {
+      return trs.user == req.params.id;
+    })
+    console.log(allTransactions);
+    res.json({
+      transactions: allTransactions
+    })
+  } catch (error) {
+
+  }
+
+}
+
 
 

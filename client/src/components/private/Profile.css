@@ -9,7 +9,7 @@
     flex-direction: column;
 }
 
-.profileCtn .row {
+.profileCtn .container-fluid > .row {
     flex: 1 1;
 }
 
