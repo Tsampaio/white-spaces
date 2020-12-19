@@ -1,3 +1,10 @@
+.adminCtn {
+  padding: 50px;
+}
+
+.adminCtn > .row {
+  padding: 20px 0;
+}
 
 .adminCtn table {
   table-layout: fixed ;
@@ -7,12 +14,29 @@
   width: 20% ;
 }
 
+.adminCtn th {
+  background-color: #999999;
+}
+
 .adminCtn td, .adminCtn th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
 }
 
-tr:nth-child(even) {
+tr:nth-child(odd) {
   background-color: #dddddd;
+}
+
+.card.userCard {
+  padding: 20px 50px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.userColDivider {
+  width: 50%;
+  margin-bottom: 20px;
 }

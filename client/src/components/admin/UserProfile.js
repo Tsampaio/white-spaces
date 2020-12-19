@@ -11,7 +11,7 @@ const Courses = ({ match, history }) => {
 
   const admin = useSelector(state => state.admin);
   const { userPurchases } = admin;
-  const { _id, name, email } = admin.userDetails;
+  const { _id, name, email, joined, active, purchases } = admin.userDetails;
   console.log(_id)
   const { subPage } = useParams();
   console.log(subPage);
@@ -29,23 +29,68 @@ const Courses = ({ match, history }) => {
     img = images(`./default.png`);
   }
 
+  const date = new Date(joined);
+  const uerJoined = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+  const allPurchases = userPurchases.map((purchase, i) => {
+    const date = new Date(purchase.date);
+    const newDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
+    return (
+      <tr key={i}>
+        <td>{newDate}</td>
+        <td>{purchase.price}</td>
+        <td>None</td>
+        <td>{purchase.price}</td>
+        <td>{purchase.productName}</td>
+      </tr>
+    )
+  });
+
+  // const totalPurchases = userPurchases.reduce((purchase, i) => {
+
+  // });
+
   return (
     <>
       <div className="adminCtn col-xl-10">
         <div className="row">
           <div className="col-2">
-            <img src={img.default} style={{ width: "100%" }} />
+            <img className="userAvatar" src={img.default} style={{ width: "100%" }} />
           </div>
           <div className="col-10">
-            <h6>Name</h6>
-            <h1>{name}</h1>
-            <h6>Email</h6>
-            <h1>{email}</h1>
+            <div className="card userCard">
+              <div className="userColDivider">
+                <h6>Name</h6>
+                <h4>{name}</h4>
+              </div>
+              <div className="userColDivider">
+                <h6>Email</h6>
+                <h4>{email}</h4>
+              </div>
+              <div className="userColDivider">
+                <h6>Profile Status</h6>
+                <h4>{active}</h4>
+              </div>
+              <div className="userColDivider">
+                <h6>Account Created</h6>
+                <h4>{uerJoined}</h4>
+              </div>
+              <div className="userColDivider">
+                <h6>Last Login</h6>
+                <h4>Today</h4>
+              </div>
+              <div className="userColDivider">
+                <h6>Total Purchases</h6>
+                <h4>${purchases} USD</h4>
+              </div>
+            </div>
+            
           </div>
         </div>
         <div className="row">
           <div className="col-2">
-            <h1>Purchase History</h1>
+            <h4>Purchase History</h4>
           </div>
           <div className="col-10">
             <table>
@@ -53,23 +98,11 @@ const Courses = ({ match, history }) => {
                 <th>DATE</th>
                 <th>FULL PRICE</th>
                 <th>DISCOUNTS</th>
-                <th>EARNINGS (USD)</th>
+                <th>SALE PRICE</th>
                 <th>PRODUCT</th>
               </tr>
               
-              {
-                userPurchases.map(purchase => {
-                  return (
-                    <tr>
-                      <td>Today</td>
-                      <td>{purchase.price}</td>
-                      <td>None</td>
-                      <td>{purchase.price}</td>
-                      <td>{purchase.productName}</td>
-                    </tr>
-                  )
-                })
-              }
+              {allPurchases.reverse()}
 
             </table>
           </div>
