@@ -1,5 +1,5 @@
-import { 
-  USERS_LIST_REQUEST, 
+import {
+  USERS_LIST_REQUEST,
   USERS_LIST_SUCCESS,
   USERS_LIST_FAIL,
   ADMIN_UPDATE_USERS_REQUEST,
@@ -7,12 +7,15 @@ import {
   ADMIN_UPDATE_USERS_FAIL,
   ADMIN_DELETE_USERS_REQUEST,
   ADMIN_DELETE_USERS_SUCCESS,
-  ADMIN_DELETE_USERS_FAIL
+  ADMIN_DELETE_USERS_FAIL,
+  ADMIN_ENROL_USER_IN_COURSE_REQUEST,
+  ADMIN_ENROL_USER_IN_COURSE_SUCCESS,
+  ADMIN_ENROL_USER_IN_COURSE_FAIL
 } from '../contants/adminConstants';
 import axios from 'axios';
 import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS } from '../contants/userConstants';
 
-export const allUsersAction = ( token ) => async dispatch => {
+export const allUsersAction = (token) => async dispatch => {
   try {
     console.log("INSIDE GET ALL USERS ACTION");
     console.log("The token is")
@@ -22,7 +25,7 @@ export const allUsersAction = ( token ) => async dispatch => {
     });
 
     console.log("Before axios")
-    const {data} = await axios.get(`/api/admin/getUsers`);
+    const { data } = await axios.get(`/api/admin/getUsers`);
 
     console.log("All users");
     console.log(data);
@@ -42,7 +45,7 @@ export const allUsersAction = ( token ) => async dispatch => {
   }
 }
 
-export const saveUsersAction = ( modelText ) => async dispatch => {
+export const saveUsersAction = (modelText) => async dispatch => {
   console.log("Inside Save users action out")
   try {
     dispatch({
@@ -57,7 +60,7 @@ export const saveUsersAction = ( modelText ) => async dispatch => {
     }
     const body = modelText;
 
-    const {data} = await axios.post(`/api/admin/updateUsers`, body, config);
+    const { data } = await axios.post(`/api/admin/updateUsers`, body, config);
 
     console.log(data);
 
@@ -76,7 +79,7 @@ export const saveUsersAction = ( modelText ) => async dispatch => {
   }
 }
 
-export const deleteUsersAction = ( modelText ) => async dispatch => {
+export const deleteUsersAction = (modelText) => async dispatch => {
   console.log("Inside Delete users action out")
   console.log(modelText);
   try {
@@ -92,7 +95,7 @@ export const deleteUsersAction = ( modelText ) => async dispatch => {
     }
     const body = modelText;
 
-    const {data} = await axios.post(`/api/admin/deleteUsers`, body, config);
+    const { data } = await axios.post(`/api/admin/deleteUsers`, body, config);
 
     console.log(data);
 
@@ -135,3 +138,43 @@ export const getUserPurchases = (id) => async dispatch => {
     console.log(err);
   }
 }
+
+export const enrollUserInCourse = (courseId, userId) => async dispatch => {
+  // console.log("Course id is: " + courseId);
+  // console.log("User id is: " + userId);
+  try {
+    dispatch({
+      type: ADMIN_ENROL_USER_IN_COURSE_REQUEST
+    });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const body = {
+      courseId,
+      userId
+    };
+
+    const res = await axios.post(`/api/admin/enrolUserInCourse`, body, config);
+    console.log(res.data);
+
+    dispatch({
+      type: ADMIN_ENROL_USER_IN_COURSE_SUCCESS,
+      payload: res.data.courses,
+      message: res.data.message
+    });
+
+  } catch (error) {
+
+    const errors = error.response.data;
+    console.log("SAVING FAIL");
+    console.log(errors);
+    dispatch({
+      type: ADMIN_ENROL_USER_IN_COURSE_FAIL,
+      payload: errors.message
+    })
+  }
+}
+

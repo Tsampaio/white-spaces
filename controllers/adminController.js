@@ -1,5 +1,7 @@
 
 const User = require('../models/userModel');
+const Courses = require('../models/courseModel');
+const Transactions = require('../models/transactionModel');
 
 exports.getUsers = async (req, res) => {
   console.log("Inside GET USERS");
@@ -101,5 +103,47 @@ exports.deleteUsers = async (req, res) => {
     res.status(401).json({
       message: error.message
     })
+  }
+}
+
+exports.enrolUserInCourse = async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+      console.log(req.body.courseId);
+      console.log(req.body.userId);
+
+      const user = await User.findById(req.body.userId);
+      const course = await Courses.findById(req.body.courseId);
+
+      const userHasCourse =  user.courses.find(course => {
+        return course._id == req.body.courseId
+      });
+
+      if(!userHasCourse) {
+        user.courses = [ ...user.courses, course._id];
+        await user.save({ validateBeforeSave: false });
+
+        course.users = [...course.users, user._id];
+        await course.save({ validateBeforeSave: false });
+        
+        console.log("User has new Course");
+
+        res.status(200).json({
+          courses: user.courses,
+          message: `${course.name} added to library`
+        });
+
+      } else {
+        throw new Error('User already has the course');
+      }
+      
+    } else {
+      throw new Error('You are not an admin');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
   }
 }

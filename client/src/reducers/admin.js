@@ -7,7 +7,10 @@ import {
   ADMIN_UPDATE_USERS_REQUEST,
   ADMIN_DELETE_USERS_REQUEST,
   ADMIN_DELETE_USERS_SUCCESS,
-  ADMIN_DELETE_USERS_FAIL
+  ADMIN_DELETE_USERS_FAIL,
+  ADMIN_ENROL_USER_IN_COURSE_REQUEST,
+  ADMIN_ENROL_USER_IN_COURSE_SUCCESS,
+  ADMIN_ENROL_USER_IN_COURSE_FAIL
 } from '../contants/adminConstants';
 import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS, FIND_USER_REQUEST, FIND_USER_SUCCESS } from '../contants/userConstants';
 
@@ -28,6 +31,7 @@ export default function (state = initialState, action) {
     case ADMIN_DELETE_USERS_REQUEST:
     case FIND_USER_REQUEST:
     case FIND_USER_PURCHASES_REQUEST:
+    case ADMIN_ENROL_USER_IN_COURSE_REQUEST:
       return {
         ...state,
         loading: true
@@ -44,6 +48,7 @@ export default function (state = initialState, action) {
     case ADMIN_UPDATE_USERS_FAIL:
     case ADMIN_DELETE_USERS_FAIL:
     case FIND_USER_PURCHASES_FAIL:
+    case ADMIN_ENROL_USER_IN_COURSE_FAIL:
       return {
         ...state,
         loading: false,
@@ -59,6 +64,14 @@ export default function (state = initialState, action) {
       return {
         ...state,
         userPurchases: payload
+      }
+    case ADMIN_ENROL_USER_IN_COURSE_SUCCESS:
+      return {
+        ...state,
+        userDetails: {
+          ...state.userDetails,
+          courses: payload
+        }
       }
     default:
       return state;
