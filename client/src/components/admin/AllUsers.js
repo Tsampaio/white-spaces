@@ -91,8 +91,8 @@ const AllUsers = () => {
     if (user.role !== "admin") {
       const joinedDate = new Date(user.joined);
       const newJoinedDate = `${joinedDate.getDate()}/${joinedDate.getMonth() + 1}/${joinedDate.getFullYear()}`;
-      console.log("Inside all Users");
-      console.log(user.selected)
+      // console.log("Inside all Users");
+      // console.log(user.selected)
       return (
         <tr key={user._id}>
           <td>
@@ -272,8 +272,8 @@ const AllUsers = () => {
         </Modal.Header>
         <Modal.Body>
           <p>Are you sure you want to {modalText.action} the following users?</p>
-          {modalText.users.map(user => {
-            return <p><b>{user.name}</b></p>;
+          {modalText.users.map((user,i) => {
+            return <p key={i}><b>{user.name}</b></p>;
           })}
         </Modal.Body>
         <Modal.Footer>

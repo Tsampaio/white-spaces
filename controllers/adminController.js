@@ -78,6 +78,7 @@ exports.updateUsers = async (req, res) => {
 exports.deleteUsers = async (req, res) => {
   try {
     if (req.user.role === 'admin') {
+      console.log("users to delete");
       console.log(req.body.users);
 
       const allUsers = req.body.users.map(user => {
@@ -85,9 +86,12 @@ exports.deleteUsers = async (req, res) => {
       })
 
       console.log(allUsers);
-
+      if(req.body.users.length > 1 ) {
       await User.deleteMany({ _id: { $in: allUsers } })
       console.log("users deleted");
+      } else {
+        await User.findByIdAndDelete(allUsers[0]);
+      } 
 
       const allDbUsers = await User.find();
 

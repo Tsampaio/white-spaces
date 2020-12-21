@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, withRouter  } from 'react-router-dom';
 import { getUserDetails } from '../../actions/auth';
 import { getCourses } from '../../actions/courses';
-import { enrollUserInCourse, removeCourseAction, getUserPurchases } from '../../actions/admin';
+import { enrollUserInCourse, removeCourseAction, getUserPurchases, deleteUsersAction } from '../../actions/admin';
 // import './Courses.css'
 import './UserProfile.css'
 
@@ -28,6 +28,7 @@ const Courses = ({ match, history }) => {
   const [show, setShow] = useState(false);
   const [modalText, setModalText] = useState({
     title: "",
+    body: "",
     action: "",
     users: [],
   });
@@ -90,29 +91,27 @@ const Courses = ({ match, history }) => {
       id: valueSplit[0],
       name: valueSplit[1]
     });
+    setModalText({
+      ...modalText,
+      title: "Enroll user in course",
+      body: `Are you sure you want to enrol <b>${name}</b> in the following course?`,
+      action: "adding"
+    });
+
     handleShow();
   }
 
-  const enrollUser = () => {
-    dispatch(enrollUserInCourse(courseSelected.id, _id));
+  const modalAction = () => {
+    if (modalText.action === "adding") {
+      dispatch(enrollUserInCourse(courseSelected.id, _id));
+    } else if (modalText.action === "removing") {
+      dispatch(removeCourseAction(courseSelected.id, _id));
+    } else if(modalText.action === "deleteUser" ) {
+      dispatch(deleteUsersAction(modalText));
+      history.push("/admin/users");
+    }
     setShow(false);
   }
-
-  // const saveChanges = () => {
-  // console.log("inside save changes");
-  // if (modalText.action === "activate") {
-  //   dispatch(saveUsersAction(modalText));
-  // } else if (modalText.action === "delete") {
-  //   dispatch(deleteUsersAction(modalText));
-  // }
-  // setShow(false);
-  // }
-
-  // const theUserCourses = userCourses && userCourses.filter(courseId => {
-  //   for(let i=0; i < all.length; i++ ) {
-  //     return all[i]._id == courseId
-  //   }
-  // });
 
   const theUserCoursesFunc = () => {
     console.log("calling theUserCoursesFunc");
@@ -127,22 +126,42 @@ const Courses = ({ match, history }) => {
       }
     }
 
-    // return courses;
     setUserCoursesDetails(courses);
   }
 
-  const removeCourse = (courseId, userId) => {
-    dispatch(removeCourseAction(courseId, userId));
+  const removeCourse = (courseId, courseName) => {
+    // dispatch(removeCourseAction(courseId, userId));
+    setCourseSelected({
+      id: courseId,
+      name: courseName
+    });
+    setModalText({
+      ...modalText,
+      title: "Delete course from user",
+      body: "Are you sure you want to delete the course " + courseName + "?",
+      action: "removing"
+    });
+    handleShow();
   }
 
   const displayUserCourses = userCoursesDetails.map((course, i) => {
     return (
       <tr key={i}>
         <td>{course.name}</td>
-        <td onClick={() => removeCourse(course._id, _id)}><i className="fas fa-trash-alt"></i></td>
+        <td onClick={() => removeCourse(course._id, course.name)}><i className="fas fa-trash-alt"></i></td>
       </tr>
     )
-  })
+  });
+
+  const deleteUser = () => {
+    setModalText({
+      title: "Delete user",
+      action: "deleteUser",
+      body: "Are you sure you want to delete the user " + name,
+      users: [admin.userDetails]
+    });
+    handleShow();
+  }
 
   console.log(userCoursesDetails);
   console.log(userCourses);
@@ -230,18 +249,23 @@ const Courses = ({ match, history }) => {
                 <option value="DEFAULT" disabled>Select course</option>
                 {allCourses}
               </select>
-              <button onClick={enrollUser}>Enroll</button>
+              {/* <button onClick={enrollUser}>Enroll</button> */}
             </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="offset-md-2 col-10">
+            <button onClick={deleteUser} className="btn btn-danger">Delete User</button>
           </div>
         </div>
       </div>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Enroll user in course</Modal.Title>
+          <Modal.Title>{modalText.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Are you sure you want to enroll <b>{name}</b> in the following course?</p>
+          <p>{modalText.body}</p>
 
           <p><b>{courseSelected.name}</b></p>
 
@@ -250,7 +274,7 @@ const Courses = ({ match, history }) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={enrollUser}>
+          <Button variant="primary" onClick={modalAction}>
             Save Changes
           </Button>
         </Modal.Footer>
@@ -259,4 +283,4 @@ const Courses = ({ match, history }) => {
   )
 }
 
-export default Courses;
+export default withRouter(Courses);
