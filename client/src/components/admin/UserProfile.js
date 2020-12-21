@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getUserDetails } from '../../actions/auth';
 import { getCourses } from '../../actions/courses';
-import { getUserPurchases } from '../../actions/admin';
-import { enrollUserInCourse } from '../../actions/admin';
+import { enrollUserInCourse, removeCourseAction, getUserPurchases } from '../../actions/admin';
 // import './Courses.css'
 import './UserProfile.css'
 
@@ -43,12 +42,13 @@ const Courses = ({ match, history }) => {
     dispatch(getUserDetails(subPage));
     dispatch(getUserPurchases(subPage));
     dispatch(getCourses());
+    theUserCoursesFunc();
   }, []);
 
   useEffect(() => {
     setUserCourses(courses);
-    
-  }, [courses]);
+
+  }, [courses, userPurchases]);
 
   useEffect(() => {
     theUserCoursesFunc();
@@ -81,7 +81,7 @@ const Courses = ({ match, history }) => {
   });
 
   const allCourses = all.map((course, i) => {
-    return <option value={`${course._id},${course.name}`}>{course.name}</option>
+    return <option key={i} value={`${course._id},${course.name}`}>{course.name}</option>
   });
 
   const handleChange = (e) => {
@@ -115,6 +115,7 @@ const Courses = ({ match, history }) => {
   // });
 
   const theUserCoursesFunc = () => {
+    console.log("calling theUserCoursesFunc");
     let courses = [];
     if (userCourses && userCourses.length > 0) {
       for (let i = 0; i < all.length; i++) {
@@ -130,12 +131,21 @@ const Courses = ({ match, history }) => {
     setUserCoursesDetails(courses);
   }
 
-  const displayUserCourses = userCoursesDetails.map(course => {
-    return <h4>{course.name}</h4>
+  const removeCourse = (courseId, userId) => {
+    dispatch(removeCourseAction(courseId, userId));
+  }
+
+  const displayUserCourses = userCoursesDetails.map((course, i) => {
+    return (
+      <tr key={i}>
+        <td>{course.name}</td>
+        <td onClick={() => removeCourse(course._id, _id)}><i className="fas fa-trash-alt"></i></td>
+      </tr>
+    )
   })
 
   console.log(userCoursesDetails);
-  console.log(displayUserCourses);
+  console.log(userCourses);
   return (
     <>
       <div className="adminCtn col-xl-10">
@@ -200,7 +210,11 @@ const Courses = ({ match, history }) => {
           </div>
           <div className="col-10">
             <div className="card userCard">
-              {displayUserCourses}
+              <table>
+                <tbody>
+                  {displayUserCourses}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

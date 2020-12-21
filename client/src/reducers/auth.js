@@ -47,9 +47,9 @@ export default function( state = initialState, action ) {
   // console.log( type );
   if(payload) {
   
-    console.log("-------------CHANGING MESSAGE----------")
-    console.log(type)
-    console.log( payload.message );
+    // console.log("-------------CHANGING MESSAGE----------")
+    // console.log(type)
+    // console.log( payload.message );
   }
   switch(type) {
       case USER_DETAILS_REQUEST:

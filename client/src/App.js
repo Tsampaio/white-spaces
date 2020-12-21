@@ -24,8 +24,8 @@ import RST_PASSWORD from './components/pages/ResetPassword';
 import Activate from './components/pages/Activate';
 import ActivateEmail from './components/pages/ActivateEmail';
 import Admin from './components/admin/AdminCtn';
-import CourseCreate from './components/admin/CourseCreate';
-import CourseUpdate from './components/pages/CourseUpdate';
+// import CourseCreate from './components/admin/CourseCreate';
+// import CourseUpdate from './components/pages/CourseUpdate';
 import ProfileCtn from './components/private/ProfileCtn';
 
 function App() {

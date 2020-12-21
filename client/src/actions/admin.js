@@ -10,7 +10,10 @@ import {
   ADMIN_DELETE_USERS_FAIL,
   ADMIN_ENROL_USER_IN_COURSE_REQUEST,
   ADMIN_ENROL_USER_IN_COURSE_SUCCESS,
-  ADMIN_ENROL_USER_IN_COURSE_FAIL
+  ADMIN_ENROL_USER_IN_COURSE_FAIL,
+  ADMIN_REMOVE_USER_COURSE_REQUEST,
+  ADMIN_REMOVE_USER_COURSE_SUCCESS,
+  ADMIN_REMOVE_USER_COURSE_FAIL
 } from '../contants/adminConstants';
 import axios from 'axios';
 import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS } from '../contants/userConstants';
@@ -73,7 +76,7 @@ export const saveUsersAction = (modelText) => async dispatch => {
     const errors = error.response.data;
     console.log(errors);
     dispatch({
-      type: USERS_LIST_FAIL,
+      type: ADMIN_UPDATE_USERS_FAIL,
       payload: errors.message
     })
   }
@@ -173,6 +176,45 @@ export const enrollUserInCourse = (courseId, userId) => async dispatch => {
     console.log(errors);
     dispatch({
       type: ADMIN_ENROL_USER_IN_COURSE_FAIL,
+      payload: errors.message
+    })
+  }
+}
+
+export const removeCourseAction = (courseId, userId) => async dispatch => {
+  // console.log("Course id is: " + courseId);
+  // console.log("User id is: " + userId);
+  try {
+    dispatch({
+      type: ADMIN_REMOVE_USER_COURSE_REQUEST
+    });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const body = {
+      courseId,
+      userId
+    };
+
+    const res = await axios.post(`/api/admin/removeUserCourse`, body, config);
+    console.log(res.data);
+
+    dispatch({
+      type: ADMIN_REMOVE_USER_COURSE_SUCCESS,
+      payload: res.data.courses,
+      message: res.data.message
+    });
+
+  } catch (error) {
+
+    const errors = error.response.data;
+    console.log("SAVING FAIL");
+    console.log(errors);
+    dispatch({
+      type: ADMIN_REMOVE_USER_COURSE_FAIL,
       payload: errors.message
     })
   }

@@ -8,7 +8,7 @@ import {
 export const checkMembership = (token) => async dispatch => {
   
   try {
-    console.log("inside checkMembership");
+    // console.log("inside checkMembership");
 
     const body = JSON.stringify({token});
 
@@ -19,7 +19,7 @@ export const checkMembership = (token) => async dispatch => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log(res.data);
+    // console.log(res.data);
     dispatch({
       type: CHECK_MEMBERSHIP,
       payload: res.data

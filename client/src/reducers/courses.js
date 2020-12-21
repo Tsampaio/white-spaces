@@ -22,7 +22,7 @@ const initialState = {
 export default function (state = initialState, action) {
   const { type, payload } = action;
 
-  console.log(type);
+  // console.log(type);
 
   switch (type) {
     case COURSE_LIST_REQUEST:
@@ -38,8 +38,8 @@ export default function (state = initialState, action) {
         data: payload.course
       }
     case GET_COURSES:
-      console.log("Reducer ALL courses");
-      console.log(payload);
+      // console.log("Reducer ALL courses");
+      // console.log(payload);
       return {
         ...state,
         loading: false,

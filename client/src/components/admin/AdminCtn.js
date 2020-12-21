@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import AllUsers from './AllUsers';
 
 const AdminCtn = ({match, history}) => {
-  console.log(match);
+  // console.log(match);
 
   const auth = useSelector(state => state.auth);
   const { active } = auth;

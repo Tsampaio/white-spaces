@@ -115,17 +115,17 @@ exports.enrolUserInCourse = async (req, res) => {
       const user = await User.findById(req.body.userId);
       const course = await Courses.findById(req.body.courseId);
 
-      const userHasCourse =  user.courses.find(course => {
+      const userHasCourse = user.courses.find(course => {
         return course._id == req.body.courseId
       });
 
-      if(!userHasCourse) {
-        user.courses = [ ...user.courses, course._id];
+      if (!userHasCourse) {
+        user.courses = [...user.courses, course._id];
         await user.save({ validateBeforeSave: false });
 
         course.users = [...course.users, user._id];
         await course.save({ validateBeforeSave: false });
-        
+
         console.log("User has new Course");
 
         res.status(200).json({
@@ -136,10 +136,47 @@ exports.enrolUserInCourse = async (req, res) => {
       } else {
         throw new Error('User already has the course');
       }
-      
+
     } else {
       throw new Error('You are not an admin');
     }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
+  }
+}
+
+exports.removeUserCourse = async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+      console.log(req.body.courseId);
+      console.log(req.body.userId);
+
+      const user = await User.findById(req.body.userId);
+      const course = await Courses.findById(req.body.courseId);
+
+      const userCourseRemoved = user.courses.filter(course => {
+        return course._id != req.body.courseId
+      });
+
+      user.courses = userCourseRemoved;
+      await user.save({ validateBeforeSave: false });
+
+      const courseRemoveUser = course.users.filter(user => {
+        return user._id != req.body.userId
+      })
+
+      course.users = courseRemoveUser;
+      await course.save({ validateBeforeSave: false });
+
+      res.status(200).json({
+        courses: user.courses,
+        message: `${course.name} removed from user library`
+      });
+    }
+
   } catch (error) {
     console.log(error.message);
     res.status(401).json({

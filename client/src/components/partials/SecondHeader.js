@@ -30,7 +30,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
      */
     function handleClickOutside(event) {
       if (dropMenu.current && !dropMenu.current.contains(event.target) && !profileIcon.current.contains(event.target)) {
-        console.log("dropMenu");
+        // console.log("dropMenu");
         // alert("You clicked outside of me!");
         // console.log("outside");
         setDropdown({
@@ -39,7 +39,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
       } 
       
       if(dropMobileMenu.current && dropMenu.current && !dropMenu.current.contains(event.target) && !burgerMenuIcon.current.contains(event.target)){
-        console.log("inside dropMobileMenu");
+        // console.log("inside dropMobileMenu");
         setMobileMenu({
           open: false
         })
@@ -89,8 +89,8 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
 
   const images = require.context('../../images/', true, /\.(png|jpe?g|svg)$/);
 
-  console.log("+++++++");
-  console.log(images);
+  // console.log("+++++++");
+  // console.log(images);
 
   if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
     // import Pic from `/${auth.user._id}.jpg`;

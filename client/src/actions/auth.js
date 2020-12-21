@@ -98,7 +98,7 @@ export const getUserDetails = (id) => async dispatch => {
     });
 
     const res = await axios.get(`/api/users/getUserDetails/${id}`);
-    console.log(res.data);
+    // console.log(res.data);
 
     dispatch({
       type: FIND_USER_SUCCESS,
@@ -152,7 +152,7 @@ export const logout = () => async dispatch => {
   // dispatch({ type: CLEAR_PROFILE });
 
   try {
-    const res = await axios.get('/api/users/logout');
+    await axios.get('/api/users/logout');
 
     //console.log(res.data);
     dispatch({ 
@@ -185,7 +185,7 @@ export const fgt_pass = ({ email }) => async dispatch => {
 
     const res = await axios.post('/api/users/forgotPassword', body, config);
 
-    //console.log(res.data);
+    console.log(res.data);
     dispatch({ 
       type: FORGOT_PASSWORD,
       payload: "We have sent you an email, to reset your password"

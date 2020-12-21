@@ -8,7 +8,7 @@ import {
   ADD_CHECKOUT,
   REMOVE_CHECKOUT,
   LOAD_CHECKOUT,
-  CREATE_COURSE,
+  // CREATE_COURSE,
   UPDATE_COURSE,
   FINISH_LESSON
 } from './types';
@@ -17,7 +17,7 @@ import { COURSE_LIST_REQUEST,
   SAVE_FEATURED_COURSES_REQUEST, 
   SAVE_FEATURED_COURSES_SUCCESS 
 } from '../contants/courseConstants';
-import { RESET_MESSAGE } from '../contants/authConstants';
+// import { RESET_MESSAGE } from '../contants/authConstants';
 
 export const getCourses = (courses) => async dispatch => {
 
@@ -26,7 +26,7 @@ export const getCourses = (courses) => async dispatch => {
       type: COURSE_LIST_REQUEST
     });
 
-    console.log("inside actions getCourses");
+    // console.log("inside actions getCourses");
 
     const body = JSON.stringify({ courses });
 
@@ -139,7 +139,7 @@ export const createCourseAction = ({ courseName, courseIntro, courseTag, courseD
       }
     });
 
-    // console.log(res.data);
+    console.log(res.data);
     console.log(body);
     console.log("inside create course");
 
@@ -224,7 +224,7 @@ export const updateCourseAction = ({ id, courseName, courseIntro, courseTag, cou
 
 export const loadCheckout = (userId) => async dispatch => {
   try {
-    console.log("inside loadCheckout action");
+    // console.log("inside loadCheckout action");
     const body = JSON.stringify({ userId });
     const res = await axios.post("/api/loadCheckout", body, {
       headers: {

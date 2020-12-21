@@ -44,3 +44,17 @@ tr:nth-child(odd) {
 .card.userCard > h4 {
   width: 100%;
 }
+
+.card.userCard tr {
+  background-color: initial;
+}
+
+.card.userCard > table,
+.card.userCard td {
+  width: auto;
+}
+
+
+.card.userCard i {
+  cursor: pointer;
+}
