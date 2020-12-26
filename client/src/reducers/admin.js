@@ -13,14 +13,17 @@ import {
   ADMIN_ENROL_USER_IN_COURSE_FAIL,
   ADMIN_REMOVE_USER_COURSE_REQUEST,
   ADMIN_REMOVE_USER_COURSE_FAIL,
-  ADMIN_REMOVE_USER_COURSE_SUCCESS
+  ADMIN_REMOVE_USER_COURSE_SUCCESS,
+  ADMIN_GET_SALES_REQUEST,
+  ADMIN_GET_SALES_SUCCESS,
+  ADMIN_GET_SALES_FAIL
 } from '../contants/adminConstants';
-import { 
-  FIND_USER_PURCHASES_FAIL, 
-  FIND_USER_PURCHASES_REQUEST, 
-  FIND_USER_PURCHASES_SUCCESS, 
-  FIND_USER_REQUEST, 
-  FIND_USER_SUCCESS 
+import {
+  FIND_USER_PURCHASES_FAIL,
+  FIND_USER_PURCHASES_REQUEST,
+  FIND_USER_PURCHASES_SUCCESS,
+  FIND_USER_REQUEST,
+  FIND_USER_SUCCESS
 } from '../contants/userConstants';
 
 const initialState = {
@@ -28,7 +31,8 @@ const initialState = {
   users: [],
   message: "",
   userDetails: {},
-  userPurchases: []
+  userPurchases: [],
+  sales: []
 }
 
 export default function (state = initialState, action) {
@@ -43,6 +47,7 @@ export default function (state = initialState, action) {
     case FIND_USER_PURCHASES_REQUEST:
     case ADMIN_ENROL_USER_IN_COURSE_REQUEST:
     case ADMIN_REMOVE_USER_COURSE_REQUEST:
+    case ADMIN_GET_SALES_REQUEST:
       return {
         ...state,
         loading: true
@@ -61,6 +66,7 @@ export default function (state = initialState, action) {
     case FIND_USER_PURCHASES_FAIL:
     case ADMIN_ENROL_USER_IN_COURSE_FAIL:
     case ADMIN_REMOVE_USER_COURSE_FAIL:
+    case ADMIN_GET_SALES_FAIL:
       return {
         ...state,
         loading: false,
@@ -85,6 +91,11 @@ export default function (state = initialState, action) {
           ...state.userDetails,
           courses: payload
         }
+      }
+    case ADMIN_GET_SALES_SUCCESS:
+      return {
+        ...state,
+        sales: payload
       }
     default:
       return state;

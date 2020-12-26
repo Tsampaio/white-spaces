@@ -13,7 +13,10 @@ import {
   ADMIN_ENROL_USER_IN_COURSE_FAIL,
   ADMIN_REMOVE_USER_COURSE_REQUEST,
   ADMIN_REMOVE_USER_COURSE_SUCCESS,
-  ADMIN_REMOVE_USER_COURSE_FAIL
+  ADMIN_REMOVE_USER_COURSE_FAIL,
+  ADMIN_GET_SALES_REQUEST,
+  ADMIN_GET_SALES_SUCCESS,
+  ADMIN_GET_SALES_FAIL
 } from '../contants/adminConstants';
 import axios from 'axios';
 import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS } from '../contants/userConstants';
@@ -220,3 +223,28 @@ export const removeCourseAction = (courseId, userId) => async dispatch => {
   }
 }
 
+export const getSalesAction = () => async dispatch => {
+  try {
+    dispatch({
+      type: ADMIN_GET_SALES_REQUEST
+    });
+
+    const {data} = await axios.get(`/api/admin/getSales`);
+
+    console.log(data.sales);
+
+    dispatch({
+      type: ADMIN_GET_SALES_SUCCESS,
+      payload: data.sales,
+    });
+
+  } catch (error) {
+    const errors = error.response.data;
+    console.log("SAVING FAIL");
+    console.log(errors);
+    dispatch({
+      type: ADMIN_GET_SALES_FAIL,
+      payload: errors.message
+    })
+  }
+}

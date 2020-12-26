@@ -86,12 +86,12 @@ exports.deleteUsers = async (req, res) => {
       })
 
       console.log(allUsers);
-      if(req.body.users.length > 1 ) {
-      await User.deleteMany({ _id: { $in: allUsers } })
-      console.log("users deleted");
+      if (req.body.users.length > 1) {
+        await User.deleteMany({ _id: { $in: allUsers } })
+        console.log("users deleted");
       } else {
         await User.findByIdAndDelete(allUsers[0]);
-      } 
+      }
 
       const allDbUsers = await User.find();
 
@@ -179,6 +179,8 @@ exports.removeUserCourse = async (req, res) => {
         courses: user.courses,
         message: `${course.name} removed from user library`
       });
+    } else {
+      throw new Error('You are not an admin');
     }
 
   } catch (error) {
@@ -187,4 +189,24 @@ exports.removeUserCourse = async (req, res) => {
       message: error.message
     });
   }
+}
+
+exports.getSales = async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+      const sales = await Transactions.find().sort({date: 'desc'});
+      
+      res.status(200).json({
+        sales: sales
+      });
+    } else {
+      throw new Error('You are not an admin');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
+  }
+
 }

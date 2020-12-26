@@ -39,6 +39,9 @@ function AdminSidebar( ) {
         <li>
           <NavLink to="/admin/users" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Users</NavLink>
         </li>
+        <li>
+          <NavLink to="/admin/sales" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Sales</NavLink>
+        </li>
       </ul>
     </div>
   );
