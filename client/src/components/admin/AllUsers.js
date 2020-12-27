@@ -5,6 +5,7 @@ import { saveUsersAction, deleteUsersAction } from '../../actions/admin';
 // import ModalWindow from '../utils/ModalWindow';
 import { Button, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { Form, Col } from 'react-bootstrap';
 import './AllUsers.css'
 
 const AllUsers = () => {
@@ -31,7 +32,19 @@ const AllUsers = () => {
   const [orderState, setOrderState] = useState({
     orderName: "",
     asc: false
-  })
+  });
+
+  const [pageUsers, setPageUsers] = useState({
+    usersPerPage: 3,
+    values: [],
+    number: 1,
+    firstPage: 0,
+    lastPage: 1
+  });
+
+  const removeAdminFromUsers = users.filter(user => {
+    return user.role !== "admin";
+  }) 
 
   useEffect(() => {
     dispatch(allUsersAction());
@@ -39,20 +52,34 @@ const AllUsers = () => {
 
   useEffect(() => {
     if (!loading) {
-      setStateUsers(users);
+      setStateUsers(removeAdminFromUsers);
     }
   }, [loading]);
 
   useEffect(() => {
-    console.log(stateUsers);
+    // console.log(stateUsers);
     const findSelected = stateUsers.find(user => {
-      console.log(user);
+      // console.log(user);
       return user.selected
     });
-    console.log(findSelected);
+    // console.log(findSelected);
 
     setUserSelected(Boolean(findSelected));
-  }, [stateUsers])
+
+    setPageUsers({
+      ...pageUsers,
+      values: paginate(stateUsers, pageUsers.usersPerPage, 1),
+      number: 1,
+      firstPage: 0,
+      // lastPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number + 1).length
+      lastPage: 1
+    });
+  }, [stateUsers]);
+
+  function paginate(array, page_size, page_number) {
+    // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+    return array.slice((page_number - 1) * page_size, page_number * page_size);
+  }
 
   const selectUsers = (usersSelected, event) => {
     // console.log(stateUsers);
@@ -87,7 +114,7 @@ const AllUsers = () => {
 
   }
 
-  const allUsers = stateUsers.map((user, i) => {
+  const allUsers = pageUsers.values.map((user, i) => {
     if (user.role !== "admin") {
       const joinedDate = new Date(user.joined);
       const newJoinedDate = `${joinedDate.getDate()}/${joinedDate.getMonth() + 1}/${joinedDate.getFullYear()}`;
@@ -123,7 +150,7 @@ const AllUsers = () => {
 
   const orderBy = (order) => {
     console.log("ordering by date");
-    users.sort(function (a, b) {
+    removeAdminFromUsers.sort(function (a, b) {
       // Turn your strings into dates, and then subtract them
       // to get a value that is either negative, positive, or zero.
       if (order === "date") {
@@ -176,7 +203,7 @@ const AllUsers = () => {
 
     });
 
-    setStateUsers(users);
+    setStateUsers(removeAdminFromUsers);
     // setTest({ loading: false })
     setOrderState({
       orderName: order,
@@ -226,14 +253,54 @@ const AllUsers = () => {
     setShow(false);
   }
 
-  // console.log(selectAll);
-  // console.log(modalText);
-  // console.log(stateUsers)
+  const movePage = (direction) => {
+    if (direction === "previous") {
+      setPageUsers({
+        ...pageUsers,
+        values: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number - 1),
+        number: pageUsers.number - 1,
+        firstPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number - 2).length,
+        lastPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number).length
+      })
+    } else {
+      console.log(pageUsers.number);
+      console.log(paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number).length);
+      setPageUsers({
+        ...pageUsers,
+        values: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number + 1),
+        number: pageUsers.number + 1,
+        firstPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number).length,
+        lastPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number + 2).length
+      })
+    }
+  }
+
+  const findUser = (e) => {
+    console.log("find a user");
+    // console.log(e.target.value);
+    const text = e.target.value.toLowerCase();
+    console.log(text);
+    const filteredusers = removeAdminFromUsers.filter((user) => {
+      console.log(user.name)
+      return (user.name.toLowerCase().indexOf(text) > -1 || user.email.toLowerCase().indexOf(text) > -1);
+    }) 
+
+    console.log(filteredusers);
+    setStateUsers(filteredusers);
+  }
+
+  console.log(pageUsers);
+
   return (
     <div className="allUsersCtn container">
       <div className="row">
         <div className="col allUsersTable">
-          <h5 className="mb-5">Showing 1 - 25 of {stateUsers.length} Students</h5>
+          <h5 className="mb-4">Showing 1 - 25 of {stateUsers.length} Students</h5>
+          <div className="row">
+          <Col sm="5">
+            <Form.Control className="my-3 input-md" type="text" placeholder="Find a user" onChange={findUser}/>
+          </Col>
+          </div>
           <table style={{ width: "100%" }}>
             <thead>
               <tr>
@@ -259,10 +326,28 @@ const AllUsers = () => {
               </tr>
             </thead>
             <tbody>
-              {allUsers}
+              {allUsers.length > 0 ? allUsers : <h3 className="my-3">No Users found</h3>}
             </tbody>
             {/* <h1>{!test.loading ? "Working" : null}</h1> */}
           </table>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col">
+          <nav aria-label="Page navigation example" className="mt-3">
+            <ul className="pagination justify-content-center">
+              <li className={pageUsers.firstPage < 1 ? "disabled page-item" : "page-item"}>
+                <a onClick={() => movePage("previous")} className="page-link" href="#">Previous</a>
+              </li>
+              <li className={pageUsers.lastPage < 1 ? "disabled page-item" : "page-item"}>
+                <a onClick={() => movePage("next")} 
+                  className="page-link" 
+                  href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+
         </div>
       </div>
 
