@@ -1,12 +1,19 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './SecondHeader.css';
+import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../images/telmo-academy1.png';
 import { loadCheckout } from '../../actions/courses';
+import { lastLoginAction } from '../../actions/auth';
 import { checkMembership } from '../../actions/membership';
-import { connect } from 'react-redux';
 
-const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembership }) => {
+const SecondHeader = () => {
+  const dispatch = useDispatch();
+
+  const auth = useSelector(state => state.auth);
+  const { isAuthenticated } = auth;
+
+  const payment = useSelector(state => state.payment);
 
   let userPic = null;
 
@@ -56,7 +63,7 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
 
   useEffect(() => {
     if (auth && auth.isAuthenticated) {
-      loadCheckout(auth && auth.user && auth.user._id);
+      dispatch(loadCheckout(auth && auth.user && auth.user._id));
     }
 
   }, [auth && auth.isAuthenticated && auth.user && auth.user.checkout]);
@@ -65,7 +72,8 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
     // console.log("loading check")
     // console.log(auth && auth.token)
     if (auth && auth.token) {
-      checkMembership(auth && auth.token);
+      dispatch(checkMembership(auth && auth.token));
+      dispatch(lastLoginAction());
     }
 
   }, [auth && auth.isAuthenticated]);
@@ -182,10 +190,4 @@ const SecondHeader = ({ auth, isAuthenticated, payment, loadCheckout, checkMembe
   )
 }
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  auth: state.auth,
-  payment: state.payment
-});
-
-export default connect(mapStateToProps, { loadCheckout, checkMembership })(SecondHeader);
+export default SecondHeader;

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   UPDATE_USER,
   UPDATE_USER_ERROR,
@@ -16,16 +17,18 @@ import {
   ACCOUNT_ACTIVATION
 } from './types';
 
-import { 
+import {
   FIND_USER_FAIL,
-  FIND_USER_REQUEST, 
-  FIND_USER_SUCCESS, 
-  USER_DETAILS_REQUEST 
+  FIND_USER_REQUEST,
+  FIND_USER_SUCCESS,
+  USER_DETAILS_REQUEST,
+  USER_LAST_LOGIN_FAIL,
+  USER_LAST_LOGIN_SUCCESS
 } from '../contants/userConstants';
 
-import { 
-  RESET_PASSWORD, 
-  RESET_PASSWORD_FAIL, 
+import {
+  RESET_PASSWORD,
+  RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
   RESET_MESSAGE,
 } from '../contants/authConstants';
@@ -146,6 +149,50 @@ export const loadUser = () => async dispatch => {
   }
 }
 
+//Last Login
+export const lastLoginAction = () => async (dispatch, getState) => {
+  try {
+    console.log("Calling last login");
+    const { auth } = getState();
+
+    console.log(auth);
+
+    if(auth && !auth.loading) {
+
+    const today = new Date();
+    const lastLogin = new Date(auth && auth.user && auth.user.lastLogin);
+    
+    console.log(lastLogin);
+
+    const diffMs = (today - lastLogin); // milliseconds between now & Christmas
+    const diffDays = Math.floor(diffMs / 86400000); // days
+    const diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+    const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+    console.log(diffDays + " days, " + diffHrs + " hours, " + diffMins + " minutes until Christmas 2009 =)");
+
+    console.log("Difference is: " + diffMins);
+    if (diffMins >= 2 ) {
+      const res = await axios.post('/api/users/lastLogin');
+
+      dispatch({
+        type: USER_LAST_LOGIN_SUCCESS,
+        payload: today
+      })
+    }
+  }
+
+    // console.log(res.data);
+  } catch (error) {
+    dispatch({
+      type: USER_LAST_LOGIN_FAIL,
+      payload: {
+        message: "Error updating last login"
+      }
+    })
+    console.log(error);
+  }
+}
+
 //Logout /Clear Profile
 export const logout = () => async dispatch => {
   console.log("logout running");
@@ -155,7 +202,7 @@ export const logout = () => async dispatch => {
     await axios.get('/api/users/logout');
 
     //console.log(res.data);
-    dispatch({ 
+    dispatch({
       type: LOGOUT
     });
 
@@ -186,7 +233,7 @@ export const fgt_pass = ({ email }) => async dispatch => {
     const res = await axios.post('/api/users/forgotPassword', body, config);
 
     console.log(res.data);
-    dispatch({ 
+    dispatch({
       type: FORGOT_PASSWORD,
       payload: "We have sent you an email, to reset your password"
     });
@@ -219,7 +266,7 @@ export const reset_pass = ({ password, passwordConfirm, token }) => async dispat
     const { data } = await axios.patch(`/api/users/resetPassword/${token}`, body, config);
 
     console.log(data);
-    dispatch({ 
+    dispatch({
       type: RESET_PASSWORD,
       payload: data.message
     });
@@ -233,7 +280,7 @@ export const reset_pass = ({ password, passwordConfirm, token }) => async dispat
       type: RESET_PASSWORD_FAIL,
       payload: errors.message
     })
-    
+
   }
 }
 
@@ -294,10 +341,10 @@ export const updateUserAction = (token, userDetails) => async dispatch => {
       name: userDetails.name,
       newPassword: userDetails.newPassword,
       newPasswordConfirm: userDetails.newPasswordConfirm,
-      password: userDetails.password 
+      password: userDetails.password
     });
 
-    if( userDetails.newPassword !== userDetails.newPasswordConfirm) {
+    if (userDetails.newPassword !== userDetails.newPasswordConfirm) {
       return dispatch({
         type: UPDATE_USER_ERROR,
         payload: "Passwords do not Match"
@@ -306,7 +353,7 @@ export const updateUserAction = (token, userDetails) => async dispatch => {
 
     const res = await axios.post(`/api/users/udpateUserDb`, body, {
       headers: {
-        Accept: 'application/json', 
+        Accept: 'application/json',
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       }

@@ -1,22 +1,38 @@
 const express = require('express');
-const authController = require('./../controllers/authController');
-const { getUserPurchases } = require('./../controllers/authController');
+const { 
+  register,
+  activate,
+  emailActivation,
+  login,
+  protect,
+  loadUser,
+  getUserDetails,
+  getUserPurchases,
+  lastLogin,
+  logout,
+  profilePic,
+  udpateUserDb,
+  forgotPassword,
+  resetPassword
+
+} = require('./../controllers/authController');
 
 const router = express.Router();
 
-router.post('/register', authController.register);
-router.post('/activate/:token', authController.activate);
-router.post('/activateAccount/:email', authController.emailActivation);
-router.post('/login', authController.login);
-router.post('/loadUser', authController.protect, authController.loadUser);
-router.get('/getUserDetails/:id', authController.protect, authController.getUserDetails);
-router.get('/getUserPurchases/:id', authController.protect, authController.getUserPurchases);
+router.post('/register', register);
+router.post('/activate/:token', activate);
+router.post('/activateAccount/:email', emailActivation);
+router.post('/login', login);
+router.post('/loadUser', protect, loadUser);
+router.get('/getUserDetails/:id', protect, getUserDetails);
+router.get('/getUserPurchases/:id', protect, getUserPurchases);
+router.post('/lastLogin', protect, lastLogin);
 
-router.get('/logout', authController.logout);
-router.post('/profilePic', authController.profilePic);
-router.post('/udpateUserDb', authController.protect, authController.udpateUserDb);
+router.get('/logout', logout);
+router.post('/profilePic', profilePic);
+router.post('/udpateUserDb', protect, udpateUserDb);
 
-router.post('/forgotPassword', authController.forgotPassword);
-router.patch('/resetPassword/:token', authController.resetPassword);
+router.post('/forgotPassword', forgotPassword);
+router.patch('/resetPassword/:token', resetPassword);
 
 module.exports = router;

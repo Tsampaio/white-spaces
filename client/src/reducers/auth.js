@@ -19,17 +19,17 @@ import {
   RESUBSCRIBE_MEMBERSHIP,
   AUTH_ERROR
 } from '../actions/types';
-import { USER_DETAILS_REQUEST } from '../contants/userConstants';
-import { 
-  RESET_PASSWORD, 
-  RESET_PASSWORD_FAIL, 
+import { USER_DETAILS_REQUEST, USER_LAST_LOGIN_FAIL, USER_LAST_LOGIN_SUCCESS } from '../contants/userConstants';
+import {
+  RESET_PASSWORD,
+  RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
-  RESET_MESSAGE 
+  RESET_MESSAGE
 } from '../contants/authConstants';
 
 const initialState = {
-	// token: localStorage.getItem('token'),
-	token: null,
+  // token: localStorage.getItem('token'),
+  token: null,
   isAuthenticated: null,
   active: null,
   user: null,
@@ -41,142 +41,151 @@ const initialState = {
   }
 }
 
-export default function( state = initialState, action ) {
+export default function (state = initialState, action) {
   const { type, payload } = action;
   // console.log("inside auth reducers");
   // console.log( type );
-  if(payload) {
-  
+  if (payload) {
+
     // console.log("-------------CHANGING MESSAGE----------")
     // console.log(type)
     // console.log( payload.message );
   }
-  switch(type) {
-      case USER_DETAILS_REQUEST:
-        return {
-          ...state,
-          loading: true
+  switch (type) {
+    case USER_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
+    case USER_LOADED:
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: payload.user,
+        token: payload.token,
+        active: payload.active,
+        loading: false
+      }
+    case USER_GUEST:
+      return {
+        ...state,
+        token: null,
+        isAuthenticated: null,
+        user: null,
+        loading: false
+      }
+    case REGISTER_SUCCESS:
+      return {
+        ...state,
+        message: payload.message
+      }
+    case LOGIN_SUCCESS:
+      return {
+        ...state,
+        isAuthenticated: true,
+        token: payload.token,
+        message: payload.message,
+        user: payload.user,
+        active: payload.user.active,
+        loading: false
+      }
+    case LOGIN_FAIL:
+      return {
+        ...state,
+        message: payload.message
+      }
+    case RESET_MESSAGE:
+      return {
+        ...state,
+        message: ""
+      }
+    // case REGISTER_FAIL:
+    case AUTH_ERROR:
+    case LOGOUT_FAIL:
+    case LOGOUT:
+      return {
+        ...state,
+        token: null,
+        isAuthenticated: false,
+        user: null,
+        message: null
+      }
+    case FORGOT_PASSWORD:
+    case UPDATE_USER_ERROR:
+      return {
+        ...state,
+        message: payload
+      }
+    case RESET_PASSWORD:
+      return {
+        ...state,
+        message: payload
+      }
+    case RESET_PASSWORD_FAIL:
+    case USER_LAST_LOGIN_FAIL:
+      return {
+        ...state,
+        message: payload
+      }
+    case EMAIL_ACTIVATION:
+    case ACCOUNT_ACTIVATION:
+    case ACCOUNT_ACTIVATION_FAIL:
+      return {
+        ...state,
+        active: "active",
+        message: payload.message
+      }
+    case GET_COURSES_OWNED:
+      return {
+        ...state,
+        coursesOwned: payload.courses
+      }
+    case COURSE_ACCESS:
+      return {
+        ...state,
+        courseAcces: payload.courses
+      }
+    case CHECK_MEMBERSHIP:
+      return {
+        ...state,
+        membership: payload
+      }
+    case CANCEL_MEMBERSHIP:
+      return {
+        ...state,
+        membership: {
+          ...state.membership,
+          active: payload.active,
+          status: payload.status
         }
-      case USER_LOADED:
-        return {
-            ...state,
-            isAuthenticated: true,
-            user: payload.user,
-            token: payload.token,
-            active: payload.active,
-            loading: false
+      }
+    case RESUBSCRIBE_MEMBERSHIP:
+      return {
+        ...state,
+        membership: {
+          ...state.membership,
+          active: payload.active,
+          status: payload.status
         }
-      case USER_GUEST:
-        return {
-          ...state,
-          token: null,
-          isAuthenticated: null,
-          user: null,
-          loading: false
+      }
+    case UPDATE_USER:
+      return {
+        ...state,
+        message: payload.message,
+        user: {
+          ...state.user,
+          name: payload.user.name
         }
-      case REGISTER_SUCCESS:
-				return {
-						...state,
-            message: payload.message
+      }
+    case USER_LAST_LOGIN_SUCCESS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          lastLogin: payload
         }
-      case LOGIN_SUCCESS:
-        return {
-          ...state,
-          isAuthenticated: true,
-          token: payload.token,
-          message: payload.message,
-          user: payload.user,
-          active: payload.user.active,
-          loading: false
-        }
-      case LOGIN_FAIL:
-        return {
-          ...state,
-          message: payload.message
-        }
-      case RESET_MESSAGE:
-        return {
-          ...state,
-          message: ""
-        }
-      // case REGISTER_FAIL:
-      case AUTH_ERROR:
-      case LOGOUT_FAIL:
-      case LOGOUT:
-        return {
-            ...state,
-            token: null,
-            isAuthenticated: false,
-            user: null,
-            message: null
-        }
-      case FORGOT_PASSWORD:
-      case UPDATE_USER_ERROR:
-        return {
-          ...state,
-          message: payload
-        }
-      case RESET_PASSWORD:
-        return {
-          ...state,
-          message: payload
-        }
-      case RESET_PASSWORD_FAIL:
-        return {
-          ...state,
-          message: payload
-        }
-      case EMAIL_ACTIVATION:
-      case ACCOUNT_ACTIVATION:
-      case ACCOUNT_ACTIVATION_FAIL:
-        return {
-          ...state,
-          active: "active",
-          message: payload.message
-        }
-      case GET_COURSES_OWNED:
-        return {
-          ...state,
-          coursesOwned: payload.courses
-        }
-      case COURSE_ACCESS:
-        return {
-          ...state,
-          courseAcces: payload.courses
-        }
-      case CHECK_MEMBERSHIP:
-        return {
-          ...state,
-          membership: payload
-        }
-      case CANCEL_MEMBERSHIP:
-        return {
-          ...state,
-          membership: {
-            ...state.membership,
-            active: payload.active,
-            status: payload.status
-          }
-        }
-      case RESUBSCRIBE_MEMBERSHIP:
-        return {
-          ...state,
-          membership: {
-            ...state.membership,
-            active: payload.active,
-            status: payload.status
-          }
-        }
-      case UPDATE_USER:
-        return {
-          ...state,
-          message: payload.message,
-          user: {
-            ...state.user,
-            name: payload.user.name
-          }
-        }
-      default:
-          return state;
+      }
+    default:
+      return state;
   }
 }

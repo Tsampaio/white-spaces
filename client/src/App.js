@@ -3,7 +3,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { loadUser } from './actions/auth';
+import { loadUser, lastLoginAction } from './actions/auth';
 import store from './store';
 import './fontawesome/css/all.min.css';
 import Home from './components/pages/Home';
@@ -32,6 +32,7 @@ function App() {
   useEffect( () => {
     console.log("Inside APP.js");
     store.dispatch(loadUser());
+    store.dispatch(lastLoginAction());
   }, []);
 
   return (

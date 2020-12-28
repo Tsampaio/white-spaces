@@ -463,6 +463,7 @@ exports.udpateUserDb = async (req, res, next) => {
 
 exports.getUserDetails = async (req, res) => {
   try {
+    if (req.user.role === 'admin' || req.user._id == req.params.id) {
     const user = await User.findById(req.params.id);
     if (!user) {
       return next(
@@ -478,8 +479,14 @@ exports.getUserDetails = async (req, res) => {
     res.json({
       user: user
     })
+  } else {
+    throw new Error('You are not an admin or the right user');
+  }
   } catch (error) {
-
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
   }
 }
 
@@ -499,6 +506,27 @@ exports.getUserPurchases = async (req, res) => {
 
   }
 
+}
+
+exports.lastLogin = async (req, res) => {
+  try {
+    console.log("last login");
+    console.log(req.user);
+    const dateNow = new Date();
+
+    const user = await User.findById(req.user._id);
+    console.log(user);
+    user.lastLogin = dateNow;
+
+    await user.save({ validateBeforeSave: false });
+
+    res.json({
+      date: dateNow
+    })
+
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 

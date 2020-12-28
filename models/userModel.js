@@ -96,6 +96,10 @@ const userSchema = new mongoose.Schema({
   hasProfilePic: {
     type: Boolean,
     default: false
+  },
+  lastLogin: {
+    type: Date,
+    default: new Date()
   }
 });
 
