@@ -1,0 +1,17 @@
+.selectCourses {
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+input[name="amount"],
+input[name="emails"] {
+  width: 60%;
+  display: inline-block;
+}
+
+select[name="amountType"],
+.selectCourses {
+  width: auto;
+  display: inline-block;
+  margin-right: 15px;
+}

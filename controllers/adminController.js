@@ -2,6 +2,7 @@
 const User = require('../models/userModel');
 const Courses = require('../models/courseModel');
 const Transactions = require('../models/transactionModel');
+const Coupon = require('../models/couponModel');
 
 exports.getUsers = async (req, res) => {
   console.log("Inside GET USERS");
@@ -194,8 +195,8 @@ exports.removeUserCourse = async (req, res) => {
 exports.getSales = async (req, res) => {
   try {
     if (req.user.role === 'admin') {
-      const sales = await Transactions.find().sort({date: 'desc'});
-      
+      const sales = await Transactions.find().sort({ date: 'desc' });
+
       res.status(200).json({
         sales: sales
       });
@@ -208,5 +209,41 @@ exports.getSales = async (req, res) => {
       message: error.message
     });
   }
+}
+exports.createCoupon = async (req, res) => {
+  try {
+    console.log("Inside create coupon")
+    if (req.user.role === 'admin') {
+      // console.log(req.body)
+      const { courses, couponDetails } = req.body;
+      // console.log(courses);
 
+      // const courses = [
+      //   {
+      //     courseId: '5e7e574556d0bc084c03f542',
+      //     name: 'Javascript Shopping Cart',
+      //   }
+      // ]
+      console.log(couponDetails);
+      const newCoupon = await Coupon.create({
+        amount: couponDetails.amount,
+        code: couponDetails.code,
+        name: couponDetails.name,
+        date: new Date(couponDetails.expires),
+        available: parseInt(couponDetails.available),
+        courses: courses,
+        restricted: couponDetails.emails ? couponDetails.emails : []
+      });
+      res.status(200).json({
+        message: "Coupon Created"
+      });
+    } else {
+      throw new Error('You are not an admin');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
+  }
 }

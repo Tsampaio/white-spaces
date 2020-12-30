@@ -9,6 +9,7 @@ import SecondHeader from '../partials/SecondHeader';
 import { useSelector } from 'react-redux';
 import AllUsers from './AllUsers';
 import Sales from './Sales';
+import Coupons from './Coupons';
 
 const AdminCtn = ({match, history}) => {
   // console.log(match);
@@ -39,6 +40,7 @@ const AdminCtn = ({match, history}) => {
             { match.params.page === "featureCourses" ? <FeatureCourses /> : null }
             { match.params.page === "users" ? <AllUsers /> : null }
             { match.params.page === "sales" ? <Sales /> : null }
+            { match.params.page === "coupons" ? <Coupons /> : null }
             
           </div>
         </div>

@@ -7,7 +7,8 @@ const {
   deleteUsers, 
   enrolUserInCourse, 
   removeUserCourse,
-  getSales
+  getSales,
+  createCoupon
 } = require('../controllers/adminController');
 
 const { protect } = require('../controllers/authController');
@@ -18,5 +19,7 @@ router.post('/admin/deleteUsers', protect, deleteUsers);
 router.post('/admin/enrolUserInCourse', protect, enrolUserInCourse);
 router.post('/admin/removeUserCourse', protect, removeUserCourse);
 router.get('/admin/getSales', protect, getSales);
+router.post('/admin/createCoupon', protect, createCoupon);
+
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -17,10 +17,10 @@ function AdminSidebar( ) {
 
   if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img.default} className="userAvatar" />
+    userPic = <img src={img.default} className="userAvatar" alt="user avatar" />
   } else {
     img = images(`./default.png`);
-    userPic = <img src={img.default} className="userAvatar" />
+    userPic = <img src={img.default} className="userAvatar" alt="user avatar" />
   }
 
   return (
@@ -41,6 +41,9 @@ function AdminSidebar( ) {
         </li>
         <li>
           <NavLink to="/admin/sales" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Sales</NavLink>
+        </li>
+        <li>
+          <NavLink to="/admin/coupons" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Coupons</NavLink>
         </li>
       </ul>
     </div>

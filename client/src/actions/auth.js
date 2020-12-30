@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   UPDATE_USER,
   UPDATE_USER_ERROR,
@@ -172,7 +171,7 @@ export const lastLoginAction = () => async (dispatch, getState) => {
 
     console.log("Difference is: " + diffMins);
     if (diffMins >= 2 ) {
-      const res = await axios.post('/api/users/lastLogin');
+      await axios.post('/api/users/lastLogin');
 
       dispatch({
         type: USER_LAST_LOGIN_SUCCESS,
