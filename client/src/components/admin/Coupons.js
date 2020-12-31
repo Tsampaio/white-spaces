@@ -342,7 +342,6 @@ const Coupon = () => {
       courses.push(coupon.courses[i].name);
     }
 
-
     const allCourses = courses.length > 0 && courses.map((course, i) => {
       return (
         <>
@@ -374,7 +373,7 @@ const Coupon = () => {
             onChange={(e) => { selectUsers(i, e) }}
             className="mr-2"
           />
-          <div className="allUsersTableDiv"><Link to={`/admin/coupons/id`}>{coupon.code}</Link></div>
+          <div className="allUsersTableDiv"><Link to={`/admin/coupons/edit/${coupon._id}`}>{coupon.code}</Link></div>
           </div>
         </td>
         <td className="px-3">

@@ -267,4 +267,24 @@ exports.getCoupons = async (req, res) => {
       message: error.message
     });
   }
-} 
+}
+
+exports.getCoupon = async (req, res) => {
+  try {
+    if(req.user.role === "admin") {
+      const { couponId } = req.params;
+
+      const coupon = await Coupon.findById(couponId);
+      res.status(200).json({
+        coupon: coupon
+      });
+    } else {
+      throw new Error('You are not an admin');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
+  }
+}

@@ -17,6 +17,9 @@ import {
   ADMIN_GET_SALES_REQUEST,
   ADMIN_GET_SALES_SUCCESS,
   ADMIN_GET_SALES_FAIL,
+  ADMIN_GET_COUPON_REQUEST,
+  ADMIN_GET_COUPON_SUCCESS,
+  ADMIN_GET_COUPON_FAIL,
   ADMIN_GET_COUPONS_REQUEST,
   ADMIN_GET_COUPONS_SUCCESS,
   ADMIN_GET_COUPONS_FAIL
@@ -36,6 +39,7 @@ const initialState = {
   userDetails: {},
   userPurchases: [],
   sales: [],
+  coupon: {},
   coupons: []
 }
 
@@ -52,6 +56,7 @@ export default function (state = initialState, action) {
     case ADMIN_ENROL_USER_IN_COURSE_REQUEST:
     case ADMIN_REMOVE_USER_COURSE_REQUEST:
     case ADMIN_GET_SALES_REQUEST:
+    case ADMIN_GET_COUPON_REQUEST:
     case ADMIN_GET_COUPONS_REQUEST:
       return {
         ...state,
@@ -72,6 +77,7 @@ export default function (state = initialState, action) {
     case ADMIN_ENROL_USER_IN_COURSE_FAIL:
     case ADMIN_REMOVE_USER_COURSE_FAIL:
     case ADMIN_GET_SALES_FAIL:
+    case ADMIN_GET_COUPON_FAIL:
     case ADMIN_GET_COUPONS_FAIL:
       return {
         ...state,
@@ -102,6 +108,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         sales: payload
+      }
+    case ADMIN_GET_COUPON_SUCCESS:
+      return {
+        ...state,
+        coupon: payload
       }
     case ADMIN_GET_COUPONS_SUCCESS:
       return {

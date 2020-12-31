@@ -20,6 +20,9 @@ import {
   ADMIN_CREATE_COUPON_REQUEST,
   ADMIN_CREATE_COUPON_SUCCESS,
   ADMIN_CREATE_COUPON_FAIL,
+  ADMIN_GET_COUPON_REQUEST,
+  ADMIN_GET_COUPON_SUCCESS,
+  ADMIN_GET_COUPON_FAIL,
   ADMIN_GET_COUPONS_REQUEST,
   ADMIN_GET_COUPONS_SUCCESS,
   ADMIN_GET_COUPONS_FAIL
@@ -306,6 +309,29 @@ export const getCouponsAction = () => async dispatch => {
     console.log(errors.message);
     dispatch({
       type: ADMIN_GET_COUPONS_FAIL,
+      payload: errors.message
+    })
+  }
+}
+
+export const getCouponIdAction = (couponId) => async dispatch => {
+  console.log("Trying get course");
+  try {
+    dispatch({
+      type: ADMIN_GET_COUPON_REQUEST
+    });
+    const { data } = await axios.get(`/api/admin/getCoupon/${couponId}`);
+    console.log(data);
+    dispatch({
+      type: ADMIN_GET_COUPON_SUCCESS,
+      payload: data.coupon
+    });
+  } catch(error) {
+    const errors = error.response.data;
+    console.log("GET COUPON FAIL");
+    console.log(errors.message);
+    dispatch({
+      type: ADMIN_GET_COUPON_FAIL,
       payload: errors.message
     })
   }

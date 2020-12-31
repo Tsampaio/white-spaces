@@ -11,6 +11,7 @@ import AllUsers from './AllUsers';
 import Sales from './Sales';
 import Coupons from './Coupons';
 import NewCoupon from './NewCoupon';
+import EditCoupon from './EditCoupon';
 
 const AdminCtn = ({match, history}) => {
   // console.log(match);
@@ -43,6 +44,7 @@ const AdminCtn = ({match, history}) => {
             { match.params.page === "sales" ? <Sales /> : null }
             { match.params.page === "coupons" && !match.params.subPage ? <Coupons /> : null }
             { match.params.page === "coupons" ? (match.params.subPage === "new" ? <NewCoupon /> : null) : null }
+            { match.params.page === "coupons" ? (match.params.subPage === "edit" ? <EditCoupon /> :null) : null }
             
             
           </div>

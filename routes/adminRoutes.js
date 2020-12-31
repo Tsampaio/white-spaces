@@ -9,7 +9,8 @@ const {
   removeUserCourse,
   getSales,
   createCoupon,
-  getCoupons
+  getCoupons,
+  getCoupon
 } = require('../controllers/adminController');
 
 const { protect } = require('../controllers/authController');
@@ -22,5 +23,6 @@ router.post('/admin/removeUserCourse', protect, removeUserCourse);
 router.get('/admin/getSales', protect, getSales);
 router.post('/admin/createCoupon', protect, createCoupon);
 router.get('/admin/getCoupons', protect, getCoupons);
+router.get('/admin/getCoupon/:couponId', protect, getCoupon);
 
 module.exports = router;
