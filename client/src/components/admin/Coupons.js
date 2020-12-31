@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { allUsersAction } from '../../actions/admin';
-import { saveUsersAction, deleteUsersAction, createCouponAction } from '../../actions/admin';
-import { getCourses } from '../../actions/courses'
+import { saveUsersAction, deleteUsersAction } from '../../actions/admin';
+import { getCouponsAction } from '../../actions/admin';
 // import ModalWindow from '../utils/ModalWindow';
 import { Button, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Form, Col, DropdownButton, InputGroup, Dropdown, FormControl } from 'react-bootstrap';
+import { Form, Col, Table } from 'react-bootstrap';
 import './AllUsers.css';
 import './Coupons.css'
 
@@ -15,14 +15,9 @@ const Coupon = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector(state => state.auth);
-  const { token } = auth;
 
   const admin = useSelector(state => state.admin);
-  const { users, loading } = admin;
-
-  const courses = useSelector(state => state.courses);
-  const { all } = courses;
-  // const courses = useSelector(state => state.courses);
+  const { users, loading, coupons } = admin;
 
   const [stateUsers, setStateUsers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -51,23 +46,9 @@ const Coupon = () => {
     return user.role !== "admin";
   })
 
-  const [coursesState, setCoursesState] = useState([]);
-  const [coupon, setCoupon] = useState({
-    amountType: "percentage",
-    amount: "",
-    code: "",
-    name: "",
-    expires: "",
-    available: "",
-    emails: [],
-    active: false
-  });
-
-  const [email, setEmail] = useState("");
-
   useEffect(() => {
     dispatch(allUsersAction());
-    dispatch(getCourses());
+    dispatch(getCouponsAction());
   }, []);
 
   useEffect(() => {
@@ -96,20 +77,6 @@ const Coupon = () => {
     });
   }, [stateUsers]);
 
-  useEffect(() => {
-    const theCourses = all.map((course, i) => {
-      return {
-        courseId: course._id,
-        name: course.name,
-        selected: false,
-        key: i
-      }
-    })
-
-    theCourses.push({ name: "All Courses", selected: false });
-    setCoursesState(theCourses);
-
-  }, [all]);
 
   function paginate(array, page_size, page_number) {
     // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
@@ -345,196 +312,109 @@ const Coupon = () => {
     setStateUsers(filteredusers);
   }
 
-  // The forwardRef is important!!
-  // Dropdown needs access to the DOM node in order to position the Menu
-  const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-    <a
-      href=""
-      ref={ref}
-      onClick={(e) => {
-        e.preventDefault();
-        onClick(e);
-      }}
-      className="mb-2 selectCourses form-control btn-primary"
-    >
-      {children}
-    &#x25bc;
-    </a>
-  ));
+  const allCoupons = coupons.map((coupon, i) => {
 
-  // forwardRef again here!
-  // Dropdown needs access to the DOM of the Menu to measure it
-  const CustomMenu = React.forwardRef(
-    ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
-      const [value, setValue] = useState('');
+    const today = new Date();
+    const couponDate = new Date(coupon.date);
+    const newCouponDate = `${('0' + couponDate.getDate()).slice(-2)}/${('0' + couponDate.getMonth() + 1).slice(-2)}/${couponDate.getFullYear()}`;
+    // console.log("Inside all Users");
+    // console.log(user.selected)
+    let emails = [];
+    let courses = [];
 
-      return (
-        <div
-          ref={ref}
-          style={style}
-          className={className}
-          aria-labelledby={labeledBy}
-
-        >
-          <FormControl
-            autoFocus
-            className="mx-3 my-2 w-auto"
-            placeholder="Type to filter..."
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
-
-          />
-          <ul className="list-unstyled">
-            {React.Children.toArray(children).filter(
-              (child) =>
-                !value || child.props.children.toLowerCase().startsWith(value),
-            )}
-          </ul>
-        </div>
-      );
-    },
-  );
-
-  const selectCourse = (i) => {
-
-    const coursesCopy = [...coursesState];
-    coursesCopy[i].selected = !coursesCopy[i].selected;
-
-    setCoursesState(coursesCopy);
-  }
-
-  // const coursesSelected = coursesState.filter(course => {
-  //   return course.selected
-  // });
-
-  const coursesSelected = coursesState.map((course, i) => {
-    return course.selected ? <Button key={i} variant="warning" className="my-4 mr-4" onClick={() => selectCourse(i)}>{course.name}</Button> : ""
-  })
-
-  const allCourses = coursesState.map((course, i) => {
-    return (
-      <Dropdown.Item active={course.selected ? "active" : ""} key={i} eventKey={i} onClick={() => selectCourse(i)}>{course.name}</Dropdown.Item>
-    )
-  });
-
-  const coursesToCoupon = coursesState.filter((course, i) => {
-    return course.selected;
-  });
-
-  const couponUpdate = (e) => {
-    setCoupon({
-      ...coupon,
-      [e.target.name]: e.target.name === "active" ? e.target.checked : e.target.value
-    })
-  }
-
-  const submitCoupon = (e) => {
-    e.preventDefault();
-    if (coursesToCoupon.length < 1) {
-      console.log("Need to select courses");
+    if (coupon.restricted.length > 0) {
+      for (let i = 0; i < coupon.restricted.length; i++) {
+        emails.push(coupon.restricted[i].email);
+      }
     }
-    dispatch(createCouponAction(coursesToCoupon, coupon));
-    console.log(coupon);
-  }
 
-  const typingEmail = (e) => {
-    setEmail(e.target.value);
-  }
+    const allEmails = emails.length > 0 && emails.map((email, i) => {
+      return (
+        <>
+          <span>{email}</span>
+          { i === (emails.length-1) ? "" : <hr className="my-2" />}
+        </>
+      )
+    });
 
-  const addEmails = (e) => {
-    setCoupon({
-      ...coupon,
-      emails: [...coupon.emails, {email}]
-    })
-  }
 
-  const allEmails = coupon.emails.map((coupon, i) => {
-    return <Button className="mr-3" key={i} variant="outline-primary">{coupon.email}</Button>
-  })
-  return (
-    <div className="allUsersCtn container">
-      <div className="row">
-        <div className="col allUsersTable">
-          <div className="card">
-            <div className="card-header">
-              New Coupon
-            </div>
-            <div className="card-body">
-              <form onSubmit={submitCoupon}>
-                <Dropdown>
-                  <Dropdown.Toggle as={CustomToggle} id="dropdown-basic">
-                    Select courses
-                  </Dropdown.Toggle>
+    for (let i = 0; i < coupon.courses.length; i++) {
+      courses.push(coupon.courses[i].name);
+    }
 
-                  <Dropdown.Menu as={CustomMenu}>
-                    {/* <Dropdown.Item eventKey="1">Red</Dropdown.Item>
-                  <Dropdown.Item eventKey="2">Blue</Dropdown.Item>
-                  <Dropdown.Item eventKey="3" active>
-                    Orange
-                  </Dropdown.Item>
-                  <Dropdown.Item eventKey="1">Red-Orange</Dropdown.Item> */}
-                    {allCourses}
-                  </Dropdown.Menu>
-                </Dropdown>
-                <div>
-                {coursesSelected}
-                </div>
 
-                <select className="form-control" defaultValue={'DEFAULT'} onChange={couponUpdate} name="amountType">
-                  <option value="DEFAULT" disabled>Select Amount Type</option>
-                  <option value="dollars">Dollars</option>
-                  <option value="percentage">Percentage</option>
-                </select>
-                <Form.Control name="amount" required className="my-3 input-md" type="text" placeholder="Enter amount" onChange={couponUpdate} />
-                
-                <Form.Control name="code" required className="my-3 input-md" type="text" placeholder="Coupon Code" onChange={couponUpdate} />
-                <Form.Control name="name" required className="my-3 input-md" type="text" placeholder="Coupon Name" onChange={couponUpdate} />
-                <Form.Control name="expires" required className="my-3 input-md" type="date" placeholder="Expires" onChange={couponUpdate} />
-                <Form.Control name="available" required className="my-3 input-md" type="text" placeholder="Number Available" onChange={couponUpdate} />
-                {/* <div>
-                  <Form.Control name="emails" className="my-3 input-md" type="text" placeholder="Private Email" size="6" onChange={couponUpdate} />
-                  <Button variant="primary">Add Email</Button>
-                </div>  */}
+    const allCourses = courses.length > 0 && courses.map((course, i) => {
+      return (
+        <>
+          <span key={i}>{course}</span>
+          { i === (courses.length-1) ? "" : <hr className="my-2" />}
+        </>
+      )
+    });
 
-                <InputGroup className="my-3 input-md">
-                  <FormControl
-                    placeholder="Add Email"
-                    aria-label="Add Email"
-                    aria-describedby="basic-addon2"
-                    placeholder="Private Email"
-                    name="emails"
-                    onChange={typingEmail}
-                  />
-                  <InputGroup.Append>
-                    <Button variant="outline-secondary" onClick={addEmails}>Add Email</Button>
-                  </InputGroup.Append>
-                  
-                </InputGroup>
-                <div className="my-3">{allEmails}</div>
-
-                <Form.Group id="formGridCheckbox">
-                  <Form.Check name="active" type="checkbox" label="Activate" onChange={couponUpdate} />
-                </Form.Group>
-                <Button variant="primary" size="lg" type="submit">
-                  Create Coupon
-              </Button>
-              </form>
-            </div>
+    const lastLogin = new Date(coupon.lastLogin);
+    const lastLoginDate = () => {
+      if (today.getDate() === lastLogin.getDate() &&
+        today.getMonth() === lastLogin.getMonth() &&
+        today.getFullYear() === lastLogin.getFullYear()
+      ) {
+        return `${('0' + lastLogin.getHours()).slice(-2)}:${('0' + lastLogin.getMinutes()).slice(-2)} - Today`
+      } else {
+        return `${('0' + lastLogin.getHours()).slice(-2)}:${('0' + lastLogin.getMinutes()).slice(-2)} - ${lastLogin.getDate()}/${lastLogin.getMonth() + 1}/${lastLogin.getFullYear()}`;
+      }
+    }
+    return (
+      <tr key={coupon._id}>
+        <td>
+          <div>
+          <input
+            type="checkbox"
+            checked={coupon.selected == null ? false : coupon.selected}
+            value={coupon.selected}
+            onChange={(e) => { selectUsers(i, e) }}
+            className="mr-2"
+          />
+          <div className="allUsersTableDiv"><Link to={`/admin/coupons/id`}>{coupon.code}</Link></div>
           </div>
+        </td>
+        <td className="px-3">
+          <div className="allUsersTableDiv">{coupon.name}</div>
+        </td>
+        <td className="px-3">
+          <div className="allUsersTableDiv">{newCouponDate}</div>
+        </td>
+        <td className="px-3">
+          <div className="allUsersTableDiv">{coupon.used}</div>
+        </td>
+        <td className="px-3">
+          <div className="allUsersTableDiv">{coupon.available}</div>
+        </td>
+        <td className="px-3">{allCourses}</td>
+        <td className="px-3">{allEmails.length > 0 ? allEmails : "No Restrictions"}</td>
+        <td className="px-3">{coupon.active ? "True" : "False" }</td>
+      </tr>
+    )
 
+  })
 
+  return (
+    <div className="allUsersCtn container-fluid">
+      <div className="row">
+        <div className="col allCouponsTable">
+          <Link to="/admin/coupons/new" className="btn btn-primary">New Coupon</Link>
           <div className="row">
             <Col sm="5">
               <Form.Control className="my-3 input-md" type="text" placeholder="Search coupons" onChange={findUser} />
             </Col>
           </div>
-          <table style={{ width: "100%" }}>
-            <thead>
+          <Table striped bordered hover responsive size="sm">
+            <thead className="thead-dark">
               <tr>
                 <th>
                   <input
                     type="checkbox"
                     onChange={(e) => { selectUsers("all", e) }}
+                    className="mr-2"
                   />
                   {userSelected ? (
                     <select defaultValue={'DEFAULT'} onChange={handleChange}>
@@ -543,22 +423,23 @@ const Coupon = () => {
                       <option value="delete">Delete</option>
                     </select>
                   ) : (
-                      <span onClick={() => orderBy("name")}>Courses</span>
+                      <span onClick={() => orderBy("name")}>Codes</span>
                     )}
                 </th>
-                <th onClick={() => orderBy("email")}>Name</th>
-                <th onClick={() => orderBy("active")}>Discount Code</th>
-                <th onClick={() => orderBy("purchases")}>Expires</th>
-                <th onClick={() => orderBy("date")}>Discounts Left</th>
-                <th onClick={() => orderBy("lastLogin")}>Restricted</th>
-                <th onClick={() => orderBy("lastLogin")}>Active</th>
+                <th className="px-3" onClick={() => orderBy("email")}>Name</th>
+                <th className="px-3" onClick={() => orderBy("active")}>Expires</th>
+                <th className="px-3" onClick={() => orderBy("purchases")}>Used</th>
+                <th className="px-3" onClick={() => orderBy("date")}>Available</th>
+                <th className="px-3" onClick={() => orderBy("lastLogin")}>Courses</th>
+                <th className="px-3" onClick={() => orderBy("lastLogin")}>Emails</th>
+                <th className="px-3" onClick={() => orderBy("lastLogin")}>Active</th>
               </tr>
             </thead>
             <tbody>
-              {allUsers.length > 0 ? allUsers : <tr className="my-3"><td>No Users found</td></tr>}
+              {allCoupons.length > 0 ? allCoupons : <tr className="my-3"><td>No Users found</td></tr>}
             </tbody>
             {/* <h1>{!test.loading ? "Working" : null}</h1> */}
-          </table>
+          </Table>
         </div>
       </div>
 

@@ -15,3 +15,7 @@ select[name="amountType"],
   display: inline-block;
   margin-right: 15px;
 }
+
+.allCouponsTable {
+  padding: 30px 50px;
+}

@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const Courses = require('../models/courseModel');
 const Transactions = require('../models/transactionModel');
 const Coupon = require('../models/couponModel');
+const e = require('express');
 
 exports.getUsers = async (req, res) => {
   console.log("Inside GET USERS");
@@ -247,3 +248,23 @@ exports.createCoupon = async (req, res) => {
     });
   }
 }
+
+exports.getCoupons = async (req, res) => {
+  try {
+    if(req.user.role === "admin") {
+      const coupons = await Coupon.find();
+      console.log("Coupons are:")
+      console.log(coupons);
+      res.status(200).json({
+        coupons: coupons
+      });
+    } else {
+      throw new Error('You are not an admin');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
+  }
+} 

@@ -19,7 +19,10 @@ import {
   ADMIN_GET_SALES_FAIL,
   ADMIN_CREATE_COUPON_REQUEST,
   ADMIN_CREATE_COUPON_SUCCESS,
-  ADMIN_CREATE_COUPON_FAIL
+  ADMIN_CREATE_COUPON_FAIL,
+  ADMIN_GET_COUPONS_REQUEST,
+  ADMIN_GET_COUPONS_SUCCESS,
+  ADMIN_GET_COUPONS_FAIL
 } from '../contants/adminConstants';
 import axios from 'axios';
 import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS } from '../contants/userConstants';
@@ -281,6 +284,28 @@ export const createCouponAction = (courses, couponDetails) => async dispatch => 
     console.log(errors);
     dispatch({
       type: ADMIN_CREATE_COUPON_FAIL,
+      payload: errors.message
+    })
+  }
+}
+
+export const getCouponsAction = () => async dispatch => {
+  try {
+    dispatch({
+      type: ADMIN_GET_COUPONS_REQUEST
+    });
+    const {data} = await axios.get("/api/admin/getCoupons");
+    // console.log(res.data);
+    dispatch({
+      type: ADMIN_GET_COUPONS_SUCCESS,
+      payload: data.coupons
+    });
+  } catch (error) {
+    const errors = error.response.data;
+    console.log("CREATING COUPON FAIL");
+    console.log(errors.message);
+    dispatch({
+      type: ADMIN_GET_COUPONS_FAIL,
       payload: errors.message
     })
   }

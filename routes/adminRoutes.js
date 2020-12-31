@@ -8,7 +8,8 @@ const {
   enrolUserInCourse, 
   removeUserCourse,
   getSales,
-  createCoupon
+  createCoupon,
+  getCoupons
 } = require('../controllers/adminController');
 
 const { protect } = require('../controllers/authController');
@@ -20,6 +21,6 @@ router.post('/admin/enrolUserInCourse', protect, enrolUserInCourse);
 router.post('/admin/removeUserCourse', protect, removeUserCourse);
 router.get('/admin/getSales', protect, getSales);
 router.post('/admin/createCoupon', protect, createCoupon);
-
+router.get('/admin/getCoupons', protect, getCoupons);
 
 module.exports = router;
