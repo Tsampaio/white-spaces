@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCouponAction, getCouponIdAction } from '../../actions/admin';
+import { createCouponAction, getCouponIdAction, updateCouponAction } from '../../actions/admin';
 import { getCourses } from '../../actions/courses';
 
 import { Button } from 'react-bootstrap';
@@ -33,7 +33,7 @@ const EditCoupon = () => {
 
   const { courseTag: couponId } = useParams();
 
-  console.log(couponId);
+  // console.log(couponId);
   const [email, setEmail] = useState("");
 
   useEffect(() => {
@@ -44,12 +44,12 @@ const EditCoupon = () => {
   useEffect(() => {
 
     const getDate = new Date(theCoupon.date);
-    console.log(getDate);
-    console.log(typeof getDate);
+    // console.log(getDate);
+    // console.log(typeof getDate);
     if (getDate != "Invalid Date") {
       const newDate = `${getDate.getFullYear()}-${('0' + getDate.getMonth() + 1).slice(-2)}-${('0' + getDate.getDate()).slice(-2)}`;
-      console.log(newDate);
-      console.log(typeof newDate);
+      // console.log(newDate);
+      // console.log(typeof newDate);
       setCoupon({
         ...coupon,
         amount: theCoupon.amount,
@@ -63,12 +63,17 @@ const EditCoupon = () => {
     }
 
     const addSelectCourses = theCoupon.courses ? theCoupon.courses : [];
+    const coursesCopy = [...coursesState];
 
-    for(let i=0; i < addSelectCourses.length; i++) {
-      addSelectCourses[i].selected = true;
+    for(let i=0; i < coursesCopy.length; i++ ) {
+      for(let j=0; j < addSelectCourses.length; j++) {
+        if(coursesCopy[i].name === addSelectCourses[j].name) {
+          coursesCopy[i].selected = true;
+        }
+      }
     }
 
-    setCoursesState(addSelectCourses);
+    setCoursesState(coursesCopy);
   }, [theCoupon]);
 
   useEffect(() => {
@@ -165,15 +170,6 @@ const EditCoupon = () => {
     })
   }
 
-  const submitCoupon = (e) => {
-    e.preventDefault();
-    if (coursesToCoupon.length < 1) {
-      console.log("Need to select courses");
-    }
-    dispatch(createCouponAction(coursesToCoupon, coupon));
-    console.log(coupon);
-  }
-
   const typingEmail = (e) => {
     setEmail(e.target.value);
   }
@@ -185,10 +181,26 @@ const EditCoupon = () => {
     })
   }
 
+  const removeEmails = (index) => {
+    const emailRemove = coupon.emails.length > 0 && coupon.emails.filter((email, i) => {
+      return index !== i
+    })
+
+    setCoupon({
+      ...coupon,
+      emails: emailRemove
+    })
+  }
+
   const allEmails = coupon.emails.length > 0 && coupon.emails.map((coupon, i) => {
-    return <Button className="mr-3" key={i} variant="outline-primary">{coupon.email}</Button>
+    return <Button className="mr-3" key={i} variant="outline-primary" onClick={() => removeEmails(i)}>{coupon.email}</Button>
   })
-  console.log(coursesState)
+  console.log(coupon);
+
+  const updateCoupon = (e) => {
+    e.preventDefault();
+    dispatch(updateCouponAction(coursesToCoupon, coupon, couponId));
+  }
   return (
     <div className="allUsersCtn container">
       <div className="row">
@@ -199,7 +211,7 @@ const EditCoupon = () => {
               Edit Coupon
             </div>
             <div className="card-body">
-              <form onSubmit={submitCoupon}>
+              <form onSubmit={updateCoupon}>
                 <Dropdown>
                   <Dropdown.Toggle as={CustomToggle} id="dropdown-basic">
                     Select courses
@@ -211,7 +223,7 @@ const EditCoupon = () => {
 
                 <div>{coursesSelected}</div>
 
-                <select className="form-control" defaultValue={'DEFAULT'} onChange={couponUpdate} name="amountType">
+                <select className="form-control" defaultValue={'DEFAULT'} onChange={couponUpdate} name="amountType" value={coupon.amountType}>
                   <option value="DEFAULT" disabled>Select Amount Type</option>
                   <option value="dollars">Dollars</option>
                   <option value="percentage">Percentage</option>
@@ -221,7 +233,7 @@ const EditCoupon = () => {
                 <Form.Control name="code" required className="my-3 input-md" type="text" placeholder="Coupon Code" onChange={couponUpdate} value={coupon.code ? coupon.code : ""} />
                 <Form.Control name="name" required className="my-3 input-md" type="text" placeholder="Coupon Name" onChange={couponUpdate} value={coupon.name ? coupon.name : ""} />
                 <Form.Control name="expires" required className="my-3 input-md" type="date" placeholder="Expires" onChange={couponUpdate} value={coupon.expires ? coupon.expires : ""} />
-                <Form.Control name="available" required className="my-3 input-md" type="text" placeholder="Number Available" onChange={couponUpdate} value={coupon.code ? coupon.code : ""} />
+                <Form.Control name="available" required className="my-3 input-md" type="text" placeholder="Number Available" onChange={couponUpdate} value={coupon.available ? coupon.available : ""} />
 
                 <InputGroup className="my-3 input-md">
                   <FormControl
@@ -243,8 +255,8 @@ const EditCoupon = () => {
                   <Form.Check name="active" type="checkbox" label="Activate" onChange={couponUpdate} checked={coupon.active ? true : false} />
                 </Form.Group>
                 <Button variant="primary" size="lg" type="submit">
-                  Create Coupon
-              </Button>
+                  Update Coupon
+                </Button>
               </form>
             </div>
           </div>

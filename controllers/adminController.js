@@ -288,3 +288,30 @@ exports.getCoupon = async (req, res) => {
     });
   }
 }
+
+exports.updateCoupon = async (req, res) => {
+  try {
+    if(req.user.role === "admin") {
+      const { couponId } = req.params;
+
+      const { couponDetails, courses } = req.body;
+
+      couponDetails.courses = [...courses];
+      couponDetails.restricted = [...couponDetails.emails];
+
+      await Coupon.findByIdAndUpdate(couponId, couponDetails);
+
+      res.status(200).json({
+        message: "Coupon Updated"
+      });
+    } else {
+      throw new Error('You are not an admin');
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
+  }
+}
+  

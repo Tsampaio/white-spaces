@@ -10,7 +10,8 @@ const {
   getSales,
   createCoupon,
   getCoupons,
-  getCoupon
+  getCoupon,
+  updateCoupon
 } = require('../controllers/adminController');
 
 const { protect } = require('../controllers/authController');
@@ -24,5 +25,6 @@ router.get('/admin/getSales', protect, getSales);
 router.post('/admin/createCoupon', protect, createCoupon);
 router.get('/admin/getCoupons', protect, getCoupons);
 router.get('/admin/getCoupon/:couponId', protect, getCoupon);
+router.put('/admin/updateCoupon/:couponId', protect, updateCoupon);
 
 module.exports = router;

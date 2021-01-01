@@ -25,7 +25,10 @@ import {
   ADMIN_GET_COUPON_FAIL,
   ADMIN_GET_COUPONS_REQUEST,
   ADMIN_GET_COUPONS_SUCCESS,
-  ADMIN_GET_COUPONS_FAIL
+  ADMIN_GET_COUPONS_FAIL,
+  ADMIN_UPDATE_COUPON_REQUEST,
+  ADMIN_UPDATE_COUPON_SUCCESS,
+  ADMIN_UPDATE_COUPON_FAIL
 } from '../contants/adminConstants';
 import axios from 'axios';
 import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS } from '../contants/userConstants';
@@ -332,6 +335,43 @@ export const getCouponIdAction = (couponId) => async dispatch => {
     console.log(errors.message);
     dispatch({
       type: ADMIN_GET_COUPON_FAIL,
+      payload: errors.message
+    })
+  }
+}
+
+export const updateCouponAction = (courses, couponDetails, couponId) => async dispatch => {
+  try {
+    dispatch({
+      type: ADMIN_UPDATE_COUPON_REQUEST
+    });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const body = {
+      courses,
+      couponDetails
+    };
+    
+    console.log(body)
+    console.log(couponId);
+
+    const {data} = await axios.put(`/api/admin/updateCoupon/${couponId}`, body, config);
+    console.log(data);
+
+    dispatch({
+      type: ADMIN_UPDATE_COUPON_SUCCESS,
+      message: data.message
+    });
+  } catch (error) {
+    const errors = error.response.data;
+    console.log("GET COUPON FAIL");
+    console.log(errors.message);
+    dispatch({
+      type: ADMIN_UPDATE_COUPON_FAIL,
       payload: errors.message
     })
   }
