@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GET_COUPON_BY_ID_FAIL, GET_COUPON_BY_ID_REQUEST, GET_COUPON_BY_ID_SUCCESS } from '../contants/couponConstants';
 import {
   PAY_COURSE,
   PAY_ERROR,
@@ -9,9 +10,9 @@ import {
 } from './types';
 
 export const payAction = (userId, token) => async dispatch => {
-  console.log("pay action");
-  console.log("userId", userId);
-  console.log("token", token);
+  // console.log("pay action");
+  // console.log("userId", userId);
+  // console.log("token", token);
   try {
     console.log("inside actions");
     console.log(`/api/braintree/getToken/${userId}`);
@@ -150,3 +151,32 @@ export const getBilling = () => async dispatch => {
     console.log(error);
   }
 };
+
+export const findCouponIdAction = (couponCode) => async dispatch => {
+  try {
+    console.log(couponCode);
+
+    dispatch({
+      type: GET_COUPON_BY_ID_REQUEST
+    });
+
+    const {data} = await axios.get(`/api/getCouponId/${couponCode}`);
+    console.log(data);
+
+    dispatch({
+      type: GET_COUPON_BY_ID_SUCCESS,
+      payload: data.coupon
+    });
+
+  } catch (error) {
+    const errors = error.response.data;
+    console.log("Failed to get couponCode");
+    console.log(errors.message);
+
+    dispatch({
+      type: GET_COUPON_BY_ID_FAIL,
+      message: errors.message
+    });
+  
+  }
+}

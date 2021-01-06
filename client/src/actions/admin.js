@@ -368,7 +368,7 @@ export const updateCouponAction = (courses, couponDetails, couponId) => async di
     });
   } catch (error) {
     const errors = error.response.data;
-    console.log("GET COUPON FAIL");
+    console.log("UPDATE COUPON FAIL");
     console.log(errors.message);
     dispatch({
       type: ADMIN_UPDATE_COUPON_FAIL,

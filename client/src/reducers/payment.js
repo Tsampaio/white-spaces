@@ -9,38 +9,47 @@ import {
   RESET_PAYMENT_RESULT,
   GET_USER_BILLING
 } from '../actions/types';
+import { GET_COUPON_BY_ID_FAIL, GET_COUPON_BY_ID_REQUEST, GET_COUPON_BY_ID_SUCCESS } from '../contants/couponConstants';
 
 const initialState = {
+  loading: true,
   paymentToken: '',
   result: "",
   checkout: [],
   checkoutPrice: 0,
   addingToCheckout: false,
   paymentComplete: false,
-  billing: []
+  billing: [],
+  coupon: {},
+  message: ""
 }
 
-export default function( state = initialState, action ) {
+export default function (state = initialState, action) {
   const { type, payload } = action;
 
-  switch(type) {
+  switch (type) {
+    case GET_COUPON_BY_ID_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
     case PAY_MEMBERSHIP:
       return {
-          ...state,
-          paymentToken: payload.clientToken,
-          paymentComplete: payload.paymentComplete
+        ...state,
+        paymentToken: payload.clientToken,
+        paymentComplete: payload.paymentComplete
       }
     case GET_PAYMENT_TOKEN:
       return {
-          ...state,
-          addingToCheckout: false,
-          paymentToken: payload.clientToken
+        ...state,
+        addingToCheckout: false,
+        paymentToken: payload.clientToken
       }
     case PAY_COURSE:
       return {
-          ...state,
-          result: payload.status,
-          checkout: []
+        ...state,
+        result: payload.status,
+        checkout: []
       }
     case ADD_CHECKOUT:
       return {
@@ -65,12 +74,24 @@ export default function( state = initialState, action ) {
         result: '',
         checkout: []
       }
-    case GET_USER_BILLING: 
+    case GET_USER_BILLING:
       return {
         ...state,
         billing: payload.billing
       }
+    case GET_COUPON_BY_ID_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        coupon: payload,
+      }
+    case GET_COUPON_BY_ID_FAIL:
+      return {
+        ...state,
+        loading: false,
+        message: payload,
+      }
     default:
       return state;
-    }
+  }
 }

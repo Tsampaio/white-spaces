@@ -10,6 +10,7 @@ const {
     removeCheckout,
     loadCheckout,
     getUserBilling,
+    getCouponId,
     test } = require('../controllers/paymentController');
 
 const { protect } = require('../controllers/authController');
@@ -22,7 +23,7 @@ router.post('/addCheckout', addCheckout);
 router.post('/removeCheckout', removeCheckout);
 router.post('/loadCheckout', loadCheckout);
 router.post('/braintree/getUserBilling', protect, getUserBilling);
-
+router.get('/getCouponId/:couponCode', protect, getCouponId);
 
 router.post('/test', test );
 

@@ -117,6 +117,7 @@ export default function (state = initialState, action) {
     case ADMIN_GET_COUPONS_SUCCESS:
       return {
         ...state,
+        loading: false,
         coupons: payload
       }
     default:

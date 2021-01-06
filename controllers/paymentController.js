@@ -1,13 +1,14 @@
 const Course = require('./../models/courseModel');
 const User = require('./../models/userModel');
 const Transaction = require('./../models/transactionModel');
+const Coupon = require('./../models/couponModel');
 const braintree = require('braintree');
 const Email = require('../utils/email');
 const { promisify } = require('util');
 const { rest } = require('lodash');
 require('dotenv').config();
 
-const gateway = braintree.connect({
+const gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
   publicKey: process.env.BRAINTREE_PUBLIC_KEY,
@@ -743,5 +744,20 @@ exports.test = async (req, res) => {
 
   } catch (error) {
     console.log(error);
+  }
+}
+
+exports.getCouponId = async (req, res) => {
+  try {
+    const {couponCode} = req.params;
+
+    const coupon = await Coupon.find({ code: couponCode.toUpperCase()});
+    console.log(coupon)
+    res.status(200).json({
+      coupon: coupon[0]
+    })
+
+  } catch (error) {
+    console.log(error)
   }
 }
