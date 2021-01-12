@@ -20,8 +20,8 @@ router.post('/braintree/payment', protect, processPayment);
 router.post('/braintree/membership/:userId', protect, membershipPayment);
 router.post('/braintree/checkout/success', emailThankYou);
 router.post('/addCheckout', addCheckout);
-router.post('/removeCheckout', removeCheckout);
-router.post('/loadCheckout', loadCheckout);
+router.post('/removeCheckout', protect, removeCheckout);
+router.post('/loadCheckout', protect, loadCheckout);
 router.post('/braintree/getUserBilling', protect, getUserBilling);
 router.get('/getCouponId/:couponCode', protect, getCouponId);
 

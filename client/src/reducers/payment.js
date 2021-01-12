@@ -9,7 +9,7 @@ import {
   RESET_PAYMENT_RESULT,
   GET_USER_BILLING
 } from '../actions/types';
-import { GET_COUPON_BY_ID_FAIL, GET_COUPON_BY_ID_REQUEST, GET_COUPON_BY_ID_SUCCESS } from '../contants/couponConstants';
+import { GET_COUPON_BY_ID_FAIL, GET_COUPON_BY_ID_REQUEST, GET_COUPON_BY_ID_RESET, GET_COUPON_BY_ID_SUCCESS } from '../contants/couponConstants';
 
 const initialState = {
   loading: true,
@@ -90,6 +90,11 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
         message: payload,
+      }
+    case GET_COUPON_BY_ID_RESET:
+      return {
+        ...state,
+        coupon: {}
       }
     default:
       return state;

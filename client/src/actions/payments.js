@@ -35,21 +35,23 @@ export const payAction = (userId, token) => async dispatch => {
   }
 }
 
-export const processPayment = (user, token, paymentData, courseTag) => async dispatch => {
+export const processPayment = (paymentData, code, courses) => async dispatch => {
   console.log("processPayment action");
   console.log(paymentData);
   try {
     console.log("inside processPayment actions");
     const config = {
       headers: {
-        Accept: 'application/json',
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json"
       }
     }
     paymentData.courseTag = courseTag
 
-    const body = JSON.stringify(paymentData);
+    const body = {
+      paymentData,
+      code,
+      courses
+    }
 
     const res = await axios.post(`/api/braintree/payment`, body, config);
 
@@ -161,7 +163,8 @@ export const findCouponIdAction = (couponCode) => async dispatch => {
     });
 
     const {data} = await axios.get(`/api/getCouponId/${couponCode}`);
-    console.log(data);
+    console.log("THE COUPON IS");
+    console.log(data.coupon);
 
     dispatch({
       type: GET_COUPON_BY_ID_SUCCESS,
@@ -170,12 +173,11 @@ export const findCouponIdAction = (couponCode) => async dispatch => {
 
   } catch (error) {
     const errors = error.response.data;
-    console.log("Failed to get couponCode");
     console.log(errors.message);
 
     dispatch({
       type: GET_COUPON_BY_ID_FAIL,
-      message: errors.message
+      payload: errors.message
     });
   
   }

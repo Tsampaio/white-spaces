@@ -177,14 +177,13 @@ export const addCheckout = ({ selectedCourse, userEmail }) => async dispatch => 
   }
 }
 
-export const removeCheckout = (courseId, userId) => async dispatch => {
+export const removeCheckout = (courseId) => async dispatch => {
   try {
 
-    const body = JSON.stringify({ courseId, userId });
+    const body = { courseId};
     console.log(body);
     const res = await axios.post("/api/removeCheckout", body, {
       headers: {
-        Accept: 'application/json',
         "Content-Type": "application/json"
       }
     });
@@ -222,16 +221,11 @@ export const updateCourseAction = ({ id, courseName, courseIntro, courseTag, cou
   }
 }
 
-export const loadCheckout = (userId) => async dispatch => {
+export const loadCheckout = () => async dispatch => {
   try {
     // console.log("inside loadCheckout action");
-    const body = JSON.stringify({ userId });
-    const res = await axios.post("/api/loadCheckout", body, {
-      headers: {
-        Accept: 'application/json',
-        "Content-Type": "application/json"
-      }
-    });
+ 
+    const res = await axios.post("/api/loadCheckout");
 
     // console.log(res);
 

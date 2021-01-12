@@ -390,17 +390,21 @@ exports.removeCheckout = async (req, res) => {
     // console.log("inside removeCheckout");
     // console.log( req.body );
 
-    const user = await User.findById(req.body.userId);
+    const user = await User.findById(req.user._id);
     // console.log( user._id );
 
     const inCart = user.checkout.filter((course) => {
       return course._id != req.body.courseId
     });
 
-    await User.findByIdAndUpdate(user._id, {
-      checkout: [...inCart]
-      // checkout: []
-    });
+    console.log(inCart);
+
+    // await User.findByIdAndUpdate(user._id, {
+    //   checkout: [...inCart]
+    //   // checkout: []
+    // });
+    user.checkout = [...inCart]
+    await user.save({ validateBeforeSave: false });
 
     res.status(200).json({
       status: 'success',
@@ -415,7 +419,7 @@ exports.loadCheckout = async (req, res) => {
   try {
     // console.log("inside loadCheckout");
 
-    const user = await User.findById(req.body.userId);
+    const user = await User.findById(req.user._id);
 
     // const checkoutPrice = user.checkout.map( (course) => {
     //   return parseInt(total.price) + parseInt(course.price);
@@ -446,7 +450,7 @@ exports.loadCheckout = async (req, res) => {
     //   return total.price + course.price;
     // })
 
-    console.log(checkoutPrice);
+    // console.log(checkoutPrice);
 
     // console.log(user.checkout);
     // console.log("**************" +  checkoutPrice + "**************");
@@ -751,13 +755,20 @@ exports.getCouponId = async (req, res) => {
   try {
     const {couponCode} = req.params;
 
-    const coupon = await Coupon.find({ code: couponCode.toUpperCase()});
+    const coupon = await Coupon.findOne({ code: couponCode.toUpperCase()});
     console.log(coupon)
+    if(coupon) {
     res.status(200).json({
-      coupon: coupon[0]
+      coupon: coupon
     })
+    } else {
+      throw new Error('Coupon not valid');
+    }
 
   } catch (error) {
-    console.log(error)
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
   }
 }
