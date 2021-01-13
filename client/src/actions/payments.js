@@ -45,7 +45,7 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
         "Content-Type": "application/json"
       }
     }
-    paymentData.courseTag = courseTag
+    // paymentData.courseTag = courseTag
 
     const body = {
       paymentData,
@@ -57,29 +57,29 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
 
     console.log(res.data);
 
-    let res2 = "";
+    // let res2 = "";
 
-    if (res.data.success) {
-      const body2 = {
-        email: user.email,
-        courseTag,
-        amount: paymentData.amount
-      }
-      res2 = await axios.post(`/api/braintree/checkout/success`, body2, config);
-      console.log("email response");
-      console.log(res2.data.message);
+    // if (res.data.success) {
+    //   const body2 = {
+    //     email: user.email,
+    //     courseTag,
+    //     amount: paymentData.amount
+    //   }
+    //   res2 = await axios.post(`/api/braintree/checkout/success`, body2, config);
+    //   console.log("email response");
+    //   console.log(res2.data.message);
 
-      dispatch({
-        type: PAY_COURSE,
-        payload: res2.data
+    //   dispatch({
+    //     type: PAY_COURSE,
+    //     payload: res2.data
 
-      });
-    } else {
-      dispatch({
-        type: PAY_ERROR,
-        payload: "Error Getting the payment Token"
-      });
-    }
+    //   });
+    // } else {
+    //   dispatch({
+    //     type: PAY_ERROR,
+    //     payload: "Error Getting the payment Token"
+    //   });
+    // }
 
 
 

@@ -39,84 +39,150 @@ exports.processPayment = async (req, res) => {
     let user = req.user;
     let userName = user.name.split(" ");
 
-    const course = await Course.findOne({ tag: courseTag })
-    // console.log(course);
-    if (!user.customerId) {
-      gateway.customer.create({
-        firstName: userName[0],
-        lastName: userName[1],
-        email: user.email
-      }, (err, result) => {
-        console.log("The user id is: ");
-        const customerId = result.customer.id;
+    console.log(req.body);
 
-        gateway.transaction.sale({
-          customerId: customerId,
-          amount: amountFromTheClient,
-          paymentMethodNonce: nonceFromTheClient,
-          options: {
-            submitForSettlement: true
+    const courses = await Course.find({ '_id': { $in: req.body.courses } });
+    console.log(courses);
+
+    const coupon = await Coupon.findOne({ 'code': req.body.code.toUpperCase() });
+    console.log(coupon);
+
+    const couponIsValid = () => {
+      if (coupon && coupon.active) {
+        const today = new Date();
+        const couponDate = new Date(coupon.date);
+        const dateInPast = function (future, present) {
+          if (future.setHours(0, 0, 0, 0) <= present.setHours(0, 0, 0, 0)) {
+            return true;
           }
-        }, async (error, transactionResult) => {
-          console.log("result is: ");
-          console.log(transactionResult);
-          console.log(transactionResult.transaction.amount);
-         
-          await Transaction.create({
-            date: new Date(),
-            user: user._id,
-            userName: user.name,
-            customerId: result.customer.id,
-            productId: course._id,
-            productName: course.name,
-            price: transactionResult.transaction.amount,
-            transactionId: transactionResult.transaction.id
-          });
+          return false;
+        };
+        console.log("Date in past")
+        console.log(dateInPast(couponDate, today))
 
-          user.customerId = result.customer.id;
-
-          await user.save({ validateBeforeSave: false });
-
-          return res.status(200).json({
-            success: true
-          })
-        })
-
-      })
-    } else {
-      gateway.customer.find(user.customerId, function (err, customer) {
-        console.log("customer is:");
-        console.log(customer);
-
-        gateway.transaction.sale({
-          customerId: customer.id,
-          amount: amountFromTheClient,
-          paymentMethodNonce: nonceFromTheClient,
-          options: {
-            submitForSettlement: true
-          }
-        }, async (error, transactionResult) => {
-          // console.log("result is: ");
-          // console.log(transactionResult);
-          // console.log(transactionResult.transaction.amount);
-         
-          await Transaction.create({
-            date: new Date(),
-            user: user._id,
-            userName: user.name,
-            customerId: customer.id,
-            productId: course._id,
-            productName: course.name,
-            price: transactionResult.transaction.amount,
-            transactionId: transactionResult.transaction.id
-          });
-
-          return res.status(200).json({
-            success: true
-          })
-        })
-      });
+        return coupon.active && coupon.available > 0 && !dateInPast(couponDate, today)
+      } else {
+        return false
+      }
     }
+
+    let finalPrice = courses.reduce((total, course) => {
+      return parseFloat(total) + parseFloat(course.price);
+    }, 0)
+
+    if (couponIsValid()) {
+      const newArray = [];
+      // const coursesInCheckout = [];
+      for (let i = 0; i < courses.length; i++) {
+        newArray.push(courses[i].price);
+        // coursesInCheckout.push(courses[i]._id)
+        for (let j = 0; j < coupon.courses.length; j++) {
+          console.log("+++++++++++++++")
+            console.log(courses[i]._id);
+            console.log(coupon.courses[j].courseId);
+            console.log("-------------")
+          if (JSON.stringify(courses[i]._id) == JSON.stringify(coupon.courses[j].courseId)) {
+            console.log("Found a course");
+            newArray[i] = coupon.amountType === "percentage" ? (
+              newArray[i] - newArray[i] * parseInt(coupon.amount) / 100
+            ) : newArray[i] - parseInt(coupon.amount)
+            // course.price = 10
+          }
+        }
+
+      }
+      console.log("New array is");
+      console.log(newArray);
+      finalPrice = newArray.reduce((total, price) => {
+        console.log("Total price is: " + total);
+        console.log("Course price is: " + price);
+        return parseFloat(total) + parseFloat(price);
+      }, 0)
+
+    }
+
+    console.log("finalPrice +++++++++");
+    console.log(finalPrice);
+
+    return res.status(200).json({
+      success: true
+    })
+
+    // const course = await Course.findOne({ tag: courseTag })
+    // console.log(course);
+    // if (!user.customerId) {
+    //   gateway.customer.create({
+    //     firstName: userName[0],
+    //     lastName: userName[1],
+    //     email: user.email
+    //   }, (err, result) => {
+    //     console.log("The user id is: ");
+    //     const customerId = result.customer.id;
+
+    //     gateway.transaction.sale({
+    //       customerId: customerId,
+    //       amount: amountFromTheClient,
+    //       paymentMethodNonce: nonceFromTheClient,
+    //       options: {
+    //         submitForSettlement: true
+    //       }
+    //     }, async (error, transactionResult) => {
+    //       console.log("result is: ");
+    //       console.log(transactionResult);
+    //       console.log(transactionResult.transaction.amount);
+
+    //       await Transaction.create({
+    //         date: new Date(),
+    //         user: user._id,
+    //         userName: user.name,
+    //         customerId: result.customer.id,
+    //         productId: course._id,
+    //         productName: course.name,
+    //         price: transactionResult.transaction.amount,
+    //         transactionId: transactionResult.transaction.id
+    //       });
+
+    //       user.customerId = result.customer.id;
+
+    //       await user.save({ validateBeforeSave: false });
+
+    //       return res.status(200).json({
+    //         success: true
+    //       })
+    //     })
+
+    //   })
+    // } else {
+    //   gateway.customer.find(user.customerId, function (err, customer) {
+    //     console.log("customer is:");
+    //     console.log(customer);
+
+    //     gateway.transaction.sale({
+    //       customerId: customer.id,
+    //       amount: amountFromTheClient,
+    //       paymentMethodNonce: nonceFromTheClient,
+    //       options: {
+    //         submitForSettlement: true
+    //       }
+    //     }, async (error, transactionResult) => {
+
+    //       await Transaction.create({
+    //         date: new Date(),
+    //         user: user._id,
+    //         userName: user.name,
+    //         customerId: customer.id,
+    //         productId: course._id,
+    //         productName: course.name,
+    //         price: transactionResult.transaction.amount,
+    //         transactionId: transactionResult.transaction.id
+    //       });
+
+    //       return res.status(200).json({
+    //         success: true
+    //       })
+    //     })
+    //   });
+    // }
 
   } catch (error) {
     console.log(error);
@@ -701,20 +767,20 @@ exports.resubscribeMembership = async (req, res) => {
 
 exports.getUserBilling = async (req, res) => {
   try {
-    const { user }  = req;
+    const { user } = req;
     console.log(user._id)
     const allTransactions = await Transaction.find();
     console.log(allTransactions);
 
     const userTransactions = allTransactions.filter((transaction) => {
       console.log("this true or false");
-      
+
       console.log(JSON.stringify(transaction.user) == JSON.stringify(user._id));
 
       return JSON.stringify(transaction.user) == JSON.stringify(user._id);
     });
 
-    userTransactions.sort(function(a,b){
+    userTransactions.sort(function (a, b) {
       // Turn your strings into dates, and then subtract them
       // to get a value that is either negative, positive, or zero.
       return new Date(b.date) - new Date(a.date);
@@ -753,14 +819,14 @@ exports.test = async (req, res) => {
 
 exports.getCouponId = async (req, res) => {
   try {
-    const {couponCode} = req.params;
+    const { couponCode } = req.params;
 
-    const coupon = await Coupon.findOne({ code: couponCode.toUpperCase()});
+    const coupon = await Coupon.findOne({ code: couponCode.toUpperCase() });
     console.log(coupon)
-    if(coupon) {
-    res.status(200).json({
-      coupon: coupon
-    })
+    if (coupon) {
+      res.status(200).json({
+        coupon: coupon
+      })
     } else {
       throw new Error('Coupon not valid');
     }

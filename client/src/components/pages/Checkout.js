@@ -44,9 +44,15 @@ const Membership = () => {
   }, [user]);
 
   useEffect(() => {
+    const coursesInCheckout = [];
+    for(let i=0; i < checkout.length; i++) {
+      coursesInCheckout.push(checkout[i]._id)
+    }
+
     setPaymentState({
       ...paymentState,
       checkoutBackup: [...checkout],
+      coursesInCheckout: coursesInCheckout,
       finalPrice: checkoutPrice
     })
 
