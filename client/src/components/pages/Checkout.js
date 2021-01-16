@@ -131,8 +131,13 @@ const Membership = () => {
   }, [checkout]);
 
   const buy = () => {
+    console.log(data.instance);
+    console.log(Object.keys(data.instance).length !== 0);
+    console.log(data.instance.constructor === Object);
+    console.log(disableButton);
+
     let nonce;
-    let getNonce = data.instance.requestPaymentMethod()
+    let getNonce = Object.keys(data.instance).length !== 0 && data.instance.requestPaymentMethod()
       .then(async data => {
         console.log(data);
         nonce = data.nonce
@@ -232,6 +237,7 @@ const Membership = () => {
 
   console.log(checkout)
   console.log(paymentState)
+  console.log(data.instance);
 
   if (payment && payment.result) {
     console.log("inside of redirect to success");

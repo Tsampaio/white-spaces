@@ -14,13 +14,16 @@ const transactionSchema = new mongoose.Schema({
     customerId: {
         type: String
     },
-    productId: {
+    productId: [{
         type: mongoose.Schema.ObjectId,
         ref: 'Course'
-    },
-    productName: {
+    }],
+    productName: [{
         type: "String"
-    },
+    }],
+    productSalePrice: [{
+        type: Number
+    }],
     billingPeriod: {
         type: String
     },
@@ -28,7 +31,7 @@ const transactionSchema = new mongoose.Schema({
         type: String
     },
     price: {
-        type: String
+        type: Number
     },
     transactionId: {
         type: String

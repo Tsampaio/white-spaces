@@ -32,9 +32,7 @@ exports.processPayment = async (req, res) => {
 
   try {
     console.log("inside processPayment");
-    let nonceFromTheClient = req.body.paymentMethodNonce;
-    let amountFromTheClient = req.body.amount;
-    let courseTag = req.body.courseTag;
+    let nonceFromTheClient = req.body.paymentData.paymentMethodNonce;
 
     let user = req.user;
     let userName = user.name.split(" ");
@@ -43,6 +41,18 @@ exports.processPayment = async (req, res) => {
 
     const courses = await Course.find({ '_id': { $in: req.body.courses } });
     console.log(courses);
+
+    const coursesId = courses.map(course => {
+      return course._id;
+    });
+
+    const coursesName = courses.map(course => {
+      return course.name;
+    });
+
+    const coursesPrice = courses.map(course => {
+      return course.price;
+    })
 
     const coupon = await Coupon.findOne({ 'code': req.body.code.toUpperCase() });
     console.log(coupon);
@@ -78,9 +88,9 @@ exports.processPayment = async (req, res) => {
         // coursesInCheckout.push(courses[i]._id)
         for (let j = 0; j < coupon.courses.length; j++) {
           console.log("+++++++++++++++")
-            console.log(courses[i]._id);
-            console.log(coupon.courses[j].courseId);
-            console.log("-------------")
+          console.log(courses[i]._id);
+          console.log(coupon.courses[j].courseId);
+          console.log("-------------")
           if (JSON.stringify(courses[i]._id) == JSON.stringify(coupon.courses[j].courseId)) {
             console.log("Found a course");
             newArray[i] = coupon.amountType === "percentage" ? (
@@ -101,88 +111,105 @@ exports.processPayment = async (req, res) => {
 
     }
 
+    let amountFromTheClient = finalPrice;
+
     console.log("finalPrice +++++++++");
     console.log(finalPrice);
 
-    return res.status(200).json({
-      success: true
-    })
+    // return res.status(200).json({
+    //   success: true
+    // })
 
     // const course = await Course.findOne({ tag: courseTag })
     // console.log(course);
-    // if (!user.customerId) {
-    //   gateway.customer.create({
-    //     firstName: userName[0],
-    //     lastName: userName[1],
-    //     email: user.email
-    //   }, (err, result) => {
-    //     console.log("The user id is: ");
-    //     const customerId = result.customer.id;
+    if (!user.customerId) {
+      gateway.customer.create({
+        firstName: userName[0],
+        lastName: userName[1],
+        email: user.email
+      }, (err, result) => {
+        console.log("The user id is: ");
+        const customerId = result.customer.id;
 
-    //     gateway.transaction.sale({
-    //       customerId: customerId,
-    //       amount: amountFromTheClient,
-    //       paymentMethodNonce: nonceFromTheClient,
-    //       options: {
-    //         submitForSettlement: true
-    //       }
-    //     }, async (error, transactionResult) => {
-    //       console.log("result is: ");
-    //       console.log(transactionResult);
-    //       console.log(transactionResult.transaction.amount);
+        gateway.transaction.sale({
+          customerId: customerId,
+          amount: amountFromTheClient,
+          paymentMethodNonce: nonceFromTheClient,
+          options: {
+            submitForSettlement: true
+          }
+        }, async (error, transactionResult) => {
+          console.log("result is: ");
+          console.log(transactionResult);
+          console.log(transactionResult.transaction.amount);
 
-    //       await Transaction.create({
-    //         date: new Date(),
-    //         user: user._id,
-    //         userName: user.name,
-    //         customerId: result.customer.id,
-    //         productId: course._id,
-    //         productName: course.name,
-    //         price: transactionResult.transaction.amount,
-    //         transactionId: transactionResult.transaction.id
-    //       });
+          const newTransaction = await Transaction.create({
+            date: new Date(),
+            user: user._id,
+            userName: user.name,
+            customerId: result.customer.id,
+            productId: coursesId,
+            productName: coursesName,
+            coupon: req.body.code,
+            price: transactionResult.transaction.amount,
+            transactionId: transactionResult.transaction.id,
+            productSalePrice: coursesPrice
+          });
 
-    //       user.customerId = result.customer.id;
+          user.customerId = result.customer.id;
 
-    //       await user.save({ validateBeforeSave: false });
+          await user.save({ validateBeforeSave: false });
 
-    //       return res.status(200).json({
-    //         success: true
-    //       })
-    //     })
+          coupon.used = coupon.used + 1;
+          coupon.available = coupon.available - 1;
 
-    //   })
-    // } else {
-    //   gateway.customer.find(user.customerId, function (err, customer) {
-    //     console.log("customer is:");
-    //     console.log(customer);
+          await coupon.save({ validateBeforeSave: false });
 
-    //     gateway.transaction.sale({
-    //       customerId: customer.id,
-    //       amount: amountFromTheClient,
-    //       paymentMethodNonce: nonceFromTheClient,
-    //       options: {
-    //         submitForSettlement: true
-    //       }
-    //     }, async (error, transactionResult) => {
+          return res.status(200).json({
+            success: true,
+            transactionId: newTransaction._id
+          })
+        })
 
-    //       await Transaction.create({
-    //         date: new Date(),
-    //         user: user._id,
-    //         userName: user.name,
-    //         customerId: customer.id,
-    //         productId: course._id,
-    //         productName: course.name,
-    //         price: transactionResult.transaction.amount,
-    //         transactionId: transactionResult.transaction.id
-    //       });
+      })
+    } else {
+      gateway.customer.find(user.customerId, function (err, customer) {
+        console.log("customer is:");
+        console.log(customer);
 
-    //       return res.status(200).json({
-    //         success: true
-    //       })
-    //     })
-    //   });
-    // }
+        gateway.transaction.sale({
+          customerId: customer.id,
+          amount: amountFromTheClient,
+          paymentMethodNonce: nonceFromTheClient,
+          options: {
+            submitForSettlement: true
+          }
+        }, async (error, transactionResult) => {
+
+          const newTransaction = await Transaction.create({
+            date: new Date(),
+            user: user._id,
+            userName: user.name,
+            customerId: customer.id,
+            productId: coursesId,
+            productName: coursesName,
+            coupon: req.body.code,
+            price: transactionResult.transaction.amount,
+            transactionId: transactionResult.transaction.id,
+            productSalePrice: coursesPrice
+          });
+
+          coupon.used = coupon.used + 1;
+          coupon.available = coupon.available - 1;
+          await coupon.save({ validateBeforeSave: false });
+
+          return res.status(200).json({
+            success: true,
+            transactionId: newTransaction._id
+          })
+        })
+      });
+    }
 
   } catch (error) {
     console.log(error);
@@ -377,36 +404,66 @@ exports.emailThankYou = async (req, res) => {
     // console.log('inside emailThankyou');
     // console.log(req.body.email);
 
-    const courseTag = req.body.courseTag;
+    const { transactionId } = req.body;
 
-    const user = await User.findOne({ email: req.body.email });
-    // console.log(user);
+    const transaction = await Transaction.findById(transactionId);
+    console.log("THE TRANSACTION IS");
 
-    const course = await Course.findOne({ tag: courseTag });
-    // console.log( course );
+    const courses = await Course.find({ '_id': { $in: transaction.productId } });
+
+    console.log(transaction);
+    const user = await User.findById(transaction.user);
+    console.log(user._id);
+    console.log(transaction.user);
+
+    const bulkUpdateOps = courses.map((course, i) => {
+      return {
+        updateOne: {
+          "filter": { "_id": course._id },
+          "update": {
+            $set: {
+              users: [...course.users, user._id],
+              sold: course.sold + 1,
+              revenue: course.revenue + transaction.productSalePrice[i]
+            }
+          }
+        }
+      }
+    });
+
+    if (JSON.stringify(user._id) === JSON.stringify(transaction.user)) {
+      console.log("WE HAVE THE RIGHT USER");
+    } else {
+      console.log("WE HAVE THE WRONG USER")
+    }
 
     await User.findByIdAndUpdate(user._id, {
-      courses: [...user.courses, course._id],
+      courses: [...user.courses, ...transaction.productId],
       checkout: [],
-      purchases: user.purchases + req.body.amount
+      purchases: user.purchases + transaction.price
     });
 
-    await Course.findByIdAndUpdate(course._id, {
-      users: [...course.users, user._id],
-      sold: course.sold + 1,
-      revenue: course.revenue + req.body.amount
-    });
+
+    const updateCourses = await Course.bulkWrite(bulkUpdateOps, { "ordered": true, "w": 1 });
+
+    // await Course.updateMany({ '_id': { $in: transaction.productId } }, {
+    //   $set: {
+    //     users: [...course.users, user._id],
+    //     sold: course.sold + 1,
+    //     revenue: course.revenue + transaction.price
+    //   }
+    // });
 
     // generateActivationToken(req, user);
 
-    const url = `${req.protocol}://localhost:3000/courses/${course.tag}`;
+    const url = `${req.protocol}://localhost:3000/profile/courses`;
     //Or http://localhost:3000/dashboard   for HOST
     // console.log(url);
-    await new Email(user, url).sendThankYou(course.name);
+    await new Email(user, url).sendThankYou();
 
     res.status(200).json({
       status: 'success',
-      message: 'You bought the course'
+      message: 'Thank you for your purchase'
     })
 
   } catch (error) {
