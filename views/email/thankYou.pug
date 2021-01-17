@@ -2,8 +2,8 @@ extends baseEmail
 
 block content
   p Hi #{firstName},
-  p Your purchase is now complete 🎉🙏
-  p Your new courses are now available at your profile page!
+  p Your purchase is complete 🎉🙏
+  p New courses have been added to your library!
   table.btn.btn-primary(role='presentation' border='0' cellpadding='0' cellspacing='0')
     tbody
       tr
@@ -12,6 +12,6 @@ block content
             tbody
               tr
                 td
-                  a(href=`${url}` target='_blank') Upload user photo
-  p If you need any help with booking your next tour, please don't hesitate to contact me!
+                  a(href=`${url}` target='_blank') Start learning
+  p We hope you have a great time at Telmo Academy!
   p - Telmo Sampaio, CEO

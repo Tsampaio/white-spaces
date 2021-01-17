@@ -9,6 +9,8 @@ import {
   GET_USER_BILLING
 } from './types';
 
+import { PAY_BUTTON_LOAD_REQUEST, PAY_BUTTON_LOAD_SUCCESS } from '../contants/paymentConstants';
+
 export const payAction = (userId, token) => async dispatch => {
   // console.log("pay action");
   // console.log("userId", userId);
@@ -39,6 +41,10 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
   console.log("processPayment action");
   console.log(paymentData);
   try {
+    dispatch({
+      type: PAY_BUTTON_LOAD_REQUEST
+    });
+
     console.log("inside processPayment actions");
     const config = {
       headers: {
@@ -54,6 +60,9 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
     }
 
     const res = await axios.post(`/api/braintree/payment`, body, config);
+    // dispatch({
+    //   type: PAY_BUTTON_LOAD_SUCCESS
+    // });
 
     console.log(res.data);
 
@@ -170,6 +179,7 @@ export const findCouponIdAction = (couponCode) => async dispatch => {
     });
 
   } catch (error) {
+    console.log(error);
     const errors = error.response.data;
     console.log(errors.message);
 

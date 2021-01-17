@@ -10,6 +10,7 @@ import {
   GET_USER_BILLING
 } from '../actions/types';
 import { GET_COUPON_BY_ID_FAIL, GET_COUPON_BY_ID_REQUEST, GET_COUPON_BY_ID_RESET, GET_COUPON_BY_ID_SUCCESS } from '../contants/couponConstants';
+import { PAY_BUTTON_LOAD_REQUEST, PAY_BUTTON_LOAD_SUCCESS } from '../contants/paymentConstants';
 
 const initialState = {
   loading: true,
@@ -21,7 +22,8 @@ const initialState = {
   paymentComplete: false,
   billing: [],
   coupon: {},
-  message: ""
+  message: "",
+  buttonLoading: false
 }
 
 export default function (state = initialState, action) {
@@ -95,6 +97,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         coupon: {}
+      }
+    case PAY_BUTTON_LOAD_REQUEST:
+      return {
+        ...state,
+        buttonLoading: true
+      }
+    case PAY_BUTTON_LOAD_SUCCESS:
+      return {
+        ...state,
+        buttonLoading: false
       }
     default:
       return state;

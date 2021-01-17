@@ -8,7 +8,7 @@ import { payAction, processPayment, findCouponIdAction } from '../../actions/pay
 import { removeCheckout, loadCheckout } from '../../actions/courses';
 import { GET_COUPON_BY_ID_RESET } from '../../contants/couponConstants';
 
-const Membership = () => {
+const Membership = ({history}) => {
 
   const dispatch = useDispatch();
 
@@ -16,7 +16,7 @@ const Membership = () => {
   const auth = useSelector(state => state.auth);
   const { user } = auth;
 
-  const { coupon, checkoutPrice, checkout, message } = payment;
+  const { coupon, checkoutPrice, checkout, message, buttonLoading, result } = payment;
 
   const [data, setData] = useState({
     instance: {}
@@ -32,10 +32,6 @@ const Membership = () => {
 
   const [disableButton, setDisableButton] = useState(false)
 
-  // console.log( payment );
-  const courseTag = payment && payment.checkout[0] && payment.checkout[0].tag;
-  // console.log( checkoutPrice);
-
   useEffect(() => {
     if (user && user._id) {
       dispatch(payAction(user._id));
@@ -45,7 +41,7 @@ const Membership = () => {
 
   useEffect(() => {
     const coursesInCheckout = [];
-    for(let i=0; i < checkout.length; i++) {
+    for (let i = 0; i < checkout.length; i++) {
       coursesInCheckout.push(checkout[i]._id)
     }
 
@@ -60,25 +56,28 @@ const Membership = () => {
   }, [checkoutPrice, checkout]);
 
   useEffect(() => {
+    const coursesInCheckout = [];
     if (couponIsValid() && coupon && coupon.active) {
       const checkoutCopy = [...paymentState.checkoutBackup];
-      
+
       const newArray = [];
-      const coursesInCheckout = [];
-      for(let i=0; i < checkoutCopy.length; i++) {
+
+      const coursesDiscounted = [];
+      for (let i = 0; i < checkoutCopy.length; i++) {
         newArray.push(checkoutCopy[i].price);
         coursesInCheckout.push(checkoutCopy[i]._id)
         for (let j = 0; j < coupon.courses.length; j++) {
-          
+
           if (checkoutCopy[i]._id == coupon.courses[j].courseId) {
-            
+
             newArray[i] = coupon.amountType === "percentage" ? (
               newArray[i] - newArray[i] * parseInt(coupon.amount) / 100
             ) : newArray[i] - parseInt(coupon.amount)
             // course.price = 10
+            coursesDiscounted.push(coupon.courses[j].courseId)
           }
         }
-    
+
       }
 
       console.log(checkoutCopy);
@@ -94,7 +93,7 @@ const Membership = () => {
 
       setPaymentState({
         ...paymentState,
-        checkoutSale: [...newArray],
+        checkoutSale: coursesDiscounted.length > 0 ? [...newArray] : [],
         coursesInCheckout: [...coursesInCheckout],
         finalPrice: finalPriceWithDiscount
       })
@@ -102,6 +101,7 @@ const Membership = () => {
       setPaymentState({
         ...paymentState,
         checkoutSale: [],
+        // coursesInCheckout: [...coursesInCheckout],
         finalPrice: checkoutPrice
       })
     }
@@ -127,8 +127,10 @@ const Membership = () => {
   }
 
   useEffect(() => {
-    console.log("Checkout is changing");
-  }, [checkout]);
+    if(result) {
+      history.push("/cart/checkout/success");
+    }
+  }, [result]);
 
   const buy = () => {
     console.log(data.instance);
@@ -151,7 +153,7 @@ const Membership = () => {
         // processPayment(userId, token, paymentData)
         // processPayment('131asdasd', 'adasdadad', paymentData)
 
-        await dispatch(processPayment( paymentData, paymentState.code, paymentState.coursesInCheckout));
+        await dispatch(processPayment(paymentData, paymentState.code, paymentState.coursesInCheckout));
 
         console.log("before redirect");
         // console.log( payment.result );
@@ -172,7 +174,14 @@ const Membership = () => {
           flow: "vault"
         }
       }} onInstance={instance => (data.instance = instance)} />
-      <button onClick={buy} className={disableButton ? "btn btn-primary invisible" : "btn btn-primary"}>Proceed to Payment</button>
+      <button onClick={buy} className={disableButton ? "btn btn-primary invisible" : "btn btn-primary"}>{buttonLoading ? (
+        <>
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        Loading...
+        </>
+      ) : "Proceed to Payment"}</button>
     </Fragment>
   )
 
@@ -235,14 +244,15 @@ const Membership = () => {
 
 
 
-  console.log(checkout)
-  console.log(paymentState)
-  console.log(data.instance);
-
-  if (payment && payment.result) {
-    console.log("inside of redirect to success");
-    return <Redirect to="/cart/checkout/success" />
-  }
+  // console.log(checkout)
+  // console.log(paymentState)
+  // console.log(data.instance);
+  console.log(typeof checkoutItems);
+  console.log(paymentState);
+  // if (payment && payment.result) {
+  //   console.log("inside of redirect to success");
+  //   return <Redirect to="/cart/checkout/success" />
+  // }
 
   return (
     <Fragment>
@@ -261,18 +271,19 @@ const Membership = () => {
             }
             <div className={payment && payment.checkout.length > 0 ? "col-6 paper-gray" : "col-8 offset-md-2 paper-gray "}>
               <h1 className="basketTitle">Products in Basket:</h1>
-              {checkoutItems.length > 0 ? checkoutItems : <Fragment><h1>Your basket is empty</h1> <Link to="/courses">Continue shopping</Link></Fragment>}
+              {checkoutItems && checkoutItems.length > 0 ? checkoutItems : <Fragment><h1>Your basket is empty</h1> <Link to="/courses">Continue shopping</Link></Fragment>}
 
-              {checkoutItems.length > 0 ? (
+              {checkoutItems && checkoutItems.length > 0 ? (
                 <>
-                  {couponIsValid() ? (
-                    <h5 className="my-4">Coupon {coupon.code} - {coupon.name} applied</h5>) : message || coupon.name ? (
-                      <h5 className="my-4">Coupon is not valid</h5>
-                    ) : null
+                  {couponIsValid() && paymentState.checkoutSale.length > 0 ? (
+                    <h5 className="my-4">Coupon {coupon.code} - {coupon.name} applied</h5>
+                  ) : message || coupon.name ? (
+                    <h5 className="my-4">Coupon is not valid</h5>
+                  ) : null
                   }
 
                   {/* {message && <h5 className="my-4">Coupon is not valid</h5>} */}
-                  <div className="checkoutPrice">Total: {couponIsValid() ? <del>${checkoutPrice}</del> : null} ${paymentState.finalPrice}</div>
+                  <div className="checkoutPrice">Total: {couponIsValid() && paymentState.checkoutSale.length > 0 ? <del>${checkoutPrice}</del> : null} ${paymentState.finalPrice}</div>
                   <input required type="text" placeholder="Enter coupon code" onChange={(e) => setPaymentState({ ...paymentState, code: e.target.value })} />
                   <button onClick={checkCoupon}>Use coupon</button>
                 </>

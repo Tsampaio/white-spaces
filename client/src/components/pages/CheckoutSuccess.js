@@ -1,42 +1,51 @@
 import React, { useState, useEffect} from 'react';
 import SecondHeader from '../partials/SecondHeader';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { resetPaymentResult } from '../../actions/payments';
-import { connect } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
-import store from '../../store';
 import './CheckoutSuccess.css';
 
-const CheckoutSuccess = ({auth, payment}) => {
+const CheckoutSuccess = ({ history }) => {
+  const dispatch = useDispatch();
+  const payment = useSelector(state => state.payment);
 
-  const [page, setPage] = useState({
-    loaded: false
-  });
+  const { result } = payment;
+
+  // const [page, setPage] = useState({
+  //   loaded: false
+  // });
 
   useEffect(() => {
     //     console.log(auth);
     // console.log(active == 'notActive');
     // console.log(!auth.loading)
 
-    store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
+    // store.dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
-    store.dispatch(resetPaymentResult());
-    // console.log(auth);
+
+    
+
+    if(!result) {
+      history.push("/courses");
+    }
+
+    dispatch(resetPaymentResult());
     
   }, []);
 
-  useEffect(() => {
-    if( auth && auth.isAuthenticated ) {
-      setPage({
-        loaded: true
-      })
-    }
+  // useEffect(() => {
+  //   if( auth && auth.isAuthenticated ) {
+  //     setPage({
+  //       loaded: true
+  //     })
+  //   }
     
-  }, [auth && auth.isAuthenticated]);
+  // }, [auth && auth.isAuthenticated]);
 
-  if( auth && !auth.isAuthenticated && page.loaded) {
-    return <Redirect to="/" />
-  }
+  // if( auth && !auth.isAuthenticated && page.loaded) {
+  //   return <Redirect to="/" />
+  // }
 
   return (
     <>
@@ -55,11 +64,11 @@ const CheckoutSuccess = ({auth, payment}) => {
   )
 }
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-  active: state.auth.active,
-  courses: state.courses,
-  payment: state.payment
-});
+// const mapStateToProps = state => ({
+//   auth: state.auth,
+//   active: state.auth.active,
+//   courses: state.courses,
+//   payment: state.payment
+// });
 
-export default connect(mapStateToProps)(CheckoutSuccess);
+export default CheckoutSuccess;

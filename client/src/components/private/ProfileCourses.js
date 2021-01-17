@@ -1,6 +1,5 @@
 import React, { useEffect, Fragment, useState, useRef } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
@@ -68,11 +67,5 @@ function ProfileCourses() {
     </div>
   );
 };
-
-ProfileCourses.propTypes = {
-  // getCurrentProfile: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
-  // profile: PropTypes.object.isRequired
-}
 
 export default ProfileCourses;

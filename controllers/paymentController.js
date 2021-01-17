@@ -160,10 +160,12 @@ exports.processPayment = async (req, res) => {
 
           await user.save({ validateBeforeSave: false });
 
-          coupon.used = coupon.used + 1;
-          coupon.available = coupon.available - 1;
+          if (couponIsValid()) {
+            coupon.used = coupon.used + 1;
+            coupon.available = coupon.available - 1;
 
-          await coupon.save({ validateBeforeSave: false });
+            await coupon.save({ validateBeforeSave: false });
+          }
 
           return res.status(200).json({
             success: true,
@@ -199,9 +201,11 @@ exports.processPayment = async (req, res) => {
             productSalePrice: coursesPrice
           });
 
-          coupon.used = coupon.used + 1;
-          coupon.available = coupon.available - 1;
-          await coupon.save({ validateBeforeSave: false });
+          if (couponIsValid()) {
+            coupon.used = coupon.used + 1;
+            coupon.available = coupon.available - 1;
+            await coupon.save({ validateBeforeSave: false });
+          }
 
           return res.status(200).json({
             success: true,
@@ -212,7 +216,10 @@ exports.processPayment = async (req, res) => {
     }
 
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    });
   }
 }
 
