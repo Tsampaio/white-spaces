@@ -28,7 +28,7 @@ const Sales = () => {
 
   const [salesState, setSalesState] = useState([]);
   const [pageSales, setPageSales] = useState({
-    salesPerPage: 2,
+    salesPerPage: 10,
     values: [],
     number: 1,
     firstPage: 0,
@@ -65,8 +65,17 @@ const Sales = () => {
       <tr key={i}>
         <td>{newSaleDate}</td>
         <td>{sale.userName}</td>
-        <td>{sale.productName}</td>
-        <td>Discount</td>
+        {/* <td>{sale.productName}</td> */}
+        <td>
+          {sale.productName.map((name, i) => {
+            let comma =", ";
+            if(i + 1 === sale.productName.length) {
+              comma = "";
+            }
+            return <div key={i}>{name + comma}</div> ;
+          }) }
+        </td>
+        <td>{sale.coupon ? sale.coupon : "-"}</td>
         <td>{sale.price}</td>
       </tr>
     )

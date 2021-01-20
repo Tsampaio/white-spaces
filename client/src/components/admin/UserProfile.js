@@ -13,7 +13,7 @@ const Courses = ({ match, history }) => {
 
   const admin = useSelector(state => state.admin);
   const { userPurchases } = admin;
-  const { _id, name, email, joined, active, purchases, courses } = admin.userDetails;
+  const { _id, name, email, joined, active, purchases, courses, lastLogin } = admin.userDetails;
   // console.log(_id)
   const { subPage } = useParams();
   // console.log(subPage);
@@ -49,7 +49,7 @@ const Courses = ({ match, history }) => {
   useEffect(() => {
     setUserCourses(courses);
 
-  }, [courses, userPurchases]);
+  }, [courses]);
 
   useEffect(() => {
     theUserCoursesFunc();
@@ -125,7 +125,8 @@ const Courses = ({ match, history }) => {
         }
       }
     }
-
+    console.log("THE COURSES ARE");
+    console.log(courses);
     setUserCoursesDetails(courses);
   }
 
@@ -163,6 +164,9 @@ const Courses = ({ match, history }) => {
     handleShow();
   }
 
+  const userLastLogin = new Date(lastLogin);
+  const userLastLoginDate = `${userLastLogin.getDate()}/${userLastLogin.getMonth() + 1}/${userLastLogin.getFullYear()}`;
+
   console.log(userCoursesDetails);
   console.log(userCourses);
   return (
@@ -192,7 +196,7 @@ const Courses = ({ match, history }) => {
               </div>
               <div className="userColDivider">
                 <h6>Last Login</h6>
-                <h4>Today</h4>
+                <h4>{userLastLoginDate}</h4>
               </div>
               <div className="userColDivider">
                 <h6>Total Purchases</h6>
