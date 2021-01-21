@@ -9,7 +9,10 @@ import {
   COURSE_LIST_REQUEST,
   SAVE_FEATURED_COURSES_REQUEST,
   SAVE_FEATURED_COURSES_SUCCESS,
-  SAVE_FEATURED_COURSES_FAIL
+  SAVE_FEATURED_COURSES_FAIL,
+  DELETE_COURSE_VIDEOCLASS_SUCCESS,
+  DELETE_COURSE_VIDEOCLASS_FAIL,
+  DELETE_COURSE_VIDEOCLASS_REQUEST
 } from '../contants/courseConstants';
 
 const initialState = {
@@ -72,6 +75,7 @@ export default function (state = initialState, action) {
         }
       }
     case SAVE_FEATURED_COURSES_REQUEST:
+    case DELETE_COURSE_VIDEOCLASS_REQUEST:
       return {
         ...state,
         loading: true
@@ -83,9 +87,16 @@ export default function (state = initialState, action) {
         all: payload
       }
     case SAVE_FEATURED_COURSES_FAIL:
+    case DELETE_COURSE_VIDEOCLASS_FAIL:
       return {
         ...state,
         message: payload
+      }
+    case DELETE_COURSE_VIDEOCLASS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        data: payload
       }
     default:
       return state;

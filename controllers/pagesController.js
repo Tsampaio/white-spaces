@@ -420,3 +420,32 @@ exports.saveFeaturedCourses = async (req, res) => {
   }
 }
 
+exports.deleteVideoClass = async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+    const { courseId, classId } = req.body;
+    console.log(req.body);
+    const course = await Course.findById(courseId);
+
+    const removeClass = course.classes.filter((courseClass, i) => {
+      return JSON.stringify(courseClass._id) !== JSON.stringify(classId)
+    })
+    course.classes = [...removeClass];
+    await course.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      message: "Class removed",
+      course
+    })
+  } else {
+    throw new Error('You are not an admin');
+  }
+
+  } catch (error) {
+    console.log(error.message);
+    res.status(401).json({
+      message: error.message
+    })
+  }
+}
+

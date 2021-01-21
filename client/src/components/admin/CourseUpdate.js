@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import store from '../../store';
 import { useParams } from 'react-router-dom';
 import { getCourse } from '../../actions/courses';
-import { updateCourseAction } from '../../actions/courses';
+import { updateCourseAction, deleteVideoClassAction } from '../../actions/courses';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -14,7 +14,7 @@ import { stateFromHTML } from 'draft-js-import-html';
 import './Admin.css';
 import './CourseUpdate.css';
 
-const CourseUpdate = ({ course, auth, updateCourseAction }) => {
+const CourseUpdate = ({ course, auth, updateCourseAction, deleteVideoClassAction }) => {
 	console.log(auth);
 
 	const [courseState, setCourseState] = useState({
@@ -25,6 +25,7 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 		courseDescription: " ",
 		coursePrice: "",
 		classes: [{
+			id: "",
 			lecture: "",
 			title: "",
 			url: "",
@@ -41,7 +42,7 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 	useEffect(() => {
 		setCourseValues();
 
-	}, [courseState.loaded]);
+	}, [courseState.loaded, course.loading]);
 
 	useEffect(() => {
 		if (courseState.courseDescription) {
@@ -58,11 +59,11 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 	const setCourseValues = async () => {
 		await store.dispatch(getCourse(courseTag));
 
-		if (course && course.data && course.data._id) {
-			for (let i = 0; i < course.data.classes.length; i++) {
-				delete course.data.classes[i]._id
-			}
-		}
+		// if (course && course.data && course.data._id) {
+		// 	for (let i = 0; i < course.data.classes.length; i++) {
+		// 		delete course.data.classes[i]._id
+		// 	}
+		// }
 
 		setCourseState({
 			...courseState,
@@ -131,6 +132,10 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 					<label htmlFor="classVideoDuration" className="col-2">Class Video Duration</label>
 					<input id="classVideoDuration" type="number" name="duration" placeholder="duration" onChange={updateClass} value={courseState.classes[i].duration} />
 				</div>
+				<div className="card-body">
+					<button onClick={() => deleteVideoClassAction(courseState.id, courseState.classes[i]._id)}><i class="fas fa-trash-alt"></i> Delete Video</button>
+					
+				</div>
 			</div>
 			// value={courseState.classes[i].lecture}
 		)
@@ -156,6 +161,7 @@ const CourseUpdate = ({ course, auth, updateCourseAction }) => {
 	}
 	// console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));
 	console.log(courseState);
+	console.log(course);
 	return (
 		<>
 			<div className="adminCtn">
@@ -204,4 +210,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, { updateCourseAction })(CourseUpdate);
+export default connect(mapStateToProps, { updateCourseAction, deleteVideoClassAction })(CourseUpdate);

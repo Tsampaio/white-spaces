@@ -13,6 +13,9 @@ import {
   FINISH_LESSON
 } from './types';
 import { COURSE_LIST_REQUEST, 
+  DELETE_COURSE_VIDEOCLASS_FAIL, 
+  DELETE_COURSE_VIDEOCLASS_REQUEST, 
+  DELETE_COURSE_VIDEOCLASS_SUCCESS, 
   SAVE_FEATURED_COURSES_FAIL, 
   SAVE_FEATURED_COURSES_REQUEST, 
   SAVE_FEATURED_COURSES_SUCCESS 
@@ -327,4 +330,37 @@ export const saveFeaturedCoursesAction = (data, token) => async dispatch => {
   }
 }
 
+export const deleteVideoClassAction = (courseId, classId) => async dispatch => {
+  try {
+    dispatch({
+      type: DELETE_COURSE_VIDEOCLASS_REQUEST,
+    });
+
+    const body = { courseId, classId };
+    console.log(body)
+    
+    const res = await axios.post("/api/deleteVideoClass", body, {
+      headers: {
+        Accept: 'application/json',
+        "Content-Type": "application/json"
+      }
+    });
+
+    console.log(res.data);
+
+    dispatch({
+      type: DELETE_COURSE_VIDEOCLASS_SUCCESS,
+      payload: res.data.course
+    });
+
+  } catch (error) {
+    const errors = error.response.data;
+    console.log("SAVING FAIL");
+    console.log(errors);
+    dispatch({
+      type: DELETE_COURSE_VIDEOCLASS_FAIL,
+      payload: errors.message
+    })
+  }
+}
 
