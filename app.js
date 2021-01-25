@@ -37,6 +37,7 @@ app.use('/api', require('./routes/braintree'));
 app.use('/api', require('./routes/membershipRoutes'));
 app.use('/api', require('./routes/adminRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
+app.use("/api/uploadCourseImage", require('./routes/uploadRoutes'));
 
 
 const PORT = process.env.PORT || 5000;

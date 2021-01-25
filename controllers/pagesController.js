@@ -449,3 +449,16 @@ exports.deleteVideoClass = async (req, res) => {
   }
 }
 
+exports.uploadCourseImage = async (req, res) => {
+  try {
+    console.log("this is image")
+    console.log(req.file);
+
+    res.status(200).json({
+      message: "Success"
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
