@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Button } from 'react-bootstrap';
 import store from '../../store';
 import { useParams } from 'react-router-dom';
@@ -19,16 +19,18 @@ import { stateFromHTML } from 'draft-js-import-html';
 import './Admin.css';
 import './CourseUpdate.css';
 
-const CourseUpdate = ({
-  course,
-  auth,
-  updateCourseAction,
-  deleteVideoClassAction,
-}) => {
-  console.log(auth);
+const CourseUpdate = () => {
+  // console.log(auth);
 
-	const [image, setImage] = useState('');
-	const [uploading, setUploading] = useState(false);
+  const dispatch = useDispatch();
+
+  const course = useSelector((state) => state.courses);
+  const { data } = course;
+
+  const auth = useSelector((state) => state.auth);
+
+  const [image, setImage] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const [courseState, setCourseState] = useState({
     id: '',
@@ -70,7 +72,7 @@ const CourseUpdate = ({
 
   useEffect(() => {
     if (saveCourse) {
-      updateCourseAction(courseState);
+      dispatch(updateCourseAction(courseState));
     }
   }, [saveCourse]);
 
@@ -148,7 +150,11 @@ const CourseUpdate = ({
               name="lecture"
               placeholder="lecture"
               onChange={updateClass}
-              value={courseState.classes[i].lecture}
+              value={
+                courseState.classes[i].lecture
+                  ? courseState.classes[i].lecture
+                  : ''
+              }
             />
           </div>
           <div className="card-body">
@@ -161,7 +167,9 @@ const CourseUpdate = ({
               name="title"
               placeholder="title"
               onChange={updateClass}
-              value={courseState.classes[i].title}
+              value={
+                courseState.classes[i].title ? courseState.classes[i].title : ''
+              }
               size="50"
             />
           </div>
@@ -175,7 +183,9 @@ const CourseUpdate = ({
               name="url"
               placeholder="url"
               onChange={updateClass}
-              value={courseState.classes[i].url}
+              value={
+                courseState.classes[i].url ? courseState.classes[i].url : ''
+              }
               size="50"
             />
           </div>
@@ -189,19 +199,23 @@ const CourseUpdate = ({
               name="duration"
               placeholder="duration"
               onChange={updateClass}
-              value={courseState.classes[i].duration}
+              value={
+                courseState.classes[i].duration
+                  ? courseState.classes[i].duration
+                  : ''
+              }
             />
           </div>
           <div className="card-body">
             <button
-              onClick={() =>
+              onClick={() => dispatch(
                 deleteVideoClassAction(
                   courseState.id,
                   courseState.classes[i]._id
                 )
-              }
+              )}
             >
-              <i class="fas fa-trash-alt"></i> Delete Video
+              <i className="fas fa-trash-alt"></i> Delete Video
             </button>
           </div>
         </div>
@@ -209,8 +223,8 @@ const CourseUpdate = ({
       );
     });
 
-  console.log(course);
-  console.log(courseState);
+  // console.log(course);
+  // console.log(courseState);
 
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
@@ -228,36 +242,54 @@ const CourseUpdate = ({
       ),
     });
     setSaveCourse(true);
-	};
-	
-	const uploadFileHandler = async (e) => {
-		const file = e.target.files[0];
-		console.log(file);
+  };
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    console.log(file);
     const formData = new FormData();
     formData.append('image', file);
+
+    // for (let [key, value] of formData) {
+    //   console.log(`${key}: ${value.name}`)
+    // }
     setUploading(true);
 
     try {
       const config = {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
+          'Content-Type': 'multipart/form-data',
+        },
+      };
 
-      const { data } = await axios.post('/api/uploadCourseImage', formData, config);
+      const { data } = await axios.post(
+        '/api/uploadCourseImage',
+        formData,
+        config
+      );
 
       setImage(data);
-      setUploading(false)
+      setUploading(false);
     } catch (error) {
       console.log(error);
       setUploading(false);
-
     }
+  };
+
+  const images = require.context('../../../../uploads/courses/', true);
+  let img = '';
+
+  if( data && data.tag ) {
+    img = images(`./${data && data.tag}.jpg`);
+  } else {
+    img = images(`./monthly-plan.jpg`);
   }
+  let userPic = <img src={img.default} alt="my sf" className="courseCover" />;
 
   // console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));
-  console.log(courseState);
-  console.log(course);
+  // console.log(courseState);
+ console.log(course);
+ console.log(data && data.tag)
   return (
     <>
       <div className="adminCtn">
@@ -266,12 +298,13 @@ const CourseUpdate = ({
             <div className="col-10">
               <div>
                 <h1>Update the Course</h1>
+                {userPic}
                 <Form.Group controlId="image">
                   <Form.Label>Image</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Enter image url"
-                    value={image}
+                    value={image ? image : ''}
                     onChange={(e) => setImage(e.target.value)}
                   ></Form.Control>
                   <Form.File
@@ -287,7 +320,7 @@ const CourseUpdate = ({
                   type="text"
                   name="courseName"
                   onChange={updateCourse}
-                  value={courseState.loaded ? courseState.courseName : ' '}
+                  value={courseState.loaded ? courseState.courseName : ''}
                   size="50"
                 />
                 <br />
@@ -350,12 +383,4 @@ const CourseUpdate = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  course: state.courses,
-  auth: state.auth,
-});
-
-export default connect(mapStateToProps, {
-  updateCourseAction,
-  deleteVideoClassAction,
-})(CourseUpdate);
+export default CourseUpdate;

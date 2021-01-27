@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
 app.get('/test', (req, res) => {
     res.send({
         name: 'Telmo'     
@@ -37,7 +40,7 @@ app.use('/api', require('./routes/braintree'));
 app.use('/api', require('./routes/membershipRoutes'));
 app.use('/api', require('./routes/adminRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
-app.use("/api/uploadCourseImage", require('./routes/uploadRoutes'));
+app.use('/api/uploadCourseImage', require('./routes/uploadRoutes'));
 
 
 const PORT = process.env.PORT || 5000;

@@ -22,10 +22,9 @@ const initialState = {
   message: ""
 }
 
+/* eslint import/no-anonymous-default-export: [2, {"allowAnonymousFunction": true}] */
 export default function (state = initialState, action) {
   const { type, payload } = action;
-
-  // console.log(type);
 
   switch (type) {
     case COURSE_LIST_REQUEST:
@@ -35,7 +34,7 @@ export default function (state = initialState, action) {
         all: []
       }
     case GET_ONE_COURSE:
-      console.log("inside reducer get one course");
+      // console.log("inside reducer get one course");
       return {
         ...state,
         data: payload.course

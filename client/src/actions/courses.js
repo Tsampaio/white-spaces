@@ -81,10 +81,10 @@ export const getCourse = (courseTag) => async dispatch => {
   // }
 
   try {
-    console.log("inside getCourse");
+    // console.log("inside getCourse");
 
     const body = JSON.stringify({ courseTag });
-    console.log(body);
+    // console.log(body);
     const res = await axios.post(`/api/getCourse`, body, {
       headers: {
         Accept: 'application/json',
@@ -92,7 +92,7 @@ export const getCourse = (courseTag) => async dispatch => {
       }
     });
 
-    console.log(res.data);
+    // console.log(res.data);
 
     dispatch({
       type: GET_ONE_COURSE,

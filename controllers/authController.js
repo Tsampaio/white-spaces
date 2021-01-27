@@ -398,7 +398,6 @@ exports.profilePic = async (req, res) => {
 
     const path = `${__dirname}/../client/public/${file.name}`;
 
-
     if (fs.existsSync(path)) {
       //file exists
       fs.unlinkSync(path)

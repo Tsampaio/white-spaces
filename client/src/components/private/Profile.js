@@ -228,7 +228,7 @@ function Profile( ) {
         'Content-Type': 'multipart/form-data'
       }
     }
-
+    console.log(cropState.croppedImage)
     const formData = new FormData();
     formData.append('file', cropState.croppedImage);
     formData.append('userId', auth.user._id);
