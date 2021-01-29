@@ -2,6 +2,7 @@ const Course = require('./../models/courseModel');
 const User = require('./../models/userModel');
 const FeaturedCourses = require('./../models/courseModel');
 const { promisify } = require('util');
+const { upload } = require('../utils/imageUpload');
 
 exports.getCourses = async (req, res, next) => {
   console.log("inside pagesController");
@@ -235,13 +236,13 @@ exports.createCourse = async (req, res, next) => {
 
 exports.coursePic = async (req, res) => {
   try {
-    if (req.files === null) {
-      return res.status(400).json({
-        msg: 'No file uploaded'
-      })
-    }
+    // if (req.files === null) {
+    //   return res.status(400).json({
+    //     msg: 'No file uploaded'
+    //   })
+    // }
 
-    const file = req.files.file;
+    // const file = req.files.file;
     // console.log(file);
     // const userId =  req.body.userId;
 
@@ -259,17 +260,31 @@ exports.coursePic = async (req, res) => {
     //   fs.unlinkSync(path)
     // }
 
-    file.mv(`${__dirname}/../client/src/images/courses/${file.name}`, err => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send(err);
+    // file.mv(`${__dirname}/../client/src/images/courses/${file.name}`, err => {
+    //   if (err) {
+    //     console.error(err);
+    //     return res.status(500).send(err);
+    //   }
+
+    //   res.json({ status: "success" });
+    // });
+
+    upload(req, res, function (error) {
+      if(error) {
+        console.log("INSIDE UPLOAD ERROR")
+        console.log(error.code)
+        error.message = 'File Size is too large. Allowed file size is 100KB';
+        res.status(500).json({ uploadError: error.message });
+        return
       }
+    })
 
-      res.json({ status: "success" });
-    });
+    res.json({ message: "you got a new course pic" })
 
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    console.log("We are in ERROR COURSE PIC");
+    console.log(error)
+    res.json({ myError: error.message });
   }
 }
 

@@ -38,30 +38,30 @@ const upload = multer({
     checkFileType(file, cb);
   },
 });
-// router.post('/', upload.single('image'), (req, res) => {
-router.post('/', (req, res) => {
-  console.log('THIS IS ROUTER POST');
-  console.log(req.files);
+// router.post('/', upload.single('course'), (req, res) => {
+// router.post('/', (req, res) => {
+  // console.log('THIS IS ROUTER POST');
+  // console.log(req.files);
 
-  const file = req.files.image
+  // const file = req.files.image
 
-  const path = `${__dirname}/../client/public/${file.name}`;
+  // const path = `${__dirname}/../client/public/${file.name}`;
 
-    if (fs.existsSync(path)) {
-      //file exists
-      fs.unlinkSync(path)
-    }
+  //   if (fs.existsSync(path)) {
+  //     //file exists
+  //     fs.unlinkSync(path)
+  //   }
 
-    file.mv(`${__dirname}/../client/src/images/${file.name}`, err => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send(err);
-      }
+  //   file.mv(`${__dirname}/../client/src/images/${file.name}`, err => {
+  //     if (err) {
+  //       console.error(err);
+  //       return res.status(500).send(err);
+  //     }
 
-      res.json({ status: "success" });
-    });
+  //     res.json({ status: "success" });
+  //   });
   // res.send(`/${req.file.path}`);
   // res.send('Hello');
-});
+// });
 
-module.exports = router;
+// module.exports = router;

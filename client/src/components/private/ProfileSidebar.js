@@ -11,17 +11,26 @@ function ProfileSidebar( ) {
   const { loading } = auth;
 
   let userPic = null;
-  const images = require.context('../../images/', true);
+  // const images = require.context('../../images/', true);
+  const images = require.context('../../../../uploads/users/', true);
 
   let img;
 
-  if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
+  try {
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img.default} className="userAvatar" />
-  } else {
+    userPic = <img src={img.default} className="userAvatar" alt="User Profile"/>
+  } catch (error) {
     img = images(`./default.png`);
-    userPic = <img src={img.default} className="userAvatar" />
+    userPic = <img src={img.default} className="userAvatar" alt="User Profile"/>
   }
+
+  // if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
+  //   img = images(`./${auth.user._id}.jpg`);
+  //   userPic = <img src={img.default} className="userAvatar" />
+  // } else {
+  //   img = images(`./default.png`);
+  //   userPic = <img src={img.default} className="userAvatar" />
+  // }
 
   return (
     <div className="col-xl-2 col-lg-3 col-md-4 userLeftCol">

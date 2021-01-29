@@ -248,7 +248,7 @@ const CourseUpdate = () => {
     const file = e.target.files[0];
     console.log(file);
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('course', file);
 
     // for (let [key, value] of formData) {
     //   console.log(`${key}: ${value.name}`)
@@ -262,28 +262,32 @@ const CourseUpdate = () => {
         },
       };
 
-      const { data } = await axios.post(
-        '/api/uploadCourseImage',
+      const res = await axios.post(
+        `/api/coursePic/${data.tag}`,
         formData,
         config
       );
-
-      setImage(data);
+      console.log(res.data)
+      setImage(res.data);
       setUploading(false);
     } catch (error) {
-      console.log(error);
+      console.log(error.data);
       setUploading(false);
     }
   };
 
   const images = require.context('../../../../uploads/courses/', true);
   let img = '';
-
-  if( data && data.tag ) {
+  try {
     img = images(`./${data && data.tag}.jpg`);
-  } else {
-    img = images(`./monthly-plan.jpg`);
+  } catch(error) {
+    img = images(`./default-course.jpg`);
   }
+  // if( data && data.tag ) {
+  //   img = images(`./${data && data.tag}.jpg`);
+  // } else {
+  //   img = images(`./default-course.jpg`);
+  // }
   let userPic = <img src={img.default} alt="my sf" className="courseCover" />;
 
   // console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));

@@ -92,21 +92,34 @@ function Profile( ) {
   let fileRef = useRef();
 
   let userPic = null;
-  const images = require.context('../../images/', true);
+  // const images = require.context('../../images/', true);
+  const images = require.context('../../../../uploads/users/', true);
 
   let img;
 
-  if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
-    // import Pic from `/${auth.user._id}.jpg`;
-    // userPic = <img src={`/${auth.user._id}.jpg`} />
+  try {
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} />
-  } else {
+    userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} alt="User Profile"/>
+  } catch (error) {
     img = images(`./default.png`);
-    userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} />
+    userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} alt="User Profile"/>
   }
+  // if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
+  //   // import Pic from `/${auth.user._id}.jpg`;
+  //   // userPic = <img src={`/${auth.user._id}.jpg`} />
+  //   img = images(`./${auth.user._id}.jpg`);
+  //   userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} alt="User Profile"/>
+  // } else {
+  //   img = images(`./default.png`);
+  //   userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} alt="User Profile"/>
+  // }
 
   const onSelectFile = e => {
+
+    if( e.target.files.length < 1) {
+      setImageUpload({ error: 'No image selected' });
+      return
+    }
     console.log("INSIDE onSelectFile");
     console.log(e.target.files[0].size);
     console.log(e.target.files[0].type);
@@ -222,7 +235,7 @@ function Profile( ) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    try {
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -231,13 +244,21 @@ function Profile( ) {
     console.log(cropState.croppedImage)
     const formData = new FormData();
     formData.append('file', cropState.croppedImage);
-    formData.append('userId', auth.user._id);
+    // formData.append('userId', auth.user._id);
 
     console.log(formData);
 
-    const res = await axios.post("/api/users/profilePic", formData, config);
+    const res = await axios.post(`/api/users/profilePic`, formData, config);
     console.log("res.data");
     console.log(res.data);
+    } catch(error) {
+      const errors = error.response.data;
+      console.log(error)
+      setImageUpload({ error: 'Image size should be less than 2 MB' });
+      // console.log("File Size is too large. Allowed file size is 100KB");
+      closeImagePreview()
+      console.log(errors.message);
+    }
   }
 
   const closeImagePreview = () => {

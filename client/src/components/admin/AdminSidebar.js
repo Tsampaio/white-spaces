@@ -11,7 +11,8 @@ function AdminSidebar( ) {
   const { loading } = auth;
 
   let userPic = null;
-  const images = require.context('../../images/', true);
+  // const images = require.context('../../images/', true);
+  const images = require.context('../../../../uploads/users/', true);
 
   let img;
 

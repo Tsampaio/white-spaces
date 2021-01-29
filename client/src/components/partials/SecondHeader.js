@@ -95,23 +95,19 @@ const SecondHeader = () => {
     })
   }
 
-  const images = require.context('../../images/', true, /\.(png|jpe?g|svg)$/);
+  // const images = require.context('../../images/', true, /\.(png|jpe?g|svg)$/);
+  const images = require.context('../../../../uploads/users/', true);
 
   // console.log("+++++++");
   // console.log(images);
 
-  if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
-    // import Pic from `/${auth.user._id}.jpg`;
-    // userPic = <img src={`/${auth.user._id}.jpg`} />
-
-    // console.log("before image");
-
+  try {
     let img = images(`./${auth && auth.user && auth.user._id}.jpg`);
     
-    userPic = <img src={img.default} className="userAvatarNav" />;
-  } else {
+    userPic = <img src={img.default} className="userAvatarNav" alt="user profile" />;
+  } catch(error) {
     let img = images(`./default.png`);
-    userPic = <img src={img.default} className="userAvatarNav" />
+    userPic = <img src={img.default} className="userAvatarNav" alt="user profile"/>
   }
 
   return (

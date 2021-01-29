@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Transactions = require('../models/transactionModel');
 const fs = require('fs');
+const { upload } = require('../utils/imageUpload');
 
 const Email = require('../utils/email');
 
@@ -381,39 +382,54 @@ exports.emailActivation = async (req, res) => {
 
 exports.profilePic = async (req, res) => {
   try {
-    if (req.files === null) {
+    if (req.file === null) {
       return res.status(400).json({
         msg: 'No file uploaded'
       })
     }
 
-    const file = req.files.file;
-    const userId = req.body.userId;
-
-    const user = await User.findById(userId);
-
-    user.hasProfilePic = true;
-
-    await user.save({ validateBeforeSave: false });
-
-    const path = `${__dirname}/../client/public/${file.name}`;
-
-    if (fs.existsSync(path)) {
-      //file exists
-      fs.unlinkSync(path)
-    }
-
-    file.mv(`${__dirname}/../client/src/images/${file.name}`, err => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send(err);
+    upload(req, res, function (error) {
+      if(error) {
+        console.log("INSIDE UPLOAD ERROR")
+        console.log(error.code)
+        error.message = 'File Size is too large. Allowed file size is 100KB';
+        res.status(500).json({ message: error.message });
+        return
       }
+    })
+    // console.log(req)
+    // console.log(req.file);
+    // console.log(req.files);
 
-      res.json({ status: "success" });
-    });
+    // const file = req.files.file;
+    // const userId = req.body.userId;
+
+    // const user = await User.findById(userId);
+
+    // user.hasProfilePic = true;
+
+    // await user.save({ validateBeforeSave: false });
+
+    // const path = `${__dirname}/../client/public/${file.name}`;
+
+    // if (fs.existsSync(path)) {
+    //   //file exists
+    //   fs.unlinkSync(path)
+    // }
+
+    // file.mv(`${__dirname}/../client/src/images/${file.name}`, err => {
+    //   if (err) {
+    //     console.error(err);
+    //     return res.status(500).send(err);
+    //   }
+
+    //   res.json({ status: "success" });
+    // });
+    res.json({ status: "success" });
 
   } catch (err) {
-    console.error(err)
+    console.log("This is error")
+    console.log(err)
   }
 }
 

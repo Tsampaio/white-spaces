@@ -16,6 +16,7 @@ const {
   resetPassword
 
 } = require('./../controllers/authController');
+const { upload } = require('../utils/imageUpload');
 
 const router = express.Router();
 
@@ -29,7 +30,7 @@ router.get('/getUserPurchases/:id', protect, getUserPurchases);
 router.post('/lastLogin', protect, lastLogin);
 
 router.get('/logout', logout);
-router.post('/profilePic', profilePic);
+router.post('/profilePic', protect, upload.single('file'), profilePic);
 router.post('/udpateUserDb', protect, udpateUserDb);
 
 router.post('/forgotPassword', forgotPassword);
