@@ -1,32 +1,29 @@
-
 const User = require('../models/userModel');
 const Courses = require('../models/courseModel');
 const Transactions = require('../models/transactionModel');
 const Coupon = require('../models/couponModel');
-const e = require('express');
+const fs = require('fs');
 
 exports.getUsers = async (req, res) => {
-  console.log("Inside GET USERS");
+  console.log('Inside GET USERS');
 
   try {
-
     if (req.user.role === 'admin') {
       const allUsers = await User.find();
 
       console.log(allUsers);
-      console.log("END OF USERS");
+      console.log('END OF USERS');
       res.status(200).json({
-        users: allUsers
-      })
+        users: allUsers,
+      });
     } else {
       throw new Error('You are not an admin');
     }
-
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
 };
 
@@ -35,82 +32,107 @@ exports.updateUsers = async (req, res) => {
     if (req.user.role === 'admin') {
       const fetchUsers = async (users) => {
         const requests = users.map(async (user, i) => {
-
           return new Promise(async (resolve, reject) => {
             const userFound = await User.findById(user._id);
 
-            if (req.body.action === "activate") {
-              userFound.active = "active"
+            if (req.body.action === 'activate') {
+              userFound.active = 'active';
             }
 
             resolve(userFound);
-
           });
-        })
-        return Promise.all(requests) // Waiting for all the requests to get resolved.
-      }
-
-      fetchUsers(req.body.users)
-        .then(async (userFound) => {
-          // console.log("THIS IS !!!!!");
-          // console.log(courseFound);
-          for (let i = 0; i < userFound.length; i++) {
-            await userFound[i].save({ validateBeforeSave: false });
-          }
-
-          const allUsers = await User.find();
-
-          res.status(200).json({
-            users: allUsers
-          })
-
         });
+        return Promise.all(requests); // Waiting for all the requests to get resolved.
+      };
 
+      fetchUsers(req.body.users).then(async (userFound) => {
+        // console.log("THIS IS !!!!!");
+        // console.log(courseFound);
+        for (let i = 0; i < userFound.length; i++) {
+          await userFound[i].save({ validateBeforeSave: false });
+        }
+
+        const allUsers = await User.find();
+
+        res.status(200).json({
+          users: allUsers,
+        });
+      });
     } else {
       throw new Error('You are not an admin');
     }
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 exports.deleteUsers = async (req, res) => {
   try {
     if (req.user.role === 'admin') {
-      console.log("users to delete");
+      console.log('users to delete');
       console.log(req.body.users);
 
-      const allUsers = req.body.users.map(user => {
+      const allUsers = req.body.users.map((user) => {
         return user._id;
-      })
+      });
+
+      const path = `${__dirname}/../uploads/users/`;
+
+      // if (fs.existsSync(path)) {
+      //   //file exists
+      //   fs.unlinkSync(path)
+      // }
 
       console.log(allUsers);
       if (req.body.users.length > 1) {
-        await User.deleteMany({ _id: { $in: allUsers } })
-        console.log("users deleted");
+        function deleteUserPhotos(allUsersId, callback) {
+          let i = allUsers.length;
+          allUsersId.forEach(function (filepath) {
+            fs.unlink(path + filepath + '.jpg', function (err) {
+              i--;
+              if (err) {
+                callback(err);
+                return;
+              } else if (i <= 0) {
+                callback(null);
+              }
+            });
+          });
+        }
+
+        deleteUserPhotos(allUsers, function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('all files removed');
+          }
+        });
+
+        await User.deleteMany({ _id: { $in: allUsers } });
+        console.log('users deleted');
       } else {
+        fs.unlinkSync(path + allUsers[0] + '.jpg');
         await User.findByIdAndDelete(allUsers[0]);
       }
 
       const allDbUsers = await User.find();
 
       res.status(200).json({
-        users: allDbUsers
-      })
-
+        users: allDbUsers,
+      });
     } else {
       throw new Error('You are not an admin');
     }
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 exports.enrolUserInCourse = async (req, res) => {
   try {
@@ -121,8 +143,8 @@ exports.enrolUserInCourse = async (req, res) => {
       const user = await User.findById(req.body.userId);
       const course = await Courses.findById(req.body.courseId);
 
-      const userHasCourse = user.courses.find(course => {
-        return course._id == req.body.courseId
+      const userHasCourse = user.courses.find((course) => {
+        return course._id == req.body.courseId;
       });
 
       if (!userHasCourse) {
@@ -132,27 +154,25 @@ exports.enrolUserInCourse = async (req, res) => {
         course.users = [...course.users, user._id];
         await course.save({ validateBeforeSave: false });
 
-        console.log("User has new Course");
+        console.log('User has new Course');
 
         res.status(200).json({
           courses: user.courses,
-          message: `${course.name} added to library`
+          message: `${course.name} added to library`,
         });
-
       } else {
         throw new Error('User already has the course');
       }
-
     } else {
       throw new Error('You are not an admin');
     }
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
+      message: error.message,
     });
   }
-}
+};
 
 exports.removeUserCourse = async (req, res) => {
   try {
@@ -163,35 +183,34 @@ exports.removeUserCourse = async (req, res) => {
       const user = await User.findById(req.body.userId);
       const course = await Courses.findById(req.body.courseId);
 
-      const userCourseRemoved = user.courses.filter(course => {
-        return course._id != req.body.courseId
+      const userCourseRemoved = user.courses.filter((course) => {
+        return course._id != req.body.courseId;
       });
 
       user.courses = userCourseRemoved;
       await user.save({ validateBeforeSave: false });
 
-      const courseRemoveUser = course.users.filter(user => {
-        return user._id != req.body.userId
-      })
+      const courseRemoveUser = course.users.filter((user) => {
+        return user._id != req.body.userId;
+      });
 
       course.users = courseRemoveUser;
       await course.save({ validateBeforeSave: false });
 
       res.status(200).json({
         courses: user.courses,
-        message: `${course.name} removed from user library`
+        message: `${course.name} removed from user library`,
       });
     } else {
       throw new Error('You are not an admin');
     }
-
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
+      message: error.message,
     });
   }
-}
+};
 
 exports.getSales = async (req, res) => {
   try {
@@ -199,7 +218,7 @@ exports.getSales = async (req, res) => {
       const sales = await Transactions.find().sort({ date: 'desc' });
 
       res.status(200).json({
-        sales: sales
+        sales: sales,
       });
     } else {
       throw new Error('You are not an admin');
@@ -207,13 +226,13 @@ exports.getSales = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
+      message: error.message,
     });
   }
-}
+};
 exports.createCoupon = async (req, res) => {
   try {
-    console.log("Inside create coupon")
+    console.log('Inside create coupon');
     if (req.user.role === 'admin') {
       // console.log(req.body)
       const { courses, couponDetails } = req.body;
@@ -233,10 +252,10 @@ exports.createCoupon = async (req, res) => {
         date: new Date(couponDetails.expires),
         available: parseInt(couponDetails.available),
         courses: courses,
-        restricted: couponDetails.emails ? couponDetails.emails : []
+        restricted: couponDetails.emails ? couponDetails.emails : [],
       });
       res.status(200).json({
-        message: "Coupon Created"
+        message: 'Coupon Created',
       });
     } else {
       throw new Error('You are not an admin');
@@ -244,19 +263,19 @@ exports.createCoupon = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
+      message: error.message,
     });
   }
-}
+};
 
 exports.getCoupons = async (req, res) => {
   try {
-    if(req.user.role === "admin") {
+    if (req.user.role === 'admin') {
       const coupons = await Coupon.find();
-      console.log("Coupons are:")
+      console.log('Coupons are:');
       console.log(coupons);
       res.status(200).json({
-        coupons: coupons
+        coupons: coupons,
       });
     } else {
       throw new Error('You are not an admin');
@@ -264,19 +283,19 @@ exports.getCoupons = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
+      message: error.message,
     });
   }
-}
+};
 
 exports.getCoupon = async (req, res) => {
   try {
-    if(req.user.role === "admin") {
+    if (req.user.role === 'admin') {
       const { couponId } = req.params;
 
       const coupon = await Coupon.findById(couponId);
       res.status(200).json({
-        coupon: coupon
+        coupon: coupon,
       });
     } else {
       throw new Error('You are not an admin');
@@ -284,14 +303,14 @@ exports.getCoupon = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
+      message: error.message,
     });
   }
-}
+};
 
 exports.updateCoupon = async (req, res) => {
   try {
-    if(req.user.role === "admin") {
+    if (req.user.role === 'admin') {
       const { couponId } = req.params;
 
       const { couponDetails, courses } = req.body;
@@ -302,7 +321,7 @@ exports.updateCoupon = async (req, res) => {
       await Coupon.findByIdAndUpdate(couponId, couponDetails);
 
       res.status(200).json({
-        message: "Coupon Updated"
+        message: 'Coupon Updated',
       });
     } else {
       throw new Error('You are not an admin');
@@ -310,8 +329,7 @@ exports.updateCoupon = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
+      message: error.message,
     });
   }
-}
-  
+};

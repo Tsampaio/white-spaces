@@ -55,7 +55,8 @@ const Courses = ({ match, history }) => {
     theUserCoursesFunc();
   }, [userCourses])
 
-  const images = require.context('../../images/', true);
+  // const images = require.context('../../images/', true);
+  const images = require.context('../../../../uploads/users/', true);
   let img;
   try {
     img = images(`./${subPage}.jpg`);
