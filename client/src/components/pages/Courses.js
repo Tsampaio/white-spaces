@@ -28,7 +28,7 @@ const Courses = () => {
   }, [loading]);
 
   console.log(courses);
-  const images = require.context('../../images/courses', true);
+  const images = require.context('../../../../uploads/courses/', true);
 
   // const loadMyThumbNail = async () => {
   //   console.log(courses.all);
@@ -38,23 +38,25 @@ const Courses = () => {
   //   setCoursesThumbnail(allThumbnails);
   // };
 
-  const allCourses = stateCourses.map((course, index) => {
+  
 
-    // if( course && course.hasThumbnail) {
-    //   img = images(`./${course.tag}.jpg`);
-    // } else {
-    //   img = images(`./default-course.jpg`);
-    // }
+  const allCourses = stateCourses.map((course, index) => {
+    let img = "";
+    try {
+      img = images(`./${course.tag}.jpg`);
+    } catch( error ) {
+      img = images(`./default-course.jpg`);
+    }
 
     // let img = images(`./${course.tag}.jpg`);
-    let img = `/images/${course.tag}.jpg`;
+    // let img = `/images/${course.tag}.jpg`;
     if (course.tag != "monthly-plan") {
       return (
         <div className="offset-1 col-10 offset-md-0 col-md-4 col-lg-3" key={index}>
           <div className="cardBorder">
             <div className="courseThumbnail courseFeatured1">
               <Link to={`/courses/${course.tag}`}>
-                <img src={img} alt="courseThumbnail" />
+                <img src={img.default} alt="courseThumbnail" />
               </Link>
             </div>
             <div className="courseTitleCtn">

@@ -15,16 +15,16 @@ const Courses = () => {
 		dispatch(getCourses());
 	}, []);
 
-	const images = require.context('../../images/courses', true);
+	const images = require.context('../../../../uploads/courses/', true);
 
 	const allCourses = courses.all && courses.all.map((course, index) => {
 
 		let img = "";
-		if (course && course.hasThumbnail) {
+		// if (course && course.hasThumbnail) {
 			img = images(`./${course.tag}.jpg`);
-		} else {
-			img = images(`./default-course.jpg`);
-		}
+		// } else {
+		// 	img = images(`./default-course.jpg`);
+		// }
 
 		return (
 			<div className="col-3" key={index}>

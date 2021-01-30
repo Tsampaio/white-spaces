@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import './CourseCard.css';
 
 const CourseCard = (props) => {
-  const images = require.context('../../images/courses', true);
+  const images = require.context('../../../../uploads/courses/', true);
 
 
   let img = images(`./${props.tag}.jpg`);
