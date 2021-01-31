@@ -299,6 +299,7 @@ export const finishLessonAction = (lesson, courseId, token) => async dispatch =>
 export const saveFeaturedCoursesAction = (data, token) => async dispatch => {
   try {
     console.log(data);
+    console.log(token)
     dispatch({
       type: SAVE_FEATURED_COURSES_REQUEST
     });

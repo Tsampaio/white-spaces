@@ -383,16 +383,17 @@ exports.finishLesson = async (req, res) => {
 
 exports.saveFeaturedCourses = async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log("THE BODY")
+    console.log(req.body[0]);
 
     if (req.user.role === 'admin') {
       const fetchCourses = async (courses) => {
         const requests = courses.map(async (course, i) => {
 
           return new Promise(async (resolve, reject) => {
-            const courseFound = await Course.findById(course.id);
+            const courseFound = await Course.findById(course._id);
             courseFound.featured = course.featured;
-            courseFound.featuredPosition = course.newIndex;
+            courseFound.position = course.position;
             // console.log("promise course found");
             // console.log(courseFound);
 

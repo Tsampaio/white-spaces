@@ -9,7 +9,7 @@ const courseSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  featuredPosition: {
+  position: {
     type: Number,
     default: 0
   },
@@ -67,11 +67,7 @@ const courseSchema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     }
-  ],
-  hasThumbnail: {
-    type: Boolean,
-    default: false
-  }
+  ]
 });
 
 const Course = mongoose.model('Course', courseSchema);

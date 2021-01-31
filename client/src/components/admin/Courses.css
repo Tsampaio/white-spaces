@@ -27,3 +27,8 @@ html,body {
 .adminCourseTop .row {
   width: 100%;
 }
+
+.btn a {
+  color: #fff;
+  text-decoration: none;
+}

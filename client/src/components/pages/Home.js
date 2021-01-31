@@ -26,7 +26,7 @@ const Home = (props) => {
   });
 
   coursesFiltered.length > 0 && coursesFiltered.sort((a, b) => {
-    return a.featuredPosition - b.featuredPosition;
+    return a.position - b.position;
   })
 
   const allFeatured = coursesFiltered.length > 0 && coursesFiltered.map((course, i) => {
