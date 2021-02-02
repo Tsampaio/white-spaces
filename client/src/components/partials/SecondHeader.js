@@ -11,9 +11,10 @@ const SecondHeader = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector(state => state.auth);
-  const { isAuthenticated } = auth;
+  const { isAuthenticated, membershipLoaded } = auth;
 
   const payment = useSelector(state => state.payment);
+  const { checkoutLoaded } = payment;
 
   let userPic = null;
 
@@ -62,7 +63,7 @@ const SecondHeader = () => {
   }, [dropMenu]);
 
   useEffect(() => {
-    if (auth && auth.isAuthenticated) {
+    if (auth && auth.isAuthenticated && !checkoutLoaded) {
       dispatch(loadCheckout(auth && auth.user && auth.user._id));
     }
 
@@ -72,7 +73,9 @@ const SecondHeader = () => {
     // console.log("loading check")
     // console.log(auth && auth.token)
     if (auth && auth.token) {
-      dispatch(checkMembership(auth && auth.token));
+      if( !membershipLoaded) {
+        dispatch(checkMembership(auth && auth.token));
+      }
       dispatch(lastLoginAction());
     }
 

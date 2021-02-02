@@ -9,50 +9,49 @@ import './Courses.css';
 
 const Courses = () => {
   const dispatch = useDispatch();
-  const courses = useSelector(state => state.courses);
-  const { loading, all } = courses;
-
-  const [coursesThumbnail, setCoursesThumbnail] = useState([]);
+  const courses = useSelector((state) => state.courses);
+  const { loading, all, coursesLoaded } = courses;
 
   const [stateCourses, setStateCourses] = useState([]);
 
   useEffect(() => {
-    dispatch(getCourses());
+    if (!coursesLoaded) {
+      dispatch(getCourses());
+    }
   }, []);
 
   useEffect(() => {
-    if(!loading){
-      setStateCourses(all);
-    }
+    if (!loading) {
+      const sortedCourses = [...all];
 
+      sortedCourses.length > 0 &&
+        sortedCourses.sort((a, b) => {
+          return a.position - b.position;
+        });
+
+      setStateCourses(sortedCourses);
+    }
   }, [loading]);
 
   console.log(courses);
   const images = require.context('../../../../uploads/courses/', true);
 
-  // const loadMyThumbNail = async () => {
-  //   console.log(courses.all);
-  //   const allThumbnails = courses && courses.all.map((course, index) => {
-  //     return images(`./${course.tag}.jpg`);
-  //   });
-  //   setCoursesThumbnail(allThumbnails);
-  // };
-
-  
-
   const allCourses = stateCourses.map((course, index) => {
-    let img = "";
+    let img = '';
     try {
       img = images(`./${course.tag}.jpg`);
-    } catch( error ) {
+    } catch (error) {
       img = images(`./default-course.jpg`);
     }
 
     // let img = images(`./${course.tag}.jpg`);
     // let img = `/images/${course.tag}.jpg`;
-    if (course.tag != "monthly-plan") {
+    if (course.tag != 'monthly-plan') {
       return (
-        <div className="offset-1 col-10 offset-md-0 col-md-4 col-lg-3" key={index}>
+        <div
+          className="offset-1 col-10 offset-md-0 col-md-4 col-lg-3"
+          key={index}
+        >
           <div className="cardBorder">
             <div className="courseThumbnail courseFeatured1">
               <Link to={`/courses/${course.tag}`}>
@@ -64,26 +63,31 @@ const Courses = () => {
             </div>
             <div className="separator"></div>
             <div className="priceCtn">
-              <span className="studentNumbers"><i className="fas fa-user"></i> Telmo Sampaio</span><span className="price">${course.price}</span>
+              <span className="studentNumbers">
+                <i className="fas fa-user"></i> Telmo Sampaio
+              </span>
+              <span className="price">${course.price}</span>
             </div>
           </div>
         </div>
-      )
+      );
     }
-  })
-  
+  });
+
   const findCourse = (e) => {
     console.log(e.target.value);
     const text = e.target.value.toLowerCase();
     console.log(text);
-    const filteredCourses = courses && courses.all.filter((course) => {
-      console.log(course.name)
-      return course.name.toLowerCase().indexOf(text) > -1;
-    }) 
+    const filteredCourses =
+      courses &&
+      courses.all.filter((course) => {
+        console.log(course.name);
+        return course.name.toLowerCase().indexOf(text) > -1;
+      });
 
     console.log(filteredCourses);
     setStateCourses(filteredCourses);
-  }
+  };
 
   return (
     <Fragment>
@@ -92,20 +96,28 @@ const Courses = () => {
         <div className="courses container">
           <div className="row">
             <div className="col-3 my-4">
-              {/* <input type="text" placeholder="Find a course" /> */}
-              <Form.Control type="text" placeholder="Find a course" onChange={findCourse}/>
+              <Form.Control
+                type="text"
+                placeholder="Find a course"
+                onChange={findCourse}
+              />
             </div>
-
           </div>
           <div className="row">
-            {loading ? <Loader /> : allCourses.length < 1 ? (
-              <div className="col-6"><h2>No Courses found</h2></div>
-            ) : allCourses}
+            {loading ? (
+              <Loader />
+            ) : allCourses.length < 1 ? (
+              <div className="col-6">
+                <h2>No Courses found</h2>
+              </div>
+            ) : (
+              allCourses
+            )}
           </div>
         </div>
       </div>
     </Fragment>
-  )
-}
+  );
+};
 
 export default Courses;

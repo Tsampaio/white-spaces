@@ -23,9 +23,11 @@ const initialState = {
   billing: [],
   coupon: {},
   message: "",
-  buttonLoading: false
+  buttonLoading: false,
+  checkoutLoaded: false
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default function (state = initialState, action) {
   const { type, payload } = action;
 
@@ -68,7 +70,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         checkout: payload.checkout,
-        checkoutPrice: payload.checkoutPrice
+        checkoutPrice: payload.checkoutPrice,
+        checkoutLoaded: true
       }
     case RESET_PAYMENT_RESULT:
       return {

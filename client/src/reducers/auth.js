@@ -36,11 +36,14 @@ const initialState = {
   loading: true,
   message: "",
   coursesOwned: [],
+  coursesOwnedLoaded: false,
   membership: {
     active: false
-  }
+  },
+  membershipLoaded: false
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default function (state = initialState, action) {
   const { type, payload } = action;
   // console.log("inside auth reducers");
@@ -138,7 +141,8 @@ export default function (state = initialState, action) {
     case GET_COURSES_OWNED:
       return {
         ...state,
-        coursesOwned: payload.courses
+        coursesOwned: payload.courses,
+        coursesOwnedLoaded: true
       }
     case COURSE_ACCESS:
       return {
@@ -148,7 +152,8 @@ export default function (state = initialState, action) {
     case CHECK_MEMBERSHIP:
       return {
         ...state,
-        membership: payload
+        membership: payload,
+        membershipLoaded: true 
       }
     case CANCEL_MEMBERSHIP:
       return {

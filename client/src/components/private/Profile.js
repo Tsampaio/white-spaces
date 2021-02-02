@@ -3,9 +3,7 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCoursesOwned } from '../../actions/courses';
 import { updateUserAction } from '../../actions/auth';
-import { checkMembership } from '../../actions/membership';
 import './Profile.css';
 
 function Profile( ) {
@@ -49,13 +47,7 @@ function Profile( ) {
   }
 
   useEffect(() => {
-
-    dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
-    // console.log(auth.user.name);
     console.log("before check membership ");
-    if (auth && auth.user && auth.user.membership && auth.user.membership.customerId) {
-      dispatch(checkMembership(auth.token));
-    }
 
     setUserDetails({
       ...userDetails,

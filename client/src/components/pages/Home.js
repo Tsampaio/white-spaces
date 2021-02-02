@@ -13,10 +13,12 @@ const Home = (props) => {
 
 
   const courses = useSelector(state => state.courses);
-  const courseLoading = courses.loading;
+  const { coursesLoaded } = courses;
 
   useEffect(() => {
+    if(!coursesLoaded) {
       dispatch(getCourses());
+    }
   }, []);
 
   console.log(courses);

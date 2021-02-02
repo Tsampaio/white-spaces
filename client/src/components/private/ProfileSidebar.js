@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -23,14 +23,6 @@ function ProfileSidebar( ) {
     img = images(`./default.png`);
     userPic = <img src={img.default} className="userAvatar" alt="User Profile"/>
   }
-
-  // if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
-  //   img = images(`./${auth.user._id}.jpg`);
-  //   userPic = <img src={img.default} className="userAvatar" />
-  // } else {
-  //   img = images(`./default.png`);
-  //   userPic = <img src={img.default} className="userAvatar" />
-  // }
 
   return (
     <div className="col-xl-2 col-lg-3 col-md-4 userLeftCol">

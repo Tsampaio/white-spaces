@@ -10,10 +10,12 @@ import './Profile.css';
 function ProfileCourses() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-  const { loading } = auth;
+  const { loading, coursesOwnedLoaded } = auth;
 
   useEffect(() => {
-    dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
+    if(!loading && !coursesOwnedLoaded) {
+      dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
+    }
 
     console.log('before check membership ');
     if (

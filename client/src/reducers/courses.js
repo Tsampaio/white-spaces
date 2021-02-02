@@ -19,7 +19,8 @@ const initialState = {
   loading: true,
   data: null,
   all: [],
-  message: ""
+  message: "",
+  coursesLoaded: false
 }
 
 /* eslint import/no-anonymous-default-export: [2, {"allowAnonymousFunction": true}] */
@@ -45,7 +46,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        all: payload.courses
+        all: payload.courses,
+        coursesLoaded: true
       }
     case UPDATE_COURSE:
       console.log(payload);
