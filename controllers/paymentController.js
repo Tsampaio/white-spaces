@@ -38,8 +38,13 @@ exports.processPayment = async (req, res) => {
     let userName = user.name.split(" ");
 
     console.log(req.body);
+    let courses;
+    if(req.body.courses[0].name === "All Courses") {
+      courses = await Course.find();
+    } else {
+      courses = await Course.find({ '_id': { $in: req.body.courses } });
+    }
 
-    const courses = await Course.find({ '_id': { $in: req.body.courses } });
     console.log(courses);
 
     const coursesId = courses.map(course => {
@@ -58,7 +63,7 @@ exports.processPayment = async (req, res) => {
     console.log(coupon);
 
     const couponIsValid = () => {
-      if (coupon && coupon.active) {
+      if (coupon && coupon.active && coupon.available > 0) {
         const today = new Date();
         const couponDate = new Date(coupon.date);
         const dateInPast = function (future, present) {
@@ -91,7 +96,7 @@ exports.processPayment = async (req, res) => {
           console.log(courses[i]._id);
           console.log(coupon.courses[j].courseId);
           console.log("-------------")
-          if (JSON.stringify(courses[i]._id) == JSON.stringify(coupon.courses[j].courseId)) {
+          if (coupon.courses[j].name === "All Courses" || JSON.stringify(courses[i]._id) === JSON.stringify(coupon.courses[j].courseId)) {
             console.log("Found a course");
             newArray[i] = coupon.amountType === "percentage" ? (
               newArray[i] - newArray[i] * parseInt(coupon.amount) / 100

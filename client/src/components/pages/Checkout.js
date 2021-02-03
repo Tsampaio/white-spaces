@@ -4,33 +4,43 @@ import { Redirect, Link } from 'react-router-dom';
 import DropIn from 'braintree-web-drop-in-react';
 import './Checkout.css';
 import SecondHeader from '../partials/SecondHeader';
-import { payAction, processPayment, findCouponIdAction } from '../../actions/payments';
+import {
+  payAction,
+  processPayment,
+  findCouponIdAction,
+} from '../../actions/payments';
 import { removeCheckout, loadCheckout } from '../../actions/courses';
 import { GET_COUPON_BY_ID_RESET } from '../../contants/couponConstants';
 
-const Membership = ({history}) => {
-
+const Membership = ({ history }) => {
   const dispatch = useDispatch();
 
-  const payment = useSelector(state => state.payment);
-  const auth = useSelector(state => state.auth);
+  const payment = useSelector((state) => state.payment);
+  const auth = useSelector((state) => state.auth);
   const { user } = auth;
 
-  const { coupon, checkoutPrice, checkout, message, buttonLoading, result } = payment;
+  const {
+    coupon,
+    checkoutPrice,
+    checkout,
+    message,
+    buttonLoading,
+    result,
+  } = payment;
 
   const [data, setData] = useState({
-    instance: {}
+    instance: {},
   });
 
   const [paymentState, setPaymentState] = useState({
-    code: "",
+    code: '',
     checkoutBackup: [],
     checkoutSale: [],
     coursesInCheckout: [],
-    finalPrice: 0
-  })
+    finalPrice: 0,
+  });
 
-  const [disableButton, setDisableButton] = useState(false)
+  const [disableButton, setDisableButton] = useState(false);
 
   useEffect(() => {
     if (user && user._id) {
@@ -42,17 +52,17 @@ const Membership = ({history}) => {
   useEffect(() => {
     const coursesInCheckout = [];
     for (let i = 0; i < checkout.length; i++) {
-      coursesInCheckout.push(checkout[i]._id)
+      coursesInCheckout.push(checkout[i]._id);
     }
 
     setPaymentState({
       ...paymentState,
       checkoutBackup: [...checkout],
       coursesInCheckout: coursesInCheckout,
-      finalPrice: checkoutPrice
-    })
+      finalPrice: checkoutPrice,
+    });
 
-    console.log("CHECKOUT PRICE IS SET")
+    console.log('CHECKOUT PRICE IS SET');
   }, [checkoutPrice, checkout]);
 
   useEffect(() => {
@@ -65,45 +75,47 @@ const Membership = ({history}) => {
       const coursesDiscounted = [];
       for (let i = 0; i < checkoutCopy.length; i++) {
         newArray.push(checkoutCopy[i].price);
-        coursesInCheckout.push(checkoutCopy[i]._id)
+        coursesInCheckout.push(checkoutCopy[i]._id);
         for (let j = 0; j < coupon.courses.length; j++) {
-
-          if (checkoutCopy[i]._id == coupon.courses[j].courseId) {
-
-            newArray[i] = coupon.amountType === "percentage" ? (
-              newArray[i] - newArray[i] * parseInt(coupon.amount) / 100
-            ) : newArray[i] - parseInt(coupon.amount)
+          if (
+            coupon.courses[j].name === 'All Courses' ||
+            JSON.stringify(checkoutCopy[i]._id) ===
+              JSON.stringify(coupon.courses[j].courseId)
+          ) {
+            newArray[i] =
+              coupon.amountType === 'percentage'
+                ? newArray[i] - (newArray[i] * parseInt(coupon.amount)) / 100
+                : newArray[i] - parseInt(coupon.amount);
             // course.price = 10
-            coursesDiscounted.push(coupon.courses[j].courseId)
+            coursesDiscounted.push(coupon.courses[j].courseId);
           }
         }
-
       }
 
       console.log(checkoutCopy);
       console.log(checkout);
 
       const finalPriceWithDiscount = newArray.reduce((total, price) => {
-        console.log("Total price is: " + total);
-        console.log("Course price is: " + price);
+        console.log('Total price is: ' + total);
+        console.log('Course price is: ' + price);
         return parseFloat(total) + parseFloat(price);
-      }, 0)
-      console.log("finalPriceWithDiscount+++++++++");
+      }, 0);
+      console.log('finalPriceWithDiscount+++++++++');
       console.log(finalPriceWithDiscount);
 
       setPaymentState({
         ...paymentState,
         checkoutSale: coursesDiscounted.length > 0 ? [...newArray] : [],
         coursesInCheckout: [...coursesInCheckout],
-        finalPrice: finalPriceWithDiscount
-      })
+        finalPrice: finalPriceWithDiscount,
+      });
     } else {
       setPaymentState({
         ...paymentState,
         checkoutSale: [],
         // coursesInCheckout: [...coursesInCheckout],
-        finalPrice: checkoutPrice
-      })
+        finalPrice: checkoutPrice,
+      });
     }
   }, [coupon]);
 
@@ -117,18 +129,20 @@ const Membership = ({history}) => {
         }
         return false;
       };
-      console.log("Date in past")
-      console.log(dateInPast(couponDate, today))
+      console.log('Date in past');
+      console.log(dateInPast(couponDate, today));
 
-      return coupon.active && coupon.available > 0 && !dateInPast(couponDate, today)
+      return (
+        coupon.active && coupon.available > 0 && !dateInPast(couponDate, today)
+      );
     } else {
-      return false
+      return false;
     }
-  }
+  };
 
   useEffect(() => {
-    if(result) {
-      history.push("/cart/checkout/success");
+    if (result) {
+      history.push('/cart/checkout/success');
     }
   }, [result]);
 
@@ -139,72 +153,106 @@ const Membership = ({history}) => {
     console.log(disableButton);
 
     let nonce;
-    let getNonce = Object.keys(data.instance).length !== 0 && data.instance.requestPaymentMethod()
-      .then(async data => {
-        console.log(data);
-        nonce = data.nonce
+    let getNonce =
+      Object.keys(data.instance).length !== 0 &&
+      data.instance
+        .requestPaymentMethod()
+        .then(async (data) => {
+          console.log(data);
+          nonce = data.nonce;
 
-        // console.log('send nonce and total to process ', nonce);
-        const paymentData = {
-          paymentMethodNonce: nonce,
-          amount: checkoutPrice
-        }
+          // console.log('send nonce and total to process ', nonce);
+          const paymentData = {
+            paymentMethodNonce: nonce,
+            amount: checkoutPrice,
+          };
 
-        // processPayment(userId, token, paymentData)
-        // processPayment('131asdasd', 'adasdadad', paymentData)
+          // processPayment(userId, token, paymentData)
+          // processPayment('131asdasd', 'adasdadad', paymentData)
 
-        await dispatch(processPayment(paymentData, paymentState.code, paymentState.coursesInCheckout));
+          await dispatch(
+            processPayment(
+              paymentData,
+              paymentState.code,
+              paymentState.coursesInCheckout
+            )
+          );
 
-        console.log("before redirect");
-        // console.log( payment.result );
-        // console.log( payment.result.success );
+          console.log('before redirect');
+          // console.log( payment.result );
+          // console.log( payment.result.success );
 
-        setDisableButton(true);
-      })
-      .catch(error => {
-        console.log('dropin error: ', error)
-      })
-  }
+          setDisableButton(true);
+        })
+        .catch((error) => {
+          console.log('dropin error: ', error);
+        });
+  };
 
-  const showDropIn = () => (
-    payment.paymentToken && <Fragment>
-      <DropIn options={{
-        authorization: payment.paymentToken,
-        paypal: {
-          flow: "vault"
-        }
-      }} onInstance={instance => (data.instance = instance)} />
-      <button onClick={buy} className={disableButton ? "btn btn-primary invisible" : "btn btn-primary"}>{buttonLoading ? (
-        <>
-          <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-        Loading...
-        </>
-      ) : "Proceed to Payment"}</button>
-    </Fragment>
-  )
+  const showDropIn = () =>
+    payment.paymentToken && (
+      <Fragment>
+        <DropIn
+          options={{
+            authorization: payment.paymentToken,
+            paypal: {
+              flow: 'vault',
+            },
+          }}
+          onInstance={(instance) => (data.instance = instance)}
+        />
+        <button
+          onClick={buy}
+          className={
+            disableButton ? 'btn btn-primary invisible' : 'btn btn-primary'
+          }
+        >
+          {buttonLoading ? (
+            <>
+              <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              Loading...
+            </>
+          ) : (
+            'Proceed to Payment'
+          )}
+        </button>
+      </Fragment>
+    );
 
   const checkoutItems = paymentState.checkoutBackup.map((course, i) => {
-    let price = paymentState.checkoutSale.length > 0 && paymentState.checkoutSale[i];
+    let price =
+      paymentState.checkoutSale.length > 0 && paymentState.checkoutSale[i];
     let sale = false;
-    if (paymentState.checkoutSale.length > 0 && paymentState.checkoutBackup[i].price != paymentState.checkoutSale[i]) {
+    if (
+      paymentState.checkoutSale.length > 0 &&
+      paymentState.checkoutBackup[i].price != paymentState.checkoutSale[i]
+    ) {
       sale = true;
     }
 
     return (
       <div className="courseInCheckout" key={i}>
         <div>
-          <span className="courseDelete" onClick={() => refreshCheckout(course._id)}><i className="fas fa-trash"></i></span>
+          <span
+            className="courseDelete"
+            onClick={() => refreshCheckout(course._id)}
+          >
+            <i className="fas fa-trash"></i>
+          </span>
           <h3 className="checkoutCourse">{course.name}</h3>
         </div>
-        <span className="coursePrice"> {sale ? (
-          <>
-            <del>${paymentState.checkoutBackup[i].price}</del>
-            <span>{price}</span>
-          </>
-        ) : <span>{paymentState.checkoutBackup[i].price}</span>
-        }
+        <span className="coursePrice">
+          {' '}
+          {sale ? (
+            <>
+              <del>${paymentState.checkoutBackup[i].price}</del>
+              <span>{price}</span>
+            </>
+          ) : (
+            <span>{paymentState.checkoutBackup[i].price}</span>
+          )}
         </span>
       </div>
     );
@@ -213,12 +261,12 @@ const Membership = ({history}) => {
   const refreshCheckout = async (courseId) => {
     await dispatch(removeCheckout(courseId));
     loadCheckout();
-  }
+  };
   console.log(auth && auth.user && !auth.user.authenticated);
 
   if (auth && !auth.isAuthenticated && !auth.loading) {
-    console.log("inside register redirect ");
-    return <Redirect to="/register" />
+    console.log('inside register redirect ');
+    return <Redirect to="/register" />;
   }
   //Redirect if payment success
 
@@ -228,9 +276,9 @@ const Membership = ({history}) => {
   // console.log(paymentState);
 
   const checkCoupon = () => {
-    dispatch({ type: GET_COUPON_BY_ID_RESET })
+    dispatch({ type: GET_COUPON_BY_ID_RESET });
     dispatch(findCouponIdAction(paymentState.code));
-  }
+  };
 
   // const finalPrice = () => {
   //   if(coupon && coupon.active) {
@@ -241,8 +289,6 @@ const Membership = ({history}) => {
   //     })
   //   }
   // }
-
-
 
   // console.log(checkout)
   // console.log(paymentState)
@@ -267,35 +313,59 @@ const Membership = ({history}) => {
                   {showDropIn()}
                 </div>
               </div>
-            ) : null
-            }
-            <div className={payment && payment.checkout.length > 0 ? "col-6 paper-gray" : "col-8 offset-md-2 paper-gray "}>
+            ) : null}
+            <div
+              className={
+                payment && payment.checkout.length > 0
+                  ? 'col-6 paper-gray'
+                  : 'col-8 offset-md-2 paper-gray '
+              }
+            >
               <h1 className="basketTitle">Products in Basket:</h1>
-              {checkoutItems && checkoutItems.length > 0 ? checkoutItems : <Fragment><h1>Your basket is empty</h1> <Link to="/courses">Continue shopping</Link></Fragment>}
+              {checkoutItems && checkoutItems.length > 0 ? (
+                checkoutItems
+              ) : (
+                <Fragment>
+                  <h1>Your basket is empty</h1>{' '}
+                  <Link to="/courses">Continue shopping</Link>
+                </Fragment>
+              )}
 
               {checkoutItems && checkoutItems.length > 0 ? (
                 <>
                   {couponIsValid() && paymentState.checkoutSale.length > 0 ? (
-                    <h5 className="my-4">Coupon {coupon.code} - {coupon.name} applied</h5>
+                    <h5 className="my-4">
+                      Coupon {coupon.code} - {coupon.name} applied
+                    </h5>
                   ) : message || coupon.name ? (
                     <h5 className="my-4">Coupon is not valid</h5>
-                  ) : null
-                  }
+                  ) : null}
 
                   {/* {message && <h5 className="my-4">Coupon is not valid</h5>} */}
-                  <div className="checkoutPrice">Total: {couponIsValid() && paymentState.checkoutSale.length > 0 ? <del>${checkoutPrice}</del> : null} ${paymentState.finalPrice}</div>
-                  <input required type="text" placeholder="Enter coupon code" onChange={(e) => setPaymentState({ ...paymentState, code: e.target.value })} />
+                  <div className="checkoutPrice">
+                    Total:{' '}
+                    {couponIsValid() && paymentState.checkoutSale.length > 0 ? (
+                      <del>${checkoutPrice}</del>
+                    ) : null}{' '}
+                    ${paymentState.finalPrice}
+                  </div>
+                  <input
+                    required
+                    type="text"
+                    placeholder="Enter coupon code"
+                    onChange={(e) =>
+                      setPaymentState({ ...paymentState, code: e.target.value })
+                    }
+                  />
                   <button onClick={checkCoupon}>Use coupon</button>
                 </>
               ) : null}
-
             </div>
-
           </div>
         </div>
       </div>
     </Fragment>
-  )
-}
+  );
+};
 
 export default Membership;

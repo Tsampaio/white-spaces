@@ -90,6 +90,17 @@ const Course = ({ course, addCheckout, auth, payment }) => {
 
           <div className="courseCtnHeader">
             <h1 className="coursePageTitle">{course && course.data && course.data.name}</h1>
+            {(userGotCourse && userGotCourse.length > 0) || (auth && auth.membership && auth.membership.active) ? (
+                  <div className="card purchaseButtons">
+                    <div className="card-header">
+
+                    </div>
+                    <div className="card-body">
+                      <Link className="buyButton" to={`/courses/${course && course.data && course.data.tag}/lessons/1`}><span className="buyCoursePrice">Start Learning</span></Link>
+                    </div>
+                  </div>
+                ) : null
+                }
           </div>
 
           <div className="courseCtnBody">
@@ -127,7 +138,7 @@ const Course = ({ course, addCheckout, auth, payment }) => {
                 )
                 }
 
-                {userGotCourse && userGotCourse.length > 0 || (auth && auth.membership && auth.membership.active) ? (
+                {(userGotCourse && userGotCourse.length > 0) || (auth && auth.membership && auth.membership.active) ? (
                   <div className="card purchaseButtons">
                     <div className="card-header">
 

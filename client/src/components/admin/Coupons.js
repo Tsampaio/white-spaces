@@ -4,9 +4,8 @@ import { allUsersAction } from '../../actions/admin';
 import { saveUsersAction, deleteUsersAction } from '../../actions/admin';
 import { getCouponsAction } from '../../actions/admin';
 // import ModalWindow from '../utils/ModalWindow';
-import { Button, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Form, Col, Table } from 'react-bootstrap';
+import { Form, Col, Table, Button, Modal } from 'react-bootstrap';
 import './AllUsers.css';
 import './Coupons.css'
 
@@ -447,12 +446,12 @@ const Coupon = () => {
           <nav aria-label="Page navigation example" className="mt-3">
             <ul className="pagination justify-content-center">
               <li className={pageUsers.firstPage < 1 ? "disabled page-item" : "page-item"}>
-                <a onClick={() => movePage("previous")} className="page-link" href="#">Previous</a>
+                <Button onClick={() => movePage("previous")} className="page-link" href="#">Previous</Button>
               </li>
               <li className={pageUsers.lastPage < 1 ? "disabled page-item" : "page-item"}>
-                <a onClick={() => movePage("next")}
+                <Button onClick={() => movePage("next")}
                   className="page-link"
-                  href="#">Next</a>
+                  href="#">Next</Button>
               </li>
             </ul>
           </nav>
