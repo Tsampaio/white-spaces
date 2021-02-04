@@ -65,6 +65,8 @@ export const getCoursesOwned = (userId) => async dispatch => {
       }
     });
 
+    console.log(res.data)
+
     dispatch({
       type: GET_COURSES_OWNED,
       payload: res.data
