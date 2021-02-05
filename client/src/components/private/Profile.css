@@ -270,10 +270,6 @@
 } */
 
 @media only screen and (max-width: 1300px) {
-    .userBillingCtn {
-        overflow: scroll;
-    }
-
     .billingScroll {
         min-width: 900px;
     }
@@ -322,4 +318,11 @@
         margin-bottom: 30px;
     }
 
+    .userBillingCtn th {
+        min-width: 100px;
+    }
+
+    .userBillingCtn th.productName {
+        min-width: 200px;
+    }
 }
