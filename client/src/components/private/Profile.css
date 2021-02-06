@@ -25,6 +25,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 250px;
 }
 
 .userLeftCol h1 {
@@ -82,7 +83,7 @@
 }
 
 .profileLinks li {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .profileLinks i {
@@ -263,11 +264,14 @@
     color: #212529;
 }
 
-/* @media only screen and (min-width: 1025px) {
-    .userLeftCol {
-        max-width: 300px;
-    }
-} */
+.userBillingCtn th,
+.userBillingCtn td {
+    padding-left: 15px;
+}
+
+.userBillingCtn td {
+    padding-bottom: 10px;
+}
 
 @media only screen and (max-width: 1300px) {
     .billingScroll {

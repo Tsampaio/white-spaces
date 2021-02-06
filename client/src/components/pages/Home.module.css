@@ -38,7 +38,7 @@
   font-family: 'Roboto';
 }
 
-.homeCounterSubTitle { 
+.homeCounterSubTitle {
   color: #fff;
   font-size: 18px;
   font-weight: 700;
@@ -93,4 +93,18 @@
   font-weight: 400;
   line-height: 25px;
   color: #666;
+}
+
+@media (max-width: 500px) {
+  .popularCoursesCtn {
+    padding-top: 0;
+    padding-bottom: 50px;
+  }
+
+  .homeCounter {
+    padding: 80px 0;
+  }
+  .homeObjectives {
+    padding: 60px 0 60px 0;
+  }
 }

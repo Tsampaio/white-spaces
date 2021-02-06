@@ -13,11 +13,14 @@ const Courses = () => {
   const auth = useSelector((state) => state.auth);
   const { token } = auth;
   const courses = useSelector((state) => state.courses);
+  const { coursesLoaded } = courses;
 
   const [courseState, setCourseSate] = useState([]);
 
   useEffect(() => {
-    dispatch(getCourses());
+    if(!coursesLoaded) {
+      dispatch(getCourses());
+    }
   }, [dispatch]);
 
   useEffect(() => {

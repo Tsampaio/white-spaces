@@ -64,7 +64,9 @@ const Sales = () => {
     return (
       <tr key={i}>
         <td>{newSaleDate}</td>
-        <td>{sale.userName}</td>
+        <td>
+          <Link to={`/admin/user/${sale.user}`}>{sale.userName}</Link>
+        </td>
         {/* <td>{sale.productName}</td> */}
         <td>
           {sale.productName.map((name, i) => {

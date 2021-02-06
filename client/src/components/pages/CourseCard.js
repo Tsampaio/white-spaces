@@ -1,5 +1,5 @@
 import React from 'react';
-// import jsCart from '../../images/javascript-shopping.jpg';
+import {Col} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './CourseCard.css';
 
@@ -10,7 +10,7 @@ const CourseCard = (props) => {
   let img = images(`./${props.tag}.jpg`);
 
   return (
-    <div className="col-3">
+    <Col sm={12} md={3} className="mb-4">
       <div className="cardBorder">
         <div className="courseThumbnail courseFeatured1">
           <Link className="courseTitle" to={`/courses/${props.tag}`}>
@@ -25,7 +25,7 @@ const CourseCard = (props) => {
           <span className="studentNumbers"><i className="fas fa-users"></i>860</span><span className="price">${props.price}</span>
         </div>
       </div>
-    </div>
+    </Col>
   )
 }
 

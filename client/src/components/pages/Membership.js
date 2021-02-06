@@ -78,13 +78,13 @@ const Membership = ({ register, isAuthenticated }) => {
 								<h3 className="membershipTitle">Annual</h3>
 								<h1 className="membershipPrice">
 									<span className="membershipDollar">$</span>
-									<span className="membershipPriceValue">99<span>.99</span></span>
-									<span>/year</span>
+									<span className="membershipPriceValue">9<span>.99</span></span>
+									<span>/month</span>
 								</h1>
-								{/* <div>
-									<span className="membershipPriceToPay">$179.88</span>
+								<div>
+									<span className="membershipPriceToPay">$120.00</span>
 									<span className="membershipBilled">BILLED YEARLY</span>
-								</div> */}
+								</div>
 								<ul className="membershipFeatures">
 									<li><i className="fa fa-check"></i>Access all courses from Library</li>
 									<li><i className="fa fa-check"></i>New courses every month</li>

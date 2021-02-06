@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { getCourses } from '../../actions/courses';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Col } from 'react-bootstrap';
 import SecondHeader from '../partials/SecondHeader';
 import Loader from '../utils/Loader';
 import { Form } from 'react-bootstrap';
@@ -95,13 +96,13 @@ const Courses = () => {
       <div className="main-container">
         <div className="courses container">
           <div className="row">
-            <div className="col-3 my-4">
+            <Col md={4} lg={3} className="offset-1 my-4 col-10 offset-md-0">
               <Form.Control
                 type="text"
                 placeholder="Find a course"
                 onChange={findCourse}
               />
-            </div>
+            </Col>
           </div>
           <div className="row">
             {loading ? (

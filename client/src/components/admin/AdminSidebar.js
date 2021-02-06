@@ -32,7 +32,7 @@ function AdminSidebar( ) {
 
       <ul className="profileLinks">
         <li>
-          <NavLink exact to="/admin/courses" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Courses</NavLink>
+          <NavLink exact to="/admin/courses" activeClassName="activeProfilePage"><i className="fa fa-graduation-cap"></i>Courses</NavLink>
         </li>
         <li>
           <NavLink to="/admin/featureCourses" activeClassName="activeProfilePage"><i className="fa fa-graduation-cap"></i>FEATURE COURSES</NavLink>
@@ -41,10 +41,10 @@ function AdminSidebar( ) {
           <NavLink to="/admin/users" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Users</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/sales" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Sales</NavLink>
+          <NavLink to="/admin/sales" activeClassName="activeProfilePage"><i className="fa fa-comment-dollar"></i>Sales</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/coupons" activeClassName="activeProfilePage"><i className="fa fa-user"></i>Coupons</NavLink>
+          <NavLink to="/admin/coupons" activeClassName="activeProfilePage"><i className="fa fa-percent"></i>Coupons</NavLink>
         </li>
       </ul>
     </div>

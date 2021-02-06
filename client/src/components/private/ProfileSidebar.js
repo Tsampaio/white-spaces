@@ -35,7 +35,7 @@ function ProfileSidebar( ) {
           <NavLink exact to="/profile" activeClassName="activeProfilePage"><i className="fa fa-user"></i>USER PROFILE</NavLink>
         </li>
         <li>
-          <NavLink to="/profile/courses" activeClassName="activeProfilePage"><i className="fa fa-graduation-cap"></i>COURSES PURCHASED</NavLink>
+          <NavLink to="/profile/courses" activeClassName="activeProfilePage"><i className="fa fa-graduation-cap"></i>MY COURSES</NavLink>
         </li>
         <li>
           <NavLink to="/profile/billing" activeClassName="activeProfilePage"><i className="far fa-credit-card"></i>BILLING</NavLink>
