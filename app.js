@@ -25,7 +25,6 @@ app.use((req, res, next) => {
     console.log("Middleware");
     next();
 });
-
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.get('/test', (req, res) => {
