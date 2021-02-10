@@ -58,9 +58,10 @@
   background-color: #fff;
 }
 
-.priceCtn .fa-users {
-  color: #999;
+.priceCtn svg {
+  color: rgb(0, 0, 0);
   margin-right: 5px;
+  font-size: 25px;
 }
 
 .studentNumbers {

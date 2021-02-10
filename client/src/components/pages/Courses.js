@@ -47,7 +47,7 @@ const Courses = () => {
 
     // let img = images(`./${course.tag}.jpg`);
     // let img = `/images/${course.tag}.jpg`;
-    if (course.tag != 'monthly-plan') {
+    if (course.tag !== 'monthly-plan') {
       return (
         <div
           className="offset-1 col-10 offset-md-0 col-md-4 col-lg-3"

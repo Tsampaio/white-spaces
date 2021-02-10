@@ -50,8 +50,13 @@ const Home = () => {
     <Fragment>
       <Header />
       <div className="container">
-        <h3 className={styles.popularCourses}>Popular Courses</h3>
+        
         <div className={styles.popularCoursesCtn}>
+        <Row>
+          <Col className="offset-1 offset-md-0 col-10">
+            <h3 className={styles.popularCourses}>Popular Courses</h3>
+          </Col>
+        </Row>
           <div className="row">{allFeatured}</div>
         </div>
       </div>
