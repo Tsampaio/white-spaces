@@ -20,14 +20,12 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    -run: sudo chown -R $USER:$USER /var/www/dev.telmo.academy/deploy/white-spaces/white-spaces/
-    -run: sudo chown -R $USER:$USER /var/www/dev.telmo.academy/deploy/white-spaces/white-spaces/client
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm i
-    - run: npm i --prefix client
+    - run: npm ci
+    - run: npm ci --prefix client
     - run: npm run build --prefix client
     - run: pm2 restart dev.telmo.academy
