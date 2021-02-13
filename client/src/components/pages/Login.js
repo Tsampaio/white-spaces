@@ -1,9 +1,10 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import SecondHeader from '../partials/SecondHeader';
+import { Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 // import { setAlert } from '../../actions/alert';
-import './Login.css';
+import * as styles from './Login.module.css';
 import { login, resetMessage } from '../../actions/auth';
 import PropTypes from 'prop-types';
 
@@ -41,22 +42,23 @@ const Login = ({ login, resetMessage, isAuthenticated, auth, active }) => {
 	return (
 		<Fragment>
 			<SecondHeader />
-			<div className="loginCtn">
+			<div className={styles.loginCtn}>
 				<div className="container">
 					<div className="row">
-						<div className="col-6 offset-3">
-							<div className="card loginCard">
-								<h1 className="loginTitle"><i className="fas fa-user"></i>Login to Telmo Academy</h1>
+						<Col xs={12} md={{ span: 6, offset: 3 }}>
+							<div className={`card ${styles.loginCard}`}>
+								<h1 className={styles.loginTitle}>Welcome back</h1>
+								<p>Log in with your email address</p>
 								<form className="form" onSubmit={e => onSubmit(e)}>
 									<div className="form-group">
-										<label>Email Address</label><br />
+										
 										<input type="email" name="email" required
 											value={email}
 											onChange={e => onChange(e)}
+											placeholder="Email"
 										/>
 									</div>
 									<div className="form-group">
-										<label>Password</label><br />
 										<input
 											type="password"
 											name="password"
@@ -64,33 +66,28 @@ const Login = ({ login, resetMessage, isAuthenticated, auth, active }) => {
 											value={password}
 											onChange={e => onChange(e)}
 											required
+											placeholder="Password"
 										/>
 									</div>
-									<input type="submit" className="btn btn-success" value="Login" />
+									<input type="submit" className="btn btn-primary" value="Login" />
 
 									{message && (
-										<div className="loginError">
+										<div className={styles.loginError}>
 											<h1>{message}</h1>
 										</div>
 									)}
 								</form>
 
 							</div>
-						</div>
-						<div className="col-3 offset-3">
-							<div className="card">
-								<h3><Link to="/forgotPassword">Forgot your password?</Link></h3>
-							</div>
-
-						</div>
-						<div className="col-3">
-							<div className="card">
-								<h3><Link to="/register">Create an Account</Link></h3>
-							</div>
-						</div>
-					</div>
+						</Col>
+						<Col xs={12} className={styles.loginExtraButtons}>
+								<Link to="/forgotPassword">Forgot Password?</Link>
+								<span className={styles.loginSeparator}>|</span>
+								<Link to="/register">Register</Link>
+						</Col>
 				</div>
 			</div>
+		</div>
 		</Fragment>
 	);
 }

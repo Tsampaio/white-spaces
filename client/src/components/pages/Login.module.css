@@ -4,11 +4,7 @@
 }
 
 .loginTitle {
-    text-align: center;
-    color: #515a5f;
-    padding-bottom: 22px;
     font-size: 20px;
-    text-align: center;
     font-weight: 700;
     line-height: 28px;
 }
@@ -54,4 +50,15 @@
 
 .loginError h1 {
     font-size: 20px;
+}
+
+.loginExtraButtons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.loginSeparator {
+    margin: 0 20px;
 }

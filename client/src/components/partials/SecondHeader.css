@@ -1,6 +1,6 @@
 .secondHeader {
   /* background-color: #002333; */
-  background-color: #cfac39;
+  background-color: #537ddc;
   /* padding: 35px 0; */
   border-bottom: 1px solid #000;
   height: 100px;
@@ -75,6 +75,8 @@
 
 .mainNav {
   flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
 }
 
 .mainNav ul {
@@ -125,7 +127,7 @@
 }
 
 .navMenu.navMenuActive {
-  height: 280px;
+  height: 250px;
   padding-top: 10px;
   -webkit-box-shadow: -11px 15px 29px -10px rgba(0,0,0,0.75);
   -moz-box-shadow: -11px 15px 29px -10px rgba(0,0,0,0.75);
