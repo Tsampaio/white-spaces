@@ -144,9 +144,6 @@ const SecondHeader = () => {
               </div>
               <ul className="desktopMenu">
                 <li>
-                  <Link to="/">HOME</Link>
-                </li>
-                <li>
                   <Link to="/courses">COURSES</Link>
                 </li>
                 {/* Add when all finished
@@ -155,7 +152,7 @@ const SecondHeader = () => {
 
             )} */}
                 <li>
-                  <Link to="/membership">PRICING</Link>
+                  <Link to="/membership">MEMBERSHIP</Link>
                 </li>
                 {isAuthenticated ? (
                   <div
@@ -238,9 +235,6 @@ const SecondHeader = () => {
                 ref={dropMobileMenu}
                 className={`navMenu ${mobileMenu.open ? 'navMenuActive' : ''}`}
               >
-                <li>
-                  <Link to="/">Home</Link>
-                </li>
                 <li>
                   <Link to="/courses">Courses</Link>
                 </li>

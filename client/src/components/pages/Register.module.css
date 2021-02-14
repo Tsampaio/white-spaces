@@ -11,7 +11,7 @@
 
 .registerCard {
     margin-top: 70px;
-    padding: 30px 45px;
+    padding: 30px 30px;
 }
 
 .registerCtn input {
@@ -19,15 +19,17 @@
 }
 
 .antiBot:global(#anti-bot) {
-    background-color: lightgray;
+    /* background-color: lightgray; */
+    border: 1px solid black;
     padding: 10px 20px;
     margin-top: 30px;
     margin-bottom: 30px;
     text-align: center;
 }
 
-#anti-bot h3 {
-    font-size: 24px;
+.antiBot:global(#anti-bot) h3 {
+    font-size: 20px;
+    line-height: 28px;
 }
 
 #anti-bot input {
@@ -59,4 +61,11 @@
     text-align: center;
     margin-top: 20px;
     margin-bottom: 50px;
+}
+
+@media(min-width: 500px) {
+    .registerCard {
+        margin-top: 70px;
+        padding: 30px 45px;
+    }
 }

@@ -15,7 +15,7 @@
 
 .loginCtn .loginCard {
     margin-top: 70px;
-    padding: 30px 45px;
+    padding: 30px 30px;
 }
 
 .col-3 .card {
@@ -61,4 +61,11 @@
 
 .loginSeparator {
     margin: 0 20px;
+}
+
+@media(min-width: 500px) {
+    .loginCtn .loginCard {
+        margin-top: 70px;
+        padding: 30px 45px;
+    }
 }
