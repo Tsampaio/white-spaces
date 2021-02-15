@@ -33,7 +33,7 @@ router.post(
   coursePic
 );
 router.post('/updateCourse', updateCourse);
-router.post('/deleteVideoClass', deleteVideoClass);
+router.post('/deleteVideoClass', protect, deleteVideoClass);
 router.post('/courseThumbnail', courseThumbnail);
 router.post('/courseAccess', courseAccess);
 router.post('/finishLesson', protect, finishLesson);

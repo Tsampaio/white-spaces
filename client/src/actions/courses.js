@@ -333,7 +333,7 @@ export const saveFeaturedCoursesAction = (data, token) => async dispatch => {
   }
 }
 
-export const deleteVideoClassAction = (courseId, classId) => async dispatch => {
+export const deleteVideoClassAction = (courseId, classId) => async (dispatch, getState) => {
   try {
     dispatch({
       type: DELETE_COURSE_VIDEOCLASS_REQUEST,
@@ -342,10 +342,13 @@ export const deleteVideoClassAction = (courseId, classId) => async dispatch => {
     const body = { courseId, classId };
     console.log(body)
     
+    const { auth: { token } } = getState();
+    console.log(token);
     const res = await axios.post("/api/deleteVideoClass", body, {
       headers: {
         Accept: 'application/json',
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
       }
     });
 

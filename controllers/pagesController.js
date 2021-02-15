@@ -438,7 +438,7 @@ exports.saveFeaturedCourses = async (req, res) => {
 
 exports.deleteVideoClass = async (req, res) => {
   try {
-    if (req.user.role === 'admin') {
+    if (req.user && req.user.role === 'admin') {
     const { courseId, classId } = req.body;
     console.log(req.body);
     const course = await Course.findById(courseId);
