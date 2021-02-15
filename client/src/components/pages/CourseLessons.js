@@ -177,7 +177,7 @@ const CourseLessons = ({
 
 						<div className="videoIframe">
 							{/* <iframe src={course && course.data && course.data.classes[lesson - 1].url} width="800" height="600" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe> */}
-							<iframe id="iframe1" style={{display: 'flex'}} src={course && course.data && course.data.classes && course.data.classes[lesson - 1].url} width="1024" height="768" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
+							<iframe id="iframe1" style={{display: 'flex'}} src={course && course.data && course.data.classes && course.data.classes[lesson - 1].url} width="1024" height="768" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen title="courseClass"></iframe>
 						</div>
 					</div>
 				</div>

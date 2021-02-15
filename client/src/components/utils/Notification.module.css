@@ -1,0 +1,13 @@
+.notificationCtn {
+  width: 100%;
+  max-width: none;
+  margin-top: 30px;
+}
+
+.header {
+  background-color: #d4edda;
+}
+
+.header svg {
+  margin-right: 10px;
+}

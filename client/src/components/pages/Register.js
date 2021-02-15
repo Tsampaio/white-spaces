@@ -1,10 +1,11 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 // import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import { Col } from 'react-bootstrap';
+import Notification from '../utils/Notification';
 import * as styles from './Register.module.css';
 
 const Register = () => {
@@ -87,7 +88,7 @@ const Register = () => {
   console.log(randNumber1);
   console.log(randNumber2);
   return (
-    <Fragment>
+    <>
       <SecondHeader />
       <div className={styles.registerCtn}>
         <div className="container">
@@ -162,10 +163,14 @@ const Register = () => {
                 )}
 
                 {message && (
-                  <div className={styles.registerSuccess}>
-                    <h1>{message}</h1>
-                  </div>
+                  // <div className={styles.registerSuccess}>
+                  //   <FaCheckCircle />
+                  //   <h3>Success</h3>
+                  //   <h2>{message}</h2>
+                  // </div>
+                  <Notification />
                 )}
+                <Notification />
               </div>
               <p className={styles.goLogin}>
                 Already have an account? <Link to="/login">Log In</Link>
@@ -174,7 +179,7 @@ const Register = () => {
           </div>
         </div>
       </div>
-    </Fragment>
+    </>
   );
 };
 

@@ -72,13 +72,13 @@ const Course = () => {
           key={i}
         >
           <div className="courseClassLecture">
-            <i className="far fa-file"></i>Lecture {theClass.lecture}
+            <i className="far fa-file"></i><span className="d-none d-sm-block">Lecture</span> {theClass.lecture}
           </div>
           <div className="courseClassTitle">
             <Link to={`/courses/${course.data.tag}/lessons/1`}>
               {theClass.title}
             </Link>
-            <span>{theClass.duration} min</span>
+            <span className="d-none d-sm-block">{theClass.duration} min</span>
           </div>
         </div>
       );
@@ -138,6 +138,7 @@ const Course = () => {
                 frameBorder="0"
                 allow="autoplay; fullscreen"
                 allowFullScreen
+                title="courseIntro"
               ></iframe>
             </div>
             <div className="row">
