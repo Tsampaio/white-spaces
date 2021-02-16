@@ -92,7 +92,7 @@ const CourseLessons = ({
 
 	let classes = course && course.data && course.data.classes && course.data.classes.map((theClass, i) => {
 		return (
-			<div className="lesson" key={i}>
+			<div className={i % 2 === 0 ? "lesson" : "lesson stripe"} key={i}>
 				<div className="lessonComplete" onClick={() => finishLessonAction(i, course && course.data && course.data._id, auth && auth.token)}>
 					{/* {	theClass.watched.complete ? 
 						<i className="fas fa-check-circle complete"></i>
@@ -105,7 +105,7 @@ const CourseLessons = ({
 				</div>
 				<Link className={lesson === (i + 1) ? "lessonLink lessonActive" : "lessonLink"} to={`/courses/${course.data.tag}/lessons/${theClass.lecture}`}>
 					{/* <i className="fas fa-play-circle"></i> */}
-					<p>{theClass.title} <span className="lessonTime"> - ({theClass.duration} mins)</span></p>
+					<p>{theClass.title} <span className="lessonTime"> <span className="d-none d-sm-block">- ({theClass.duration} mins)</span></span></p>
 				</Link>
 			</div>
 		);
@@ -160,7 +160,7 @@ const CourseLessons = ({
 					<div className="courseLinksCtn">
 						<h1><i class="far fa-play-circle"></i><span>{course && course.data && course.data.name}</span></h1>
 
-						<h5 className="courseCurriculum">{percentageWatched()}% <span>complete</span></h5>
+						<h5 className="courseCurriculum">Progress: {percentageWatched()}% <span>complete</span></h5>
 						<div className="lessonsCtn">
 							{classes}
 						</div>
