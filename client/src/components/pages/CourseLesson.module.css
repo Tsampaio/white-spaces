@@ -4,7 +4,7 @@
     flex: 1 1;
 }
 
-.courseLesson > .row {
+.classesCol {
     flex: 1 1;
     display: flex;
     flex-wrap: wrap;
@@ -79,6 +79,15 @@
     text-decoration: none;
 }
 
+.lessonActiveCtn .lesson{
+    background-color: #596fa2;
+    
+}
+
+.lessonActiveCtn p {
+    color: #fff;
+}
+
 .lessonActive p {
     font-weight: bold;
 }
@@ -108,10 +117,6 @@
 
 .lessonComplete i {
     font-size: 20px;
-}
-
-.lessonComplete i.complete {
-    color: orange;
 }
 
 .currentLessonTitle {
@@ -172,6 +177,30 @@ iframe {
     width: 100%;
 }
 
+.nextPrevButtonsCtn {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.nextPrevButtonsCtn a {
+    width: 50%;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.nextPrevButtonsCtn a:first-child {
+    border-right: 1px solid black;
+}
+
+.nextPrevButtonsCtn h1 {
+    background-color: #596fa2;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 5px;
+}
+
 @media(min-width: 768px) {
     iframe {
         height: 430px;
@@ -183,6 +212,10 @@ iframe {
         order: 0;
         width: 350px;
         margin-bottom: 0px;
+    }
+
+    .nextPrevButtonsCtn h1 {
+        padding: 13px 5px;
     }
 }
 

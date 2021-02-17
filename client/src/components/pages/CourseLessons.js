@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import SecondHeader from '../partials/SecondHeader';
-import './CourseLesson.css';
+import styles from './CourseLesson.module.css';
 import store from '../../store';
 import { useParams, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -92,21 +92,23 @@ const CourseLessons = ({
 
 	let classes = course && course.data && course.data.classes && course.data.classes.map((theClass, i) => {
 		return (
-			<div className={i % 2 === 0 ? "lesson" : "lesson stripe"} key={i}>
-				<div className="lessonComplete" onClick={() => finishLessonAction(i, course && course.data && course.data._id, auth && auth.token)}>
-					{/* {	theClass.watched.complete ? 
-						<i className="fas fa-check-circle complete"></i>
-					 : <i className="far fa-circle"></i>
-					}  */}
-					{console.log("CHECKING LESSON")}
-					{checkLesson(theClass, i)}
+			<div className={lesson === (i + 1) ? styles.lessonActiveCtn : ''}>
+				<div className={i % 2 === 0 ? styles.lesson : `${styles.lesson} ${styles.stripe}`} key={i}>
+					<div className={styles.lessonComplete} onClick={() => finishLessonAction(i, course && course.data && course.data._id, auth && auth.token)}>
+						{/* {	theClass.watched.complete ? 
+							<i className="fas fa-check-circle complete"></i>
+						: <i className="far fa-circle"></i>
+						}  */}
+						{console.log("CHECKING LESSON")}
+						{checkLesson(theClass, i)}
 
 
+					</div>
+					<Link className={lesson === (i + 1) ? `${styles.lessonLink} ${styles.lessonActive}` : styles.lessonLink} to={`/courses/${course.data.tag}/lessons/${theClass.lecture}`}>
+						{/* <i className="fas fa-play-circle"></i> */}
+						<p>{theClass.title} <span className={styles.lessonTime}> <span className="d-none d-sm-block">- ({theClass.duration} mins)</span></span></p>
+					</Link>
 				</div>
-				<Link className={lesson === (i + 1) ? "lessonLink lessonActive" : "lessonLink"} to={`/courses/${course.data.tag}/lessons/${theClass.lecture}`}>
-					{/* <i className="fas fa-play-circle"></i> */}
-					<p>{theClass.title} <span className="lessonTime"> <span className="d-none d-sm-block">- ({theClass.duration} mins)</span></span></p>
-				</Link>
 			</div>
 		);
 	});
@@ -115,10 +117,16 @@ const CourseLessons = ({
 		if ((lesson + 1) > totalLessons) {
 			// console.log(lesson);
 			// console.log("inside of if");
-			return <h1>Last Lesson of the Course!</h1>
+			return 	<Link to={lesson !== 1 ? `/courses/${course && course.data && course.data.tag}/lessons/${lesson - 1}`: '#'}><h1><i className="fas fa-arrow-left"></i> Previous Lesson </h1></Link>
+
 		} else {
 			// console.log("inside of else");
-			return <Link to={`/courses/${course && course.data && course.data.tag}/lessons/${lesson + 1}`}><h1>Next Lesson <i className="fas fa-arrow-right"></i></h1></Link>
+			return (
+				<>
+					<Link to={lesson !== 1 ? `/courses/${course && course.data && course.data.tag}/lessons/${lesson - 1}`: '#'}><h1><i className="fas fa-arrow-left"></i> Previous Lesson </h1></Link>
+					<Link to={`/courses/${course && course.data && course.data.tag}/lessons/${lesson + 1}`}><h1>Next Lesson <i className="fas fa-arrow-right"></i></h1></Link>
+				</>
+			)
 		}
 	}
 
@@ -155,29 +163,30 @@ const CourseLessons = ({
 	return (
 		<Fragment>
 			<SecondHeader />
-			<div className="container-fluid courseLesson">
-				<div className="row">
-					<div className="courseLinksCtn">
-						<h1><i class="far fa-play-circle"></i><span>{course && course.data && course.data.name}</span></h1>
+			<div className={`container-fluid ${styles.courseLesson}`}>
+				<div className={`row ${styles.classesCol}`}>
+					<div className={styles.courseLinksCtn}>
+						<h1><i className="far fa-play-circle"></i><span>{course && course.data && course.data.name}</span></h1>
 
-						<h5 className="courseCurriculum">Progress: {percentageWatched()}% <span>complete</span></h5>
-						<div className="lessonsCtn">
+						<h5 className={styles.courseCurriculum}>Progress: {percentageWatched()}% <span>complete</span></h5>
+						<div className={styles.lessonsCtn}>
 							{classes}
 						</div>
 					</div>
-					<div className="courseLinksCtn backup">
+					<div className={`${styles.courseLinksCtn} ${styles.backup}`}>
 
 					</div>
-					<div className="courseMainVideoCtn">
-						{lessonContinue()}
-						<div className="currentLessonTitle">
+					<div className={styles.courseMainVideoCtn}>
+						<div className={styles.nextPrevButtonsCtn}>
+							{lessonContinue()}
+						</div>
+						<div className={styles.currentLessonTitle}>
 							<i class="fas fa-chalkboard-teacher"></i>
 							<p>{course && course.data && course.data.classes && course.data.classes[lesson - 1].title}</p>
 						</div>
 
-						<div className="videoIframe">
-							{/* <iframe src={course && course.data && course.data.classes[lesson - 1].url} width="800" height="600" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe> */}
-							<iframe id="iframe1" style={{display: 'flex'}} src={course && course.data && course.data.classes && course.data.classes[lesson - 1].url} width="1024" height="768" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen title="courseClass"></iframe>
+						<div className={`${styles.videoIframe} embed-responsive embed-responsive-16by9`}>
+							<iframe className="embed-responsive-item" id="iframe1" style={{display: 'flex'}} src={course && course.data && course.data.classes && course.data.classes[lesson - 1].url} width="1024" height="768" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen title="courseClass"></iframe>
 						</div>
 					</div>
 				</div>
