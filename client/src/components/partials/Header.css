@@ -57,7 +57,8 @@ header {
 
 @media (max-width: 500px) {
   .heroTitle {
-    min-height: 450px;
+    min-height: 400px;
+    height: 70vh;
   }
 
   .heroTitle h3 {

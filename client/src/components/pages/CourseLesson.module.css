@@ -201,13 +201,7 @@ iframe {
     padding: 10px 5px;
 }
 
-@media(min-width: 768px) {
-    iframe {
-        height: 430px;
-    }
-}
-
-@media(min-width: 1024px) {
+@media(min-width: 769px) {
     .courseLinksCtn {
         order: 0;
         width: 350px;
