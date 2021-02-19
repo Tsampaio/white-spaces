@@ -127,7 +127,7 @@
 }
 
 .navMenu.navMenuActive {
-  height: 250px;
+  height: 190px;
   padding-top: 10px;
   -webkit-box-shadow: -11px 15px 29px -10px rgba(0,0,0,0.75);
   -moz-box-shadow: -11px 15px 29px -10px rgba(0,0,0,0.75);

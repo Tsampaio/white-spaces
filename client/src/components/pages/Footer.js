@@ -8,7 +8,7 @@ const Footer = () => {
     <footer>
       <Container>
         <Row className={styles.footerSocialCtn}>
-          <div>
+          <div className={styles.footerLogoSocialCtn}>
             <img src={footerLogo} alt="Telmo Academy Logo"/>
             {/* <span className="footerEmail"><i className="fas fa-envelope"></i>support@telmoacademy.com</span> */}
             <span className={styles.footerSocial}>

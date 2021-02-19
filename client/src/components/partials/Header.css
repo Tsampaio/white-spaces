@@ -1,6 +1,6 @@
 header {
   background-image: url('../../images/telmo-academy.jpg');
-  height: 60vh;
+  height: 70vh;
   background-size: cover;
   background-repeat: no-repeat;
   font-family: 'Roboto', sans-serif;
@@ -13,7 +13,7 @@ header {
 
 .heroTitle {
   width: 100%;
-  min-height: 650px;
+  height: 60vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,7 +24,7 @@ header {
   line-height: 34px;
   letter-spacing: 0px;
   font-weight: 700;
-  font-size: 34px;
+  font-size: 30px;
   margin-bottom: 20px;
 }
 
@@ -32,8 +32,9 @@ header {
   line-height: 95px;
   letter-spacing: 0px;
   font-weight: 700;
-  font-size: 86px;
   margin-bottom: 20px;
+  font-size: 50px;
+  line-height: 65px;
 }
 
 .actionButton {
@@ -55,18 +56,13 @@ header {
   color: #000;
 }
 
-@media (max-width: 500px) {
-  .heroTitle {
-    min-height: 400px;
-    height: 70vh;
-  }
-
+@media(min-width: 768px) {
   .heroTitle h3 {
-    font-size: 30px;
+    font-size: 34px;
   }
 
   .heroTitle h1 {
-    font-size: 50px;
+    font-size: 86px;
     line-height: 65px;
   }
 }
