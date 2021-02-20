@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import { Col } from 'react-bootstrap';
-import Notification from '../utils/Notification';
+import MessageDisplay from '../utils/MessageDisplay';
 import * as styles from './Register.module.css';
 
 const Register = () => {
@@ -16,6 +16,7 @@ const Register = () => {
     passwordConfirm: '',
     randNumber1: Math.floor(Math.random() * 10 + 1),
     randNumber2: Math.floor(Math.random() * 10 + 1),
+    showError: false,
     formMessage: '',
     result: 0,
   });
@@ -26,26 +27,30 @@ const Register = () => {
     passwordConfirm,
     randNumber1,
     randNumber2,
+    showError,
     formMessage,
     result,
   } = formData;
 
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, notification } = auth;
-
-  useEffect(() => {
-    if (formMessage) {
-      setTimeout(() => {
-        // resetMessage();
-        console.log('formMessage deleted');
-        setFormData({ ...formData, formMessage: '' });
-      }, 5000);
-    }
-  }, [formMessage]);
+  const { isAuthenticated, notification, loading } = auth;
 
   const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value, showError: false, formMessage: '' });
+
+  useEffect(() => {
+    if(notification.status === "success") {
+      setFormData({
+        ...formData,
+        name: '',
+        email: '',
+        password: '',
+        passwordConfirm: '',
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notification])
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -62,18 +67,17 @@ const Register = () => {
       console.log('Result', result);
       console.log(randNumber1 === result);
       console.log(randNumber1 !== result);
-      // setFormData({ ...formData, formMessage: 'You are a robot!' });
+      setFormData({ ...formData, formMessage: 'The calculation answer is wrong! Try again' });
       // dispatch({type:  })
     } else {
       console.log('Inside register action');
-      dispatch(register({ name, email, password, passwordConfirm }));
       setFormData({
         ...formData,
-        name: '',
-        email: '',
-        password: '',
-        passwordConfirm: '',
+        showError: true,
+        formMessage: ''
       });
+      dispatch(register({ name, email, password, passwordConfirm }));
+      
     }
   };
 
@@ -141,7 +145,7 @@ const Register = () => {
 
                   {randNumber1 && (
                     <div className={styles.antiBot} id="anti-bot">
-                      <h3>I'm not a Robot</h3>
+                      <h3>Solve the calculation</h3>
                       <span>{randNumber1}</span>
                       <span>+</span>
                       <span>{randNumber2}</span>
@@ -157,19 +161,24 @@ const Register = () => {
                   />
                 </form>
 
-                {formMessage && (
-                  <div className={styles.registerError}>
-                    <h1>{formMessage}</h1>
-                  </div>
-                )}
-
-                {notification && notification.status && (
+                {!loading && notification && notification.status && showError && (
                   // <div className={styles.registerSuccess}>
                   //   <FaCheckCircle />
                   //   <h3>Success</h3>
                   //   <h2>{message}</h2>
                   // </div>
-                  <Notification status={notification.status} message={notification.message} />
+                  <MessageDisplay 
+                    header={notification.status === "fail" ? "Registration error" : "Registration success"}
+                    status={notification.status} 
+                    message={notification.message} 
+                  />
+                )}
+                {!loading && formMessage && (
+                  <MessageDisplay 
+                    header="Registration error"
+                    status="fail" 
+                    message={formMessage} 
+                  />
                 )}
               </div>
               <p className={styles.goLogin}>

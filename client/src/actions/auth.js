@@ -22,7 +22,7 @@ import {
   FIND_USER_SUCCESS,
   USER_DETAILS_REQUEST,
   USER_LAST_LOGIN_FAIL,
-  USER_LAST_LOGIN_SUCCESS
+  USER_LAST_LOGIN_SUCCESS,
 } from '../contants/userConstants';
 
 import {
@@ -30,20 +30,26 @@ import {
   RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
   RESET_MESSAGE,
-  LOGIN_REQUEST
+  LOGIN_REQUEST,
+  REGISTER_REQUEST,
 } from '../contants/authConstants';
 
 //Register User
 export const register = ({ name, email, password, passwordConfirm }) => async dispatch => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-
-  const body = JSON.stringify({ name, email, password, passwordConfirm });
-
+  
   try {
+    dispatch({
+      type: REGISTER_REQUEST
+    })
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  
+    const body = JSON.stringify({ name, email, password, passwordConfirm });
+
     const res = await axios.post("/api/users/register", body, config);
     console.log("res.data");
     console.log(res.data);

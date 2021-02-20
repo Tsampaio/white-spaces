@@ -67,7 +67,7 @@ exports.register = async (req, res) => {
       //   status: 'fail',
       //   message: 'That email already has been taken'
       // });
-      throw new Error('That email already has been taken');
+      throw new Error('That email has been taken already');
     }
 
     const newUser = await User.create({

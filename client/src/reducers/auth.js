@@ -26,7 +26,8 @@ import {
   ACCOUNT_ACTIVATION_FAIL,
   RESET_MESSAGE,
   RESET_NOTIFICATION,
-  LOGIN_REQUEST
+  LOGIN_REQUEST,
+  REGISTER_REQUEST
 } from '../contants/authConstants';
 
 const initialState = {
@@ -59,6 +60,7 @@ export default function (state = initialState, action) {
   switch (type) {
     case USER_DETAILS_REQUEST:
     case LOGIN_REQUEST:
+    case REGISTER_REQUEST:
       return {
         ...state,
         loading: true
@@ -84,7 +86,8 @@ export default function (state = initialState, action) {
     case REGISTER_SUCCESS:
       return {
         ...state,
-        notification: payload
+        notification: payload,
+        loading: false
       }
     case RESET_NOTIFICATION: {
       return {
