@@ -14,8 +14,8 @@ const {
   udpateUserDb,
   forgotPassword,
   resetPassword
-
 } = require('./../controllers/authController');
+
 const { upload } = require('../utils/imageUpload');
 
 const router = express.Router();

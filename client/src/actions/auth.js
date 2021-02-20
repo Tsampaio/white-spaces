@@ -30,6 +30,7 @@ import {
   RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
   RESET_MESSAGE,
+  LOGIN_REQUEST
 } from '../contants/authConstants';
 
 //Register User
@@ -51,27 +52,32 @@ export const register = ({ name, email, password, passwordConfirm }) => async di
       payload: res.data
     });
 
-  } catch (err) {
-    const errors = err.response.data.errors;
-    console.log(errors);
+  } catch (error) {
+    const errors = error.response.data;
+    console.log(errors.message);
 
     dispatch({
-      type: REGISTER_FAIL
+      type: REGISTER_FAIL,
+      payload: errors
     });
   }
 }
 
 //Login User
 export const login = ({ email, password }) => async dispatch => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-
-  const body = JSON.stringify({ email, password });
-
   try {
+    dispatch({
+      type: LOGIN_REQUEST,
+    });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  
+    const body = JSON.stringify({ email, password });
+
     const { data } = await axios.post("/api/users/login", body, config);
     console.log("res.data");
     console.log(data);
@@ -82,11 +88,12 @@ export const login = ({ email, password }) => async dispatch => {
 
   } catch (error) {
     // const errors = err.response.data.errors;
+    const errors = error.response.data;
     console.log(error.response.data.message);
 
     dispatch({
       type: LOGIN_FAIL,
-      payload: error.response.data
+      payload: errors
     });
   }
 }

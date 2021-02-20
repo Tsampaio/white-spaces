@@ -48,7 +48,7 @@ const generateActivationToken = async (req, user) => {
   user.activationToken = activationToken;
   await user.save({ validateBeforeSave: false });
 
-  const url = `${req.protocol}://localhost:3000/activate/${activationToken}`;
+  const url = `${req.protocol}://${req.get('host')}/activate/${activationToken}`;
   //Or http://localhost:3000/dashboard   for HOST
   // console.log(url);
   await new Email(user, url).sendWelcome();
@@ -63,10 +63,11 @@ exports.register = async (req, res) => {
     const user = await User.findOne({ email })
 
     if (user) {
-      return res.status(401).send({
-        status: 'fail',
-        message: 'That email already has been taken'
-      });
+      // return res.status(401).send({
+      //   status: 'fail',
+      //   message: 'That email already has been taken'
+      // });
+      throw new Error('That email already has been taken');
     }
 
     const newUser = await User.create({
@@ -95,10 +96,14 @@ exports.register = async (req, res) => {
 
     res.status(201).json({
       status: 'success',
-      message: 'You are Registered',
+      message: 'Please check your email to activate your account!',
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    res.status(401).json({
+      status: 'fail',
+      message: error.message,
+    });
   }
 
 };
@@ -136,26 +141,36 @@ exports.activate = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   console.log("Inside Login Controller");
-
+  try {
   // 1) Check if email and password exist
   if (!email || !password) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Please provide email and password'
-    });
+    // return res.status(400).json({
+    //   status: 'fail',
+    //   message: 'Please provide email and password'
+    // });
+
+    throw new Error('Please provide email and password');
   }
   // 2) Check if user exists && password is correct
   const user = await User.findOne({ email }).select('+password');
   // console.log(user);
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return res.status(401).json({
-      status: 'fail',
-      message: 'Incorrect email or password'
-    });
+    // return res.status(401).json({
+    //   status: 'fail',
+    //   message: 'Incorrect email or password'
+    // });
+    throw new Error('Incorrect email or password');
   }
 
   // 3) If everything ok, send token to client
   createSendToken(user, 200, res, "You are logged in");
+  } catch(error) {
+    console.log(error.message);
+    res.status(401).json({
+      status: 'fail',
+      message: error.message,
+    });
+  }
 };
 
 exports.logout = (req, res) => {

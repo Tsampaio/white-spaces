@@ -1,35 +1,41 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import { Col } from 'react-bootstrap';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 // import { setAlert } from '../../actions/alert';
 import * as styles from './Login.module.css';
-import { login, resetMessage } from '../../actions/auth';
-import PropTypes from 'prop-types';
+import { login } from '../../actions/auth';
+import MessageDisplay from '../utils/MessageDisplay';
 
-const Login = ({ login, resetMessage, isAuthenticated, auth, active }) => {
+const Login = () => {
+	
+	const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const { isAuthenticated, notification, active, loading } = auth;
+
 	const [formData, setFormData] = useState({
 		email: '',
-		password: ''
+		password: '',
+		showError: false
 	});
 
-	const [message, setMessage] = useState("")
+	// const [message, setMessage] = useState("")
 
-	useEffect(() => {
-		resetMessage();
-	}, []);
-
-	useEffect(() => {
-		setMessage(auth.message);
-	}, [auth.message])
+	// useEffect(() => {
+	// 	setMessage(auth.message);
+	// }, [auth.message])
 
 	const { email, password } = formData;
-	const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+	const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value, showError: false });
 
 	const onSubmit = async e => {
 		e.preventDefault();
-		login({ email, password });
+		setFormData({
+			...formData,
+			showError: true
+		})
+		dispatch(login({ email, password }));
 	}
 
 	//Redirect if logged in
@@ -71,10 +77,13 @@ const Login = ({ login, resetMessage, isAuthenticated, auth, active }) => {
 									</div>
 									<input type="submit" className="btn btn-primary" value="Login" />
 
-									{message && (
-										<div className={styles.loginError}>
-											<h1>{message}</h1>
-										</div>
+									{!loading && notification && notification.status === "fail" && formData.showError && (
+										
+										<MessageDisplay
+											header="Authentication Error"
+											status={notification.status} 
+											message={notification.message}
+										/>
 									)}
 								</form>
 
@@ -92,15 +101,6 @@ const Login = ({ login, resetMessage, isAuthenticated, auth, active }) => {
 	);
 }
 
-Login.propTypes = {
-	// setAlert: PropTypes.func.isRequired,
-	login: PropTypes.func.isRequired,
-	isAuthenticated: PropTypes.bool
-}
 
-const mapStateToProps = state => ({
-	isAuthenticated: state.auth.isAuthenticated,
-	auth: state.auth
-})
 
-export default connect(mapStateToProps, { login, resetMessage })(Login);
+export default Login;

@@ -24,7 +24,9 @@ import {
   RESET_PASSWORD,
   RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
-  RESET_MESSAGE
+  RESET_MESSAGE,
+  RESET_NOTIFICATION,
+  LOGIN_REQUEST
 } from '../contants/authConstants';
 
 const initialState = {
@@ -34,7 +36,7 @@ const initialState = {
   active: null,
   user: null,
   loading: true,
-  message: "",
+  notification: {},
   coursesOwned: [],
   coursesOwnedLoaded: false,
   membership: {
@@ -56,6 +58,7 @@ export default function (state = initialState, action) {
   }
   switch (type) {
     case USER_DETAILS_REQUEST:
+    case LOGIN_REQUEST:
       return {
         ...state,
         loading: true
@@ -77,11 +80,18 @@ export default function (state = initialState, action) {
         user: null,
         loading: false
       }
+    case REGISTER_FAIL:
     case REGISTER_SUCCESS:
       return {
         ...state,
-        message: payload.message
+        notification: payload
       }
+    case RESET_NOTIFICATION: {
+      return {
+      ...state,
+      notification: payload
+      }
+    }
     case LOGIN_SUCCESS:
       return {
         ...state,
@@ -95,7 +105,8 @@ export default function (state = initialState, action) {
     case LOGIN_FAIL:
       return {
         ...state,
-        message: payload.message
+        notification: payload,
+        loading: false
       }
     case RESET_MESSAGE:
       return {

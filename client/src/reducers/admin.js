@@ -43,6 +43,7 @@ const initialState = {
   coupons: []
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default function (state = initialState, action) {
   const { type, payload } = action;
   // console.log(type);

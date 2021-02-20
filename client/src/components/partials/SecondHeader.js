@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useRef } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './SecondHeader.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,12 +6,13 @@ import logo from '../../images/telmo-academy1.png';
 import { loadCheckout } from '../../actions/courses';
 import { lastLoginAction } from '../../actions/auth';
 import { checkMembership } from '../../actions/membership';
+import { RESET_NOTIFICATION } from '../../contants/authConstants';
 
 const SecondHeader = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, membershipLoaded } = auth;
+  const { isAuthenticated, membershipLoaded, notification } = auth;
 
   const payment = useSelector((state) => state.payment);
   const { checkoutLoaded } = payment;
@@ -31,6 +32,13 @@ const SecondHeader = () => {
 
   const profileIcon = React.useRef();
   const burgerMenuIcon = React.useRef();
+
+  useEffect(() => {
+    if(notification && notification.status) {
+      dispatch({type: RESET_NOTIFICATION, payload: { status: "", message: ""}})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     /**

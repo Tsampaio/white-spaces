@@ -32,7 +32,7 @@ const Register = () => {
 
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, message } = auth;
+  const { isAuthenticated, notification } = auth;
 
   useEffect(() => {
     if (formMessage) {
@@ -62,7 +62,8 @@ const Register = () => {
       console.log('Result', result);
       console.log(randNumber1 === result);
       console.log(randNumber1 !== result);
-      setFormData({ ...formData, formMessage: 'You are a robot!' });
+      // setFormData({ ...formData, formMessage: 'You are a robot!' });
+      // dispatch({type:  })
     } else {
       console.log('Inside register action');
       dispatch(register({ name, email, password, passwordConfirm }));
@@ -162,15 +163,14 @@ const Register = () => {
                   </div>
                 )}
 
-                {message && (
+                {notification && notification.status && (
                   // <div className={styles.registerSuccess}>
                   //   <FaCheckCircle />
                   //   <h3>Success</h3>
                   //   <h2>{message}</h2>
                   // </div>
-                  <Notification />
+                  <Notification status={notification.status} message={notification.message} />
                 )}
-                <Notification />
               </div>
               <p className={styles.goLogin}>
                 Already have an account? <Link to="/login">Log In</Link>
