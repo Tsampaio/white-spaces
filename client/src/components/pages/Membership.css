@@ -1,7 +1,7 @@
 .membershipCtn {
     padding-top: 100px;
     padding-bottom: 100px;
-    background-color: #f5f6f7;
+    background: linear-gradient(to bottom, #e3ffe7 0%, #d9e7ff 100%);
     flex: 1 1;
 }
 
@@ -132,3 +132,28 @@
 i.fa-times {
     color: red;
 }
+
+
+@media(max-width: 500px) {
+    .membershipCtn {
+        padding: 50px 0;
+    }
+
+    .membershipFeatures {
+        padding: 0 15px;
+        margin-top: 30px;
+    }
+
+    .membershipPrice .membershipPriceValue {
+        font-size: 70px;
+    }
+
+    .monthlyCtn, .annualCtn {
+        padding-bottom: 30px;
+    }
+
+    .membershipTitle {
+        margin-top: 30px;
+    }
+}
+

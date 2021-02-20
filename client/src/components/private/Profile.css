@@ -48,6 +48,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0 auto;
 }
 
 .userRightCol h1 {
@@ -137,7 +138,7 @@
 
 .userDetails img {
     width: 100px;
-    margin-right: 20px;
+    margin-right: 0px;
 }
 
 .imagePreviewOverlay {
@@ -305,13 +306,16 @@
 }
 
 @media only screen and (max-width: 768px) {
-    
+    .userDetails {
+        width: 450px;
+    }
 }
 
 
 @media only screen and (max-width: 500px) {
     .profileCtn {
-        padding-bottom: 30px;
+        padding-top: 50px;
+        padding-bottom: 50px;
     }
     
     .billingCtn {
@@ -328,5 +332,14 @@
 
     .userBillingCtn th.productName {
         min-width: 200px;
+    }
+
+    .userDetails {
+        width: 80%;
+        padding: 30px 20px;
+    }
+
+    .userDetails img {
+        margin: 0;
     }
 }

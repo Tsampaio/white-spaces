@@ -72,7 +72,7 @@ const Membership = ({ register, isAuthenticated }) => {
 			<div className="membershipCtn">
 				<div className="container">
 					<div className="row">
-						<div className="col-lg-5 offset-lg-1 col-md-10 offset-md-1">
+						<div className="offset-1 col-10 offset-md-0 col-lg-5 offset-lg-1 col-md-10 offset-md-1">
 							<div className="annualCtn">
 								<h2 className="membershipRecommended">MOST POPULAR</h2>
 								<h3 className="membershipTitle">Annual</h3>
@@ -96,7 +96,7 @@ const Membership = ({ register, isAuthenticated }) => {
 							</div>
 
 						</div>
-						<div className="col-lg-5 col-md-10 offset-md-1">
+						<div className="offset-1 col-10 offset-md-0 col-lg-5 col-md-10 offset-md-1">
 							<div className="monthlyCtn">
 								<h3 className="membershipTitle">Monthly</h3>
 								<h1 className="membershipPrice">

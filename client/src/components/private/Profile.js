@@ -277,7 +277,7 @@ function Profile( ) {
 
   return (
 
-    <div className="col-xl-10 col-lg-9 col-md-12 col-sm-12 userRightCol">
+    <div className="userRightCol">
       <div className="userDetails">
         {imageUpload.error &&
           <h1>{imageUpload.error}</h1>
