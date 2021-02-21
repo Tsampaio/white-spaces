@@ -139,26 +139,17 @@ exports.activate = async (req, res, next) => {
 }
 
 exports.login = async (req, res, next) => {
-  const { email, password } = req.body;
-  console.log("Inside Login Controller");
   try {
+    const { email, password } = req.body;
+    console.log("Inside Login Controller");
   // 1) Check if email and password exist
   if (!email || !password) {
-    // return res.status(400).json({
-    //   status: 'fail',
-    //   message: 'Please provide email and password'
-    // });
-
     throw new Error('Please provide email and password');
   }
   // 2) Check if user exists && password is correct
   const user = await User.findOne({ email }).select('+password');
   // console.log(user);
   if (!user || !(await user.correctPassword(password, user.password))) {
-    // return res.status(401).json({
-    //   status: 'fail',
-    //   message: 'Incorrect email or password'
-    // });
     throw new Error('Incorrect email or password');
   }
 
@@ -247,26 +238,20 @@ exports.loadUser = (req, res) => {
   });
 }
 
-exports.forgotPassword = async (req, res, next) => {
-  // console.log("inside forgot password");
+exports.forgotPassword = async (req, res) => {
   //1) Get user based on POSTed email
-  // console.log(req.body.email);
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) {
-    return next(
-      res.status(404).json({
-        status: 'Fail',
-        message: 'There is no user with email address.'
-      })
-    );
-  }
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      throw new Error('The email does not exist');
+    }
 
   // 2) Generate the random reset token
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
   // 3) Send it to user's email
-  try {
+  
     // await sendEmail({
     //   email: user.email,
     //   subject: 'Your password reset token (valid for 10 min)',
@@ -277,25 +262,25 @@ exports.forgotPassword = async (req, res, next) => {
     // 'host'
     // )}/api/users/resetPassword/${resetToken}`;
 
-    const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+    const resetURL = `${req.protocol}://${req.get('host')}/resetPassword/${resetToken}`;
 
     await new Email(user, resetURL).sendPasswordReset();
 
     res.status(200).json({
       status: 'success',
-      message: 'Token sent to email!'
+      message: 'We have sent you an email, to reset your password'
     });
   } catch (err) {
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save({ validateBeforeSave: false });
+    // user.passwordResetToken = undefined;
+    // user.passwordResetExpires = undefined;
+    // await user.save({ validateBeforeSave: false });
 
-    return next(
-      res.status(500).json({
-        status: 'fail',
-        message: 'There was an error sending the email. Try again later!'
-      })
-    );
+    console.log(err.message);
+
+    res.status(401).json({
+      status: 'fail',
+      message: err.message,
+    })
   }
 };
 

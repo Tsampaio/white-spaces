@@ -1,25 +1,30 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { fgt_pass, resetMessage } from '../../actions/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { fgt_pass } from '../../actions/auth';
 import SecondHeader from '../partials/SecondHeader';
 import { Col } from 'react-bootstrap';
-import * as styles from './ForgotPassword.module.css';
+import styles from './ForgotPassword.module.css';
+import MessageDisplay from '../utils/MessageDisplay';
 
-const ForgotPassword = ({ fgt_pass, resetMessage, auth }) => {
+const ForgotPassword = () => {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const { notification, loading } = auth;
+  
   const [formData, setFormData] = useState({
     email: '',
   });
 
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    console.log('reseting the message, in forgotpass');
-    resetMessage();
-  }, []);
+  // useEffect(() => {
+  //   console.log('reseting the message, in forgotpass');
+  //   resetMessage();
+  // }, []);
 
-  useEffect(() => {
-    setMessage(auth.message);
-  }, [auth.message]);
+  // useEffect(() => {
+  //   setMessage(auth.message);
+  // }, [auth.message]);
 
   const { email } = formData;
   const onChange = (e) =>
@@ -27,15 +32,9 @@ const ForgotPassword = ({ fgt_pass, resetMessage, auth }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    fgt_pass({ email });
+    dispatch(fgt_pass({ email }));
     // removeMessage();
   };
-
-  // const removeMessage = () => {
-  //   setTimeout(()=> {
-  //     setMessage("");
-  //   }, 7000);
-  // }
 
   return (
     <Fragment>
@@ -66,7 +65,13 @@ const ForgotPassword = ({ fgt_pass, resetMessage, auth }) => {
                     value="Reset Password"
                   />
                 </form>
-                <h1 className="forgotPasswordMessage">{message}</h1>
+                {!loading && notification && notification.message && (
+                  <MessageDisplay
+                    header="Reset Password"
+                    status={notification.status} 
+                    message={notification.message}
+                  />
+                )}
               </div>
             </Col>
           </div>
@@ -76,10 +81,4 @@ const ForgotPassword = ({ fgt_pass, resetMessage, auth }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-});
-
-export default connect(mapStateToProps, { fgt_pass, resetMessage })(
-  ForgotPassword
-);
+export default ForgotPassword;

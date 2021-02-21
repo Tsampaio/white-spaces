@@ -3,10 +3,10 @@ import SecondHeader from '../partials/SecondHeader';
 import { Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-// import { setAlert } from '../../actions/alert';
 import * as styles from './Login.module.css';
 import { login } from '../../actions/auth';
 import MessageDisplay from '../utils/MessageDisplay';
+import { RESET_NOTIFICATION } from '../../contants/authConstants';
 
 const Login = () => {
 	
@@ -20,14 +20,15 @@ const Login = () => {
 		showError: false
 	});
 
-	// const [message, setMessage] = useState("")
-
-	// useEffect(() => {
-	// 	setMessage(auth.message);
-	// }, [auth.message])
-
 	const { email, password } = formData;
 	const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value, showError: false });
+
+	useEffect(() => {
+    if(notification && notification.status) {
+      dispatch({type: RESET_NOTIFICATION, payload: { status: "", message: ""}})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 	const onSubmit = async e => {
 		e.preventDefault();
@@ -90,9 +91,9 @@ const Login = () => {
 							</div>
 						</Col>
 						<Col xs={12} className={styles.loginExtraButtons}>
-								<Link to="/forgotPassword">Forgot Password?</Link>
-								<span className={styles.loginSeparator}>|</span>
-								<Link to="/register">Register</Link>
+							<Link to="/forgotPassword">Forgot Password?</Link>
+							<span className={styles.loginSeparator}>|</span>
+							<Link to="/register">Register</Link>
 						</Col>
 				</div>
 			</div>

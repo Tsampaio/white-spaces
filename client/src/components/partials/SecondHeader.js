@@ -6,7 +6,6 @@ import logo from '../../images/telmo-academy1.png';
 import { loadCheckout } from '../../actions/courses';
 import { lastLoginAction } from '../../actions/auth';
 import { checkMembership } from '../../actions/membership';
-import { RESET_NOTIFICATION } from '../../contants/authConstants';
 
 const SecondHeader = () => {
   const dispatch = useDispatch();
@@ -32,13 +31,6 @@ const SecondHeader = () => {
 
   const profileIcon = React.useRef();
   const burgerMenuIcon = React.useRef();
-
-  useEffect(() => {
-    if(notification && notification.status) {
-      dispatch({type: RESET_NOTIFICATION, payload: { status: "", message: ""}})
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     /**

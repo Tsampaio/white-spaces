@@ -9,7 +9,6 @@ import {
   USER_GUEST,
   LOGOUT,
   LOGOUT_FAIL,
-  FORGOT_PASSWORD,
   EMAIL_ACTIVATION,
   ACCOUNT_ACTIVATION,
   GET_COURSES_OWNED,
@@ -27,7 +26,10 @@ import {
   RESET_MESSAGE,
   RESET_NOTIFICATION,
   LOGIN_REQUEST,
-  REGISTER_REQUEST
+  REGISTER_REQUEST,
+  FORGOT_PASSWORD,
+  FORGOT_PASSWORD_REQUEST,
+  FORGOT_PASSWORD_FAIL
 } from '../contants/authConstants';
 
 const initialState = {
@@ -61,6 +63,7 @@ export default function (state = initialState, action) {
     case USER_DETAILS_REQUEST:
     case LOGIN_REQUEST:
     case REGISTER_REQUEST:
+    case FORGOT_PASSWORD_REQUEST:
       return {
         ...state,
         loading: true
@@ -84,6 +87,8 @@ export default function (state = initialState, action) {
       }
     case REGISTER_FAIL:
     case REGISTER_SUCCESS:
+    case FORGOT_PASSWORD:
+    case FORGOT_PASSWORD_FAIL:
       return {
         ...state,
         notification: payload,
@@ -127,7 +132,6 @@ export default function (state = initialState, action) {
         user: null,
         message: null
       }
-    case FORGOT_PASSWORD:
     case UPDATE_USER_ERROR:
       return {
         ...state,

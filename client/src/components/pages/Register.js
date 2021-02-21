@@ -7,6 +7,7 @@ import { register } from '../../actions/auth';
 import { Col } from 'react-bootstrap';
 import MessageDisplay from '../utils/MessageDisplay';
 import * as styles from './Register.module.css';
+import { RESET_NOTIFICATION } from '../../contants/authConstants';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -38,6 +39,13 @@ const Register = () => {
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value, showError: false, formMessage: '' });
+
+    useEffect(() => {
+      if(notification && notification.status) {
+        dispatch({type: RESET_NOTIFICATION, payload: { status: "", message: ""}})
+      }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
   useEffect(() => {
     if(notification.status === "success") {

@@ -11,7 +11,6 @@ import {
   AUTH_ERROR,
   LOGOUT,
   LOGOUT_FAIL,
-  FORGOT_PASSWORD,
   EMAIL_ACTIVATION,
   ACCOUNT_ACTIVATION
 } from './types';
@@ -32,6 +31,9 @@ import {
   RESET_MESSAGE,
   LOGIN_REQUEST,
   REGISTER_REQUEST,
+  FORGOT_PASSWORD,
+  FORGOT_PASSWORD_REQUEST,
+  FORGOT_PASSWORD_FAIL
 } from '../contants/authConstants';
 
 //Register User
@@ -235,33 +237,34 @@ export const logout = () => async dispatch => {
 //Forgot Password
 export const fgt_pass = ({ email }) => async dispatch => {
   try {
+    dispatch({
+      type: FORGOT_PASSWORD_REQUEST
+    });
+
     const config = {
       headers: {
         'Content-Type': 'application/json'
       }
     }
-    const body = JSON.stringify({ email });
+    const body = { email };
 
     const res = await axios.post('/api/users/forgotPassword', body, config);
 
     console.log(res.data);
     dispatch({
       type: FORGOT_PASSWORD,
-      payload: "We have sent you an email, to reset your password"
+      payload: res.data
     });
 
-
     // dispatch(loadUser());
-  } catch (err) {
-    // const errors = err.response.data.errors;
-    console.log(err);
-    // if(errors) {
-    //     errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-    // }
+  } catch (error) {
+    const errors = error.response.data;
+    console.log(errors);
 
-    // dispatch({
-    //     type: LOGOUT_FAIL
-    // });
+    dispatch({
+      type: FORGOT_PASSWORD_FAIL,
+      payload: errors
+    });
   }
 }
 
