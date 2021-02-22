@@ -25,7 +25,8 @@ import {
 } from '../contants/userConstants';
 
 import {
-  RESET_PASSWORD,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
   RESET_MESSAGE,
@@ -271,8 +272,13 @@ export const fgt_pass = ({ email }) => async dispatch => {
 //Reset Password
 export const reset_pass = ({ password, passwordConfirm, token }) => async dispatch => {
   try {
+    dispatch({
+      type: RESET_PASSWORD_REQUEST
+    });
+
     const config = {
       headers: {
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       }
     }
@@ -282,18 +288,17 @@ export const reset_pass = ({ password, passwordConfirm, token }) => async dispat
 
     console.log(data);
     dispatch({
-      type: RESET_PASSWORD,
-      payload: data.message
+      type: RESET_PASSWORD_SUCCESS,
+      payload: data
     });
 
-
-    // dispatch(loadUser());
   } catch (error) {
     const errors = error.response.data;
+    console.log(error.response.data.message);
 
     dispatch({
       type: RESET_PASSWORD_FAIL,
-      payload: errors.message
+      payload: errors
     })
 
   }

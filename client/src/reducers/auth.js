@@ -20,7 +20,8 @@ import {
 } from '../actions/types';
 import { USER_DETAILS_REQUEST, USER_LAST_LOGIN_FAIL, USER_LAST_LOGIN_SUCCESS } from '../contants/userConstants';
 import {
-  RESET_PASSWORD,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
   RESET_MESSAGE,
@@ -64,6 +65,7 @@ export default function (state = initialState, action) {
     case LOGIN_REQUEST:
     case REGISTER_REQUEST:
     case FORGOT_PASSWORD_REQUEST:
+    case RESET_PASSWORD_REQUEST:
       return {
         ...state,
         loading: true
@@ -89,6 +91,8 @@ export default function (state = initialState, action) {
     case REGISTER_SUCCESS:
     case FORGOT_PASSWORD:
     case FORGOT_PASSWORD_FAIL:
+    case RESET_PASSWORD_SUCCESS:
+    case RESET_PASSWORD_FAIL:
       return {
         ...state,
         notification: payload,
@@ -137,12 +141,6 @@ export default function (state = initialState, action) {
         ...state,
         message: payload
       }
-    case RESET_PASSWORD:
-      return {
-        ...state,
-        message: payload
-      }
-    case RESET_PASSWORD_FAIL:
     case USER_LAST_LOGIN_FAIL:
       return {
         ...state,

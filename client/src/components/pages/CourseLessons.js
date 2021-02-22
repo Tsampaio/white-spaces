@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import styles from './CourseLesson.module.css';
-import store from '../../store';
 import { useParams, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCourse, getCoursesOwned, finishLessonAction, lessonsWatchedAction } from '../../actions/courses';

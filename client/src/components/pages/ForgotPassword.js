@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fgt_pass } from '../../actions/auth';
 import SecondHeader from '../partials/SecondHeader';
 import { Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import styles from './ForgotPassword.module.css';
 import MessageDisplay from '../utils/MessageDisplay';
 
@@ -73,6 +74,11 @@ const ForgotPassword = () => {
                   />
                 )}
               </div>
+              <Col xs={12} className={styles.fgtPasswordButtons}>
+							  <Link to="/login">Login</Link>
+							  <span className={styles.fgtSeparator}>|</span>
+							  <Link to="/register">Register</Link>
+						  </Col>
             </Col>
           </div>
         </div>

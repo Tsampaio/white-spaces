@@ -308,34 +308,43 @@ exports.forgotPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res, next) => {
   // 1) Get user based on the token
-  const hashedToken = crypto
-    .createHash('sha256')
-    .update(req.params.token)
-    .digest('hex');
+  try {
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(req.params.token)
+      .digest('hex');
 
-  const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() }
-  });
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() }
+    });
 
-  // 2) If token has not expired, and there is user, set the new password
-  if (!user) {
-    return next(
-      res.status(400).json({
-        status: 'fail',
-        message: 'Token is invalid or has expired'
-      })
-    );
+    // 2) If token has not expired, and there is user, set the new password
+    if (!user) {
+      throw new Error('Token is invalid or has expired');
+    }
+    
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    user.passwordChangedAt = Date.now();
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    // 3) Update changedPasswordAt property for the user
+    // 4) Log the user in, send JWT
+    // createSendToken(user, 200, res, "Password updated");
+    res.status(200).json({
+      status: 'success',
+      message: 'Password updated'
+    })
+  } catch(error) {
+    console.log(error.message);
+    res.status(401).json({
+      status: 'fail',
+      message: error.message,
+    });
   }
-  user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-  await user.save();
-
-  // 3) Update changedPasswordAt property for the user
-  // 4) Log the user in, send JWT
-  createSendToken(user, 200, res, "Password reseted");
 };
 
 exports.updatePassword = async (req, res, next) => {
