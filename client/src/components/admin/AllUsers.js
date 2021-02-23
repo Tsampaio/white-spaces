@@ -360,9 +360,9 @@ const AllUsers = () => {
                 <a onClick={() => movePage("previous")} className="page-link" href="#">Previous</a>
               </li>
               <li className={pageUsers.lastPage < 1 ? "disabled page-item" : "page-item"}>
-                <a onClick={() => movePage("next")}
+                <button onClick={() => movePage("next")}
                   className="page-link"
-                  href="#">Next</a>
+                  >Next</button>
               </li>
             </ul>
           </nav>

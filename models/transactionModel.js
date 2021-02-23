@@ -11,6 +11,9 @@ const transactionSchema = new mongoose.Schema({
     userName: {
         type: String
     },
+    userEmail: {
+        type: String
+    },
     customerId: {
         type: String
     },

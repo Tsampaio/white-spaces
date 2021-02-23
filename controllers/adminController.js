@@ -91,15 +91,17 @@ exports.deleteUsers = async (req, res) => {
         function deleteUserPhotos(allUsersId, callback) {
           let i = allUsers.length;
           allUsersId.forEach(function (filepath) {
-            fs.unlink(path + filepath + '.jpg', function (err) {
-              i--;
-              if (err) {
-                callback(err);
-                return;
-              } else if (i <= 0) {
-                callback(null);
-              }
-            });
+            if (fs.existsSync(path + filepath + '.jpg')) {
+              fs.unlink(path + filepath + '.jpg', function (err) {
+                i--;
+                if (err) {
+                  callback(err);
+                  return;
+                } else if (i <= 0) {
+                  callback(null);
+                }
+              });
+            }
           });
         }
 
@@ -114,8 +116,11 @@ exports.deleteUsers = async (req, res) => {
         await User.deleteMany({ _id: { $in: allUsers } });
         console.log('users deleted');
       } else {
-        fs.unlinkSync(path + allUsers[0] + '.jpg');
+        if (fs.existsSync(path + allUsers[0] + '.jpg')) {
+          fs.unlinkSync(path + allUsers[0] + '.jpg');
+        }
         await User.findByIdAndDelete(allUsers[0]);
+        console.log('user was deleted');
       }
 
       const allDbUsers = await User.find();
