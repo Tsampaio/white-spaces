@@ -55,19 +55,22 @@ const AllUsers = () => {
 
   useEffect(() => {
     // console.log(stateUsers);
+    
     const findSelected = stateUsers.find(user => {
       // console.log(user);
       return user.selected
     });
-    // console.log(findSelected);
+    console.log(findSelected);
 
     setUserSelected(Boolean(findSelected));
+    
+    console.log(paginate(stateUsers, pageUsers.usersPerPage, 1))
 
     setPageUsers({
       ...pageUsers,
       values: paginate(stateUsers, pageUsers.usersPerPage, 1),
-      number: 1,
-      firstPage: 0,
+      number: pageUsers.number,
+      firstPage: pageUsers.firstPage,
       // lastPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number + 1).length
       lastPage: 1
     });
@@ -103,8 +106,13 @@ const AllUsers = () => {
       setSelectAll(!selectAll);
     } else {
       const selectAllCopy = [...stateUsers];
+      
+
+      const globalUserSelected = (pageUsers.number-1) * pageUsers.usersPerPage + usersSelected;
+      console.log("the user selected is:", usersSelected);
+      console.log(selectAllCopy[globalUserSelected]);
       // selectAllCopy[usersSelected].selected = !selectAllCopy[usersSelected].selected;
-      selectAllCopy[usersSelected].selected = event.target.checked;
+      selectAllCopy[globalUserSelected].selected = event.target.checked;
 
       setStateUsers(selectAllCopy);
     }
