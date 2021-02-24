@@ -33,11 +33,10 @@ import {
 import axios from 'axios';
 import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS } from '../contants/userConstants';
 
-export const allUsersAction = (token) => async dispatch => {
+export const allUsersAction = () => async dispatch => {
   try {
     console.log("INSIDE GET ALL USERS ACTION");
-    console.log("The token is")
-    console.log(token);
+    
     dispatch({
       type: USERS_LIST_REQUEST
     });
