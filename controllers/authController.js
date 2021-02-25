@@ -442,21 +442,20 @@ exports.profilePic = async (req, res) => {
   }
 }
 
-exports.udpateUserDb = async (req, res, next) => {
+exports.updateUserDb = async (req, res) => {
   try {
     console.log(req.body.newPassword);
     let message = '';
     const user = await User.findById(req.user.id).select('+password');
+    console.log("The user is");
+    console.log(user);
     // console.log("password is: " +  req.body.password)
     // console.log(await user.correctPassword(req.body.password, user.password));
     // 2) Check if POSTed current password is correct
-    if (!req.body.password || !(await user.correctPassword(req.body.password, user.password))) {
-      return next(
-        res.status(401).json({
-          status: 'fail',
-          message: 'Your current password is wrong.'
-        })
-      );
+    if ((req.body.newPassword || req.body.newPasswordConfirm ) && !req.body.password) {
+      throw new Error('Please enter your current password');
+    } else if( (req.body.newPassword && req.body.newPasswordConfirm ) && !(await user.correctPassword(req.body.password, user.password))) {
+      throw new Error('Your current password is wrong');
     }
 
     // 3) If so, update password
@@ -466,22 +465,30 @@ exports.udpateUserDb = async (req, res, next) => {
       console.log("inside password")
       user.password = req.body.newPassword;
       user.passwordConfirm = req.body.newPasswordConfirm;
-      message = "Password updated",
-        await user.save();
+      message = "Profile Updated",
+      await user.save();
+      res.status(200).json({
+        status: "success",
+        message: "Profile Updated"
+      })
     } else {
-      message = "Name updated",
-        await user.save({ validateBeforeSave: false });
+      await user.save({ validateBeforeSave: false });
+      res.status(200).json({
+        status: "success",
+        message: "Profile Updated"
+      }) 
     }
-
-
     // User.findByIdAndUpdate will NOT work as intended!
 
     // 4) Log user in, send JWT
-    createSendToken(user, 200, res, message);
+    // createSendToken(user, 200, res, message);
 
   } catch (error) {
-    console.log("inside error")
-    console.log(error)
+    console.log(error.message);
+    res.status(401).json({
+      status: "fail",
+      message: error.message
+    });
   }
 }
 

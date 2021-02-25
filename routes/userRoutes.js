@@ -11,7 +11,7 @@ const {
   lastLogin,
   logout,
   profilePic,
-  udpateUserDb,
+  updateUserDb,
   forgotPassword,
   resetPassword
 } = require('./../controllers/authController');
@@ -31,7 +31,7 @@ router.post('/lastLogin', protect, lastLogin);
 
 router.get('/logout', logout);
 router.post('/profilePic', protect, upload.single('file'), profilePic);
-router.post('/udpateUserDb', protect, udpateUserDb);
+router.post('/updateUserDb', protect, updateUserDb);
 
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);

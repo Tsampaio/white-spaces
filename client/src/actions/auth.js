@@ -364,14 +364,7 @@ export const updateUserAction = (token, userDetails) => async dispatch => {
       password: userDetails.password
     });
 
-    if (userDetails.newPassword !== userDetails.newPasswordConfirm) {
-      return dispatch({
-        type: UPDATE_USER_ERROR,
-        payload: "Passwords do not Match"
-      });
-    }
-
-    const res = await axios.post(`/api/users/udpateUserDb`, body, {
+    const res = await axios.post(`/api/users/updateUserDb`, body, {
       headers: {
         Accept: 'application/json',
         "Content-Type": "application/json",
@@ -387,10 +380,11 @@ export const updateUserAction = (token, userDetails) => async dispatch => {
     });
 
   } catch (error) {
-    // console.log(error.response.data.message);
+    console.log(error);
+    const errors = error.response.data
     dispatch({
       type: UPDATE_USER_ERROR,
-      payload: error.response.data.message
+      payload: errors
     });
   }
 }

@@ -4,28 +4,30 @@ import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUserAction } from '../../actions/auth';
+import { Button } from 'react-bootstrap';
+import MessageDisplay from '../utils/MessageDisplay';
 import './Profile.css';
 
-function Profile( ) {
+function Profile() {
   const [cropState, setCropState] = useState({
     src: null,
     crop: {
       aspect: 1,
       height: 297,
-      unit: "px",
+      unit: 'px',
       width: 297,
       x: 0,
-      y: 0
-    }
+      y: 0,
+    },
   });
 
   const dispatch = useDispatch();
-  const auth = useSelector(state => state.auth);
-  const { active } = auth;
+  const auth = useSelector((state) => state.auth);
+  const { notification, loading } = auth;
 
   const [page, setPage] = useState({
     loaded: false,
-    showImagePreview: false
+    showImagePreview: false,
   });
 
   const [userDetails, setUserDetails] = useState({
@@ -33,26 +35,23 @@ function Profile( ) {
     newPassword: '',
     newPasswordConfirm: '',
     password: '',
-    error: ''
-  })
+    showError: false,
+    formChanged: false
+  });
+
+  const { showError, formChanged } = userDetails;
 
   const [imageUpload, setImageUpload] = useState({
-    error: ''
-  })
-
-  const loaderDelay = () => {
-    setTimeout(() => {
-      setPage({ ...page, loaded: true })
-    }, 500);
-  }
+    error: '',
+  });
 
   useEffect(() => {
-    console.log("before check membership ");
+    console.log('before check membership ');
 
     setUserDetails({
       ...userDetails,
-      name: auth && auth.user && auth.user.name
-    })
+      name: auth && auth.user && auth.user.name,
+    });
 
     // console.log(auth);
   }, [auth && auth.user && auth.user._id]);
@@ -60,25 +59,31 @@ function Profile( ) {
   const updateUserDetails = (event) => {
     setUserDetails({
       ...userDetails,
-      [event.target.name]: event.target.value
-    })
-  }
+      showError: false,
+      formChanged: true,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   const submitUserDetails = (event) => {
     event.preventDefault();
-    if (userDetails.newPassword !== userDetails.newPasswordConfirm) {
+    if ((userDetails.newPassword || userDetails.newPasswordConfirm) && userDetails.newPassword !== userDetails.newPasswordConfirm) {
       setUserDetails({
         ...userDetails,
-        error: "Passwords do not match"
-      })
+        showError: true
+      });
+      console.log("Setting error")
+    } else {
+      console.log("Dispatching Update")
+      dispatch(updateUserAction(auth && auth.token, userDetails));
     }
+  };
 
-    dispatch(updateUserAction(auth && auth.token, userDetails));
-  }
-
-  const imageMaxSize = 2000000 // bytes
+  const imageMaxSize = 2000000; // bytes
   const acceptedFileTypes = 'image/png, image/jpg, image/jpeg, image/gif';
-  const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => { return item.trim() });
+  const acceptedFileTypesArray = acceptedFileTypes.split(',').map((item) => {
+    return item.trim();
+  });
   //let imageRef = null;
   let imageRef = useRef();
   let fileRef = useRef();
@@ -91,10 +96,24 @@ function Profile( ) {
 
   try {
     img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} alt="User Profile"/>
+    userPic = (
+      <img
+        src={img.default}
+        className="userAvatar"
+        onLoad={() => setPage({ loaded: true })}
+        alt="User Profile"
+      />
+    );
   } catch (error) {
     img = images(`./default.png`);
-    userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} alt="User Profile"/>
+    userPic = (
+      <img
+        src={img.default}
+        className="userAvatar"
+        onLoad={() => setPage({ loaded: true })}
+        alt="User Profile"
+      />
+    );
   }
   // if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
   //   // import Pic from `/${auth.user._id}.jpg`;
@@ -106,57 +125,56 @@ function Profile( ) {
   //   userPic = <img src={img.default} className="userAvatar" onLoad={() => setPage({ loaded: true })} alt="User Profile"/>
   // }
 
-  const onSelectFile = e => {
-
-    if( e.target.files.length < 1) {
+  const onSelectFile = (e) => {
+    if (e.target.files.length < 1) {
       setImageUpload({ error: 'No image selected' });
-      return
+      return;
     }
-    console.log("INSIDE onSelectFile");
+    console.log('INSIDE onSelectFile');
     console.log(e.target.files[0].size);
     console.log(e.target.files[0].type);
-    console.log(acceptedFileTypesArray)
+    console.log(acceptedFileTypesArray);
 
     if (e.target.files[0].size > imageMaxSize) {
       setImageUpload({ error: 'Image size should be less than 2 MB' });
-      return
+      return;
     } else if (!acceptedFileTypesArray.includes(e.target.files[0].type)) {
-      setImageUpload({ error: 'Image should be of the type JPG, JPEG, PNG or GIF' });
-      return
+      setImageUpload({
+        error: 'Image should be of the type JPG, JPEG, PNG or GIF',
+      });
+      return;
     }
 
-    setPage({ ...page, showImagePreview: true })
+    setPage({ ...page, showImagePreview: true });
     if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
       console.log(reader.result);
       reader.addEventListener('load', () => {
-
         setCropState({
           ...cropState,
-          src: reader.result
-        })
+          src: reader.result,
+        });
         // setPage({ ...page, showImagePreview: true })
-      }
-      );
+      });
       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
-  const onImageLoaded = async image => {
+  const onImageLoaded = async (image) => {
     console.log(image);
     imageRef.current = image;
   };
 
-  const onCropComplete = crop => {
+  const onCropComplete = (crop) => {
     makeClientCrop(crop);
   };
 
   const onCropChange = (crop, percentCrop) => {
     // You could also use percentCrop:
-    console.log("inside onCropChange");
+    console.log('inside onCropChange');
     setCropState({
       ...cropState,
-      crop
+      crop,
     });
   };
 
@@ -172,10 +190,10 @@ function Profile( ) {
       console.log(croppedImageUrl);
       setCropState({
         ...cropState,
-        croppedImageUrl: croppedImageUrl
+        croppedImageUrl: croppedImageUrl,
       });
     }
-  }
+  };
 
   const getCroppedImg = (image, crop, fileName) => {
     console.log(image);
@@ -199,14 +217,14 @@ function Profile( ) {
       crop.height
     );
 
-    const reader = new FileReader()
-    canvas.toBlob(blob => {
-      reader.readAsDataURL(blob)
+    const reader = new FileReader();
+    canvas.toBlob((blob) => {
+      reader.readAsDataURL(blob);
       reader.onloadend = () => {
         dataURLtoFile(reader.result, `${auth.user._id}.jpg`);
-      }
-    })
-  }
+      };
+    });
+  };
 
   const dataURLtoFile = (dataurl, filename) => {
     let arr = dataurl.split(','),
@@ -221,49 +239,49 @@ function Profile( ) {
     let croppedImage = new File([u8arr], filename, { type: mime });
     setCropState({
       ...cropState,
-      croppedImage: croppedImage
-    })
-  }
+      croppedImage: croppedImage,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }
-    console.log(cropState.croppedImage)
-    const formData = new FormData();
-    formData.append('file', cropState.croppedImage);
-    // formData.append('userId', auth.user._id);
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      console.log(cropState.croppedImage);
+      const formData = new FormData();
+      formData.append('file', cropState.croppedImage);
+      // formData.append('userId', auth.user._id);
 
-    console.log(formData);
+      console.log(formData);
 
-    const res = await axios.post(`/api/users/profilePic`, formData, config);
-    console.log("res.data");
-    console.log(res.data);
-    } catch(error) {
+      const res = await axios.post(`/api/users/profilePic`, formData, config);
+      console.log('res.data');
+      console.log(res.data);
+    } catch (error) {
       const errors = error.response.data;
-      console.log(error)
+      console.log(error);
       setImageUpload({ error: 'Image size should be less than 2 MB' });
       // console.log("File Size is too large. Allowed file size is 100KB");
-      closeImagePreview()
+      closeImagePreview();
       console.log(errors.message);
     }
-  }
+  };
 
   const closeImagePreview = () => {
-    setPage({ ...page, showImagePreview: false })
+    setPage({ ...page, showImagePreview: false });
     console.log(fileRef.current);
     fileRef.current.value = null;
     setCropState({
       ...cropState,
       crop: {
-        aspect: 1 / 1
-      }
-    })
-  }
+        aspect: 1 / 1,
+      },
+    });
+  };
 
   // if (active == 'notActive' && !auth.loading) {
   //   console.log("inside redirect");
@@ -272,16 +290,13 @@ function Profile( ) {
   //   return <Redirect to="/" />
   // }
 
-  console.log(page);
+  // console.log(page);
   // console.log(cropState)
 
   return (
-
     <div className="userRightCol">
       <div className="userDetails">
-        {imageUpload.error &&
-          <h1>{imageUpload.error}</h1>
-        }
+        {imageUpload.error && <h1>{imageUpload.error}</h1>}
         {!page.loaded && (
           <div className="preLoaderProfilePic">
             <div className="spinner-border " role="status">
@@ -291,53 +306,107 @@ function Profile( ) {
         )}
         <div className="uploadButtonCtn">
           <label htmlFor="file">{userPic}</label>
-          <input ref={fileRef} type="file" id="file" accept="image/*" onChange={onSelectFile} />
+          <input
+            ref={fileRef}
+            type="file"
+            id="file"
+            accept="image/*"
+            onChange={onSelectFile}
+          />
         </div>
 
-        {page.showImagePreview && (<div className="imagePreviewOverlay">
-          <i className="fa fa-times-circle closeOverlay" onClick={closeImagePreview}></i>
-          <h2>Crop your Image</h2>
-          {cropState.src && (
-            <ReactCrop
-              src={cropState.src}
-              crop={cropState.crop}
-              ruleOfThirds
-              onImageLoaded={onImageLoaded}
-              onComplete={onCropComplete}
-              onChange={onCropChange}
-            />
-          )}
-          {cropState.croppedImageUrl && (
-            <img alt="Crop" style={{ maxWidth: '100%' }} src={cropState.croppedImageUrl} />
-          )}
-          {cropState.src ? (
-            <form onSubmit={handleSubmit}>
-              <button type="submit" className="uploadButton">Save image</button>
-            </form>
-          ) : null
-          }
-        </div>)
-        }
+        {page.showImagePreview && (
+          <div className="imagePreviewOverlay">
+            <i
+              className="fa fa-times-circle closeOverlay"
+              onClick={closeImagePreview}
+            ></i>
+            <h2>Crop your Image</h2>
+            {cropState.src && (
+              <ReactCrop
+                src={cropState.src}
+                crop={cropState.crop}
+                ruleOfThirds
+                onImageLoaded={onImageLoaded}
+                onComplete={onCropComplete}
+                onChange={onCropChange}
+              />
+            )}
+            {cropState.croppedImageUrl && (
+              <img
+                alt="Crop"
+                style={{ maxWidth: '100%' }}
+                src={cropState.croppedImageUrl}
+              />
+            )}
+            {cropState.src ? (
+              <form onSubmit={handleSubmit}>
+                <button type="submit" className="uploadButton">
+                  Save image
+                </button>
+              </form>
+            ) : null}
+          </div>
+        )}
 
-        <h3>Upload a new profile image</h3>
+        <h3>Upload image</h3>
         <form onSubmit={submitUserDetails}>
           <label htmlFor="">Full Name</label>
-          <input type="text" placeholder="My name" value={userDetails.name || ""} name="name" onChange={updateUserDetails} />
-          <label htmlFor="">New Password</label>
-          <input type="password" name="newPassword" onChange={updateUserDetails} />
-          <label htmlFor="">Confirm Password</label>
-          <input type="password" name="newPasswordConfirm" onChange={updateUserDetails} />
+          <input
+            type="text"
+            placeholder="My name"
+            value={userDetails.name || ''}
+            name="name"
+            onChange={updateUserDetails}
+          />
+          <h3>Change your password</h3>
+          <div className="changePasswordCtn">
+            <label htmlFor="newPassword">New Password</label>
+            <input
+              type="password"
+              name="newPassword"
+              id="newPassword"
+              onChange={updateUserDetails}
+            />
+            <label htmlFor="newPasswordConfirm">Confirm Password</label>
+            <input
+              type="password"
+              name="newPasswordConfirm"
+              id="newPasswordConfirm"
+              onChange={updateUserDetails}
+            />
 
-          <hr />
-          <label htmlFor="">To save changes, enter current password</label>
-          <input type="password" name="password" onChange={updateUserDetails} />
-          <p className="formError">{auth && auth.message}</p>
-          <button className="saveChanges" type="submit">Save Changes</button>
+            <hr />
+            <label htmlFor="">To save new password, enter current password</label>
+            <input
+              type="password"
+              name="password"
+              onChange={updateUserDetails}
+            />
+            </div>
+            
+            <Button variant="primary" type="submit" disabled={!formChanged}>
+              Update Profile
+            </Button>
+          
         </form>
+        {!loading && showError && (
+          <MessageDisplay
+            header="Update error"
+            status="Fail" 
+            message="Passwords do not match"
+          />
+        )}
+        {!loading && notification && notification.status && (
+          <MessageDisplay
+            header={notification.status === "success" ? "Success" : "Error"}
+            status={notification.status} 
+            message={notification.message}
+          />
+        )}
       </div>
     </div>
-
   );
-};
+}
 
 export default Profile;

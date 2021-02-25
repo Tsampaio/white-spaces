@@ -139,7 +139,7 @@ export default function (state = initialState, action) {
     case UPDATE_USER_ERROR:
       return {
         ...state,
-        message: payload
+        notification: payload
       }
     case USER_LAST_LOGIN_FAIL:
       return {
@@ -192,11 +192,7 @@ export default function (state = initialState, action) {
     case UPDATE_USER:
       return {
         ...state,
-        message: payload.message,
-        user: {
-          ...state.user,
-          name: payload.user.name
-        }
+        notification: payload
       }
     case USER_LAST_LOGIN_SUCCESS:
       return {

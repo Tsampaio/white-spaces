@@ -9,6 +9,9 @@ const courseSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  level: {
+    type: String,
+  },
   position: {
     type: Number,
     default: 0
