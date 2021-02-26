@@ -5,7 +5,7 @@ header {
   background-repeat: no-repeat;
   font-family: 'Roboto', sans-serif;
   color: #fff;
-  position: relative;
+  /* position: relative; */
   display: flex;
   flex-wrap: wrap;
   flex: 1 1;

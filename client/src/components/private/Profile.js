@@ -3,7 +3,7 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUserAction } from '../../actions/auth';
+import { updateUserAction, loadUser } from '../../actions/auth';
 import { Button } from 'react-bootstrap';
 import MessageDisplay from '../utils/MessageDisplay';
 import './Profile.css';
@@ -44,6 +44,10 @@ function Profile() {
   const [imageUpload, setImageUpload] = useState({
     error: '',
   });
+
+  useEffect(() => {
+    dispatch(loadUser());
+  }, [notification])
 
   useEffect(() => {
     console.log('before check membership ');
@@ -350,6 +354,7 @@ function Profile() {
         )}
 
         <h3>Upload image</h3>
+        <hr />
         <form onSubmit={submitUserDetails}>
           <label htmlFor="">Full Name</label>
           <input

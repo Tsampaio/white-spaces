@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './SecondHeader.css';
+import styles from './SecondHeader.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../images/telmo-academy1.png';
 import { loadCheckout } from '../../actions/courses';
@@ -33,6 +33,16 @@ const SecondHeader = () => {
   const burgerMenuIcon = React.useRef();
 
   useEffect(() => {
+    if(mobileMenu.open) {
+      // document.body.style.overflow = 'hidden';
+      document.body.classList.add(styles.lock);
+    } else {
+      // document.body.style.overflow = 'unset';
+      document.body.classList.remove(styles.lock);
+    }
+ }, [mobileMenu ]);
+
+  useEffect(() => {
     /**
      * Alert if clicked on outside of element
      */
@@ -54,9 +64,10 @@ const SecondHeader = () => {
         dropMobileMenu.current &&
         dropMenu.current &&
         !dropMenu.current.contains(event.target) &&
+        !dropMobileMenu.current.contains(event.target) &&
         !burgerMenuIcon.current.contains(event.target)
       ) {
-        // console.log("inside dropMobileMenu");
+        console.log("inside dropMobileMenu");
         setMobileMenu({
           open: false,
         });
@@ -114,35 +125,35 @@ const SecondHeader = () => {
     let img = images(`./${auth && auth.user && auth.user._id}.jpg`);
 
     userPic = (
-      <img src={img.default} className="userAvatarNav" alt="user profile" />
+      <img src={img.default} className={styles.userAvatarNav} alt="user profile" />
     );
   } catch (error) {
     let img = images(`./default.png`);
     userPic = (
-      <img src={img.default} className="userAvatarNav" alt="user profile" />
+      <img src={img.default} className={styles.userAvatarNav} alt="user profile" />
     );
   }
 
   return (
     <>
-      <div className="secondHeader">
+      <div className={styles.secondHeader}>
         <div className="container">
           <div className="row">
-            <div className="col-sm-12 mainNav">
+            <div className={`col-sm-12 ${styles.mainNav}`}>
               <Link to="/">
                 <img
                   src={logo}
                   alt="Telmo Academy Logo"
-                  className="logo logo-light"
+                  className={styles.logo}
                 />
               </Link>
               <div
-                className="mobileMenu"
+                className={styles.mobileMenu}
                 onClick={() => handleDropdown(mobileMenu, setMobileMenu)}
               >
                 <i ref={burgerMenuIcon} className="fas fa-bars"></i>
               </div>
-              <ul className="desktopMenu">
+              <ul className={styles.desktopMenu}>
                 <li>
                   <Link to="/courses">COURSES</Link>
                 </li>
@@ -157,7 +168,7 @@ const SecondHeader = () => {
                 {isAuthenticated ? (
                   <div
                     ref={dropMenu}
-                    className={dropDown.open ? 'navDropDown' : 'hideDropDown'}
+                    className={dropDown.open ? styles.navDropDown : styles.hideDropDown}
                   >
                     <li>
                       <Link to="/profile">
@@ -196,12 +207,12 @@ const SecondHeader = () => {
                 )}
                 {isAuthenticated ? (
                   <li>
-                    <Link className="checkoutLink" to="/cart/checkout">
+                    <Link className={styles.checkoutLink} to="/cart/checkout">
                       <i className="fa fa-shopping-cart"></i>
                       {payment &&
                       payment.checkout &&
                       payment.checkout.length > 0 ? (
-                        <span className="checkoutNumber">
+                        <span className={styles.checkoutNumber}>
                           {payment &&
                             payment.checkout &&
                             payment.checkout.length}
@@ -227,42 +238,38 @@ const SecondHeader = () => {
           </div>
         </div>
       </div>
-      <div className="navMenuCtn">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-sm-12">
-              <ul
-                ref={dropMobileMenu}
-                className={`navMenu ${mobileMenu.open ? 'navMenuActive' : ''}`}
-              >
+      <div className={`${styles.navMenuCtn} ${mobileMenu.open ? styles.navMenuActive : ''}`}>
+        <div className={styles.mobileMenuDiv} ref={dropMobileMenu}>
+          <ul
+            
+            className={styles.navMenu}
+          >
+            <li>
+              <Link to="/courses">Courses</Link>
+            </li>
+            <li>
+              <Link to="/membership">Membership</Link>
+            </li>
+            {isAuthenticated ? (
+              <>
                 <li>
-                  <Link to="/courses">Courses</Link>
+                  <Link to="/profile">Profile</Link>
                 </li>
                 <li>
-                  <Link to="/membership">Membership</Link>
+                  <Link to="/logout">Logout</Link>
                 </li>
-                {isAuthenticated ? (
-                  <>
-                    <li>
-                      <Link to="/profile">Profile</Link>
-                    </li>
-                    <li>
-                      <Link to="/logout">Logout</Link>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li>
-                      <Link to="/login">Login</Link>
-                    </li>
-                    <li>
-                      <Link to="/register">Register</Link>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/login">Login</Link>
+                </li>
+                <li>
+                  <Link to="/register">Register</Link>
+                </li>
+              </>
+            )}
+          </ul>
         </div>
       </div>
     </>
