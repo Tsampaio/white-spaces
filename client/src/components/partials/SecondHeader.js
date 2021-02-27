@@ -11,7 +11,7 @@ const SecondHeader = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, membershipLoaded, notification } = auth;
+  const { isAuthenticated, membershipLoaded, notification, user } = auth;
 
   const payment = useSelector((state) => state.payment);
   const { checkoutLoaded } = payment;
@@ -33,14 +33,14 @@ const SecondHeader = () => {
   const burgerMenuIcon = React.useRef();
 
   useEffect(() => {
-    if(mobileMenu.open) {
+    if (mobileMenu.open) {
       // document.body.style.overflow = 'hidden';
       document.body.classList.add(styles.lock);
     } else {
       // document.body.style.overflow = 'unset';
       document.body.classList.remove(styles.lock);
     }
- }, [mobileMenu ]);
+  }, [mobileMenu]);
 
   useEffect(() => {
     /**
@@ -54,7 +54,7 @@ const SecondHeader = () => {
       ) {
         // console.log("dropMenu");
         // alert("You clicked outside of me!");
-        // console.log("outside");
+        console.log("outside");
         setDropdown({
           open: false,
         });
@@ -62,12 +62,10 @@ const SecondHeader = () => {
 
       if (
         dropMobileMenu.current &&
-        dropMenu.current &&
-        !dropMenu.current.contains(event.target) &&
         !dropMobileMenu.current.contains(event.target) &&
         !burgerMenuIcon.current.contains(event.target)
       ) {
-        console.log("inside dropMobileMenu");
+        console.log('inside dropMobileMenu');
         setMobileMenu({
           open: false,
         });
@@ -125,12 +123,20 @@ const SecondHeader = () => {
     let img = images(`./${auth && auth.user && auth.user._id}.jpg`);
 
     userPic = (
-      <img src={img.default} className={styles.userAvatarNav} alt="user profile" />
+      <img
+        src={img.default}
+        className={styles.userAvatarNav}
+        alt="user profile"
+      />
     );
   } catch (error) {
     let img = images(`./default.png`);
     userPic = (
-      <img src={img.default} className={styles.userAvatarNav} alt="user profile" />
+      <img
+        src={img.default}
+        className={styles.userAvatarNav}
+        alt="user profile"
+      />
     );
   }
 
@@ -168,7 +174,9 @@ const SecondHeader = () => {
                 {isAuthenticated ? (
                   <div
                     ref={dropMenu}
-                    className={dropDown.open ? styles.navDropDown : styles.hideDropDown}
+                    className={
+                      dropDown.open ? styles.navDropDown : styles.hideDropDown
+                    }
                   >
                     <li>
                       <Link to="/profile">
@@ -224,7 +232,7 @@ const SecondHeader = () => {
                 {isAuthenticated ? (
                   <li
                     ref={profileIcon}
-                    className="userAvatarNavCtn"
+                    className={styles.userAvatarNavCtn}
                     onClick={() => handleDropdown(dropDown, setDropdown)}
                   >
                     {userPic}
@@ -238,39 +246,57 @@ const SecondHeader = () => {
           </div>
         </div>
       </div>
-      <div className={`${styles.navMenuCtn} ${mobileMenu.open ? styles.navMenuActive : ''}`}>
-        <div className={styles.mobileMenuDiv} ref={dropMobileMenu}>
-          <ul
-            
-            className={styles.navMenu}
-          >
-            <li>
-              <Link to="/courses">Courses</Link>
-            </li>
-            <li>
-              <Link to="/membership">Membership</Link>
-            </li>
-            {isAuthenticated ? (
-              <>
-                <li>
-                  <Link to="/profile">Profile</Link>
-                </li>
-                <li>
-                  <Link to="/logout">Logout</Link>
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
-                  <Link to="/login">Login</Link>
-                </li>
-                <li>
-                  <Link to="/register">Register</Link>
-                </li>
-              </>
-            )}
-          </ul>
+      <div
+        className={`${styles.navMenuCtn} ${
+          mobileMenu.open ? styles.navMenuActive : ''
+        }`}
+      ></div>
+      <div
+        className={`${styles.mobileMenuDiv} ${
+          mobileMenu.open ? styles.slide : ''
+        }`}
+        ref={dropMobileMenu}
+      >
+        <div className={styles.mobileMenuPicCtn}>
+          {userPic}
+          <div>
+            <h3>Hey {user && user.name ? user.name.split(' ')[0] : 'guest'},</h3>
+            <p>Welcome back</p>
+          </div>
         </div>
+        <ul className={styles.navMenu}>
+          <li>
+            <Link to="/courses">Courses</Link>
+          </li>
+          <li>
+            <Link to="/membership">Membership</Link>
+          </li>
+          {isAuthenticated ? (
+            <>
+              <li>
+                <Link to="/profile" onClick={() => handleDropdown(mobileMenu, setMobileMenu)}>Profile</Link>
+              </li>
+              <li>
+                <Link to="/profile/courses" onClick={() => handleDropdown(mobileMenu, setMobileMenu)}>My Courses</Link>
+              </li>
+              <li>
+                <Link to="/profile/billing" onClick={() => handleDropdown(mobileMenu, setMobileMenu)}>Billing</Link>
+              </li>
+              <li>
+                <Link to="/logout">Logout</Link>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
+            </>
+          )}
+        </ul>
       </div>
     </>
   );

@@ -128,13 +128,6 @@
   display: none;
 }
 
-.mobileMenuDiv {
-  width: 45%;
-  height: 100%;
-  background-color: #fff;
-  
-}
-
 .navMenu {
   background-color: white;
   list-style: none;
@@ -142,11 +135,32 @@
   transition: all 0.25s ease-in-out;
 }
 
+.navMenu a {
+  display: inline-block;
+  width: 100%;
+}
+
 .navMenuCtn.navMenuActive {
   display: block;
   -webkit-box-shadow: -11px 15px 29px -10px rgba(0,0,0,0.75);
   -moz-box-shadow: -11px 15px 29px -10px rgba(0,0,0,0.75);
   box-shadow: -11px 15px 29px -10px rgba(0,0,0,0.75);
+}
+
+.mobileMenuDiv {
+  width: 70%;
+  height: 100%;
+  background-color: #fff;
+  position: absolute;
+  left: -300px;
+  transition: all 0.5s ease-in-out;
+  visibility: hidden;
+  z-index: 3;
+}
+
+.mobileMenuDiv.slide {
+  visibility: unset;
+  left: 0;
 }
 
 .navMenu li {
@@ -174,6 +188,31 @@
   color: #fff;
   font-size: 30px;
   display: inline-block;
+}
+
+.mobileMenuPicCtn {
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #fbfbf8;
+  border-bottom: 1px solid #dfdfdf;
+}
+
+.mobileMenuPicCtn img {
+    width: 64px;
+    margin-right: 20px;
+}
+
+.mobileMenuPicCtn h3 {
+  color: #000;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.mobileMenuPicCtn p {
+  color: #000;
+  margin: 0
 }
 
 @media(min-width: 991px) {
