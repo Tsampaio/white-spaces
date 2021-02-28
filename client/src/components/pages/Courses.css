@@ -1,6 +1,4 @@
 .main-container {
-    /* background-color: #f4f4f4; */
-    background: #e3ffe7;
     background: linear-gradient(to bottom, #e3ffe7 0%, #d9e7ff 100%);
     flex: 1 1;
 }

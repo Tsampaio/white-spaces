@@ -2,7 +2,8 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
 import DropIn from 'braintree-web-drop-in-react';
-import './Checkout.css';
+import { Form, Col, Button } from 'react-bootstrap';
+import styles from './Checkout.module.css';
 import SecondHeader from '../partials/SecondHeader';
 import {
   payAction,
@@ -204,18 +205,18 @@ const Membership = ({ history }) => {
         <button
           onClick={buy}
           className={
-            disableButton ? 'btn btn-primary invisible' : 'btn btn-primary'
+            styles.disableButton ? 'btn btn-primary invisible mt-4' : 'btn btn-primary mt-4'
           }
         >
           {buttonLoading ? (
             <>
-              <div class="spinner-border" role="status">
+              <div class={`spinner-border ${styles.spinner}`} role="status">
                 <span class="sr-only">Loading...</span>
               </div>
               Loading...
             </>
           ) : (
-            'Proceed to Payment'
+            'Finish Payment'
           )}
         </button>
       </Fragment>
@@ -233,25 +234,25 @@ const Membership = ({ history }) => {
     }
 
     return (
-      <div className="courseInCheckout" key={i}>
+      <div className={styles.courseInCheckout} key={i}>
         <div>
           <span
-            className="courseDelete"
+            className={styles.courseDelete}
             onClick={() => refreshCheckout(course._id)}
           >
             <i className="fas fa-trash"></i>
           </span>
-          <h3 className="checkoutCourse">{course.name}</h3>
+          <h3 className={styles.checkoutCourse}>{course.name}</h3>
         </div>
-        <span className="coursePrice">
+        <span className={styles.coursePrice}>
           {' '}
           {sale ? (
             <>
               <del>${paymentState.checkoutBackup[i].price}</del>
-              <span>{price}</span>
+              <span>${price}</span>
             </>
           ) : (
-            <span>{paymentState.checkoutBackup[i].price}</span>
+            <span>${paymentState.checkoutBackup[i].price}</span>
           )}
         </span>
       </div>
@@ -275,7 +276,8 @@ const Membership = ({ history }) => {
   // console.log(data);
   // console.log(paymentState);
 
-  const checkCoupon = () => {
+  const checkCoupon = (e) => {
+    e.preventDefault();
     dispatch({ type: GET_COUPON_BY_ID_RESET });
     dispatch(findCouponIdAction(paymentState.code));
   };
@@ -303,13 +305,13 @@ const Membership = ({ history }) => {
   return (
     <Fragment>
       <SecondHeader />
-      <div className="checkoutCtn">
+      <div className={styles.checkoutCtn}>
         <div className="container">
           <div className="row">
             {payment && payment.checkout.length > 0 ? (
-              <div className="col-6">
-                <div className="paymentCtn">
-                  <h1>Confirm your purchase</h1>
+              <div className="col-12 col-lg-6 my-4">
+                <div className={styles.paymentCtn}>
+                  <h1>Confirm your purchase:</h1>
                   {showDropIn()}
                 </div>
               </div>
@@ -317,17 +319,20 @@ const Membership = ({ history }) => {
             <div
               className={
                 payment && payment.checkout.length > 0
-                  ? 'col-6 paper-gray'
-                  : 'col-8 offset-md-2 paper-gray '
+                  ? 'col-12 col-lg-6 my-4'
+                  :  'offset-1 col-10 col-md-8 offset-md-2'
               }
             >
-              <h1 className="basketTitle">Products in Basket:</h1>
+              <div className={styles.paperGray}>
+              <h1 className={styles.basketTitle}>Products in Basket:</h1>
               {checkoutItems && checkoutItems.length > 0 ? (
                 checkoutItems
               ) : (
                 <Fragment>
                   <h1>Your basket is empty</h1>{' '}
-                  <Link to="/courses">Continue shopping</Link>
+                  <Button className="mt-3">
+                  <Link to="/courses">Search courses</Link>
+                  </Button>
                 </Fragment>
               )}
 
@@ -342,24 +347,41 @@ const Membership = ({ history }) => {
                   ) : null}
 
                   {/* {message && <h5 className="my-4">Coupon is not valid</h5>} */}
-                  <div className="checkoutPrice">
+                  <div className={styles.checkoutPrice}>
                     Total:{' '}
                     {couponIsValid() && paymentState.checkoutSale.length > 0 ? (
                       <del>${checkoutPrice}</del>
                     ) : null}{' '}
                     ${paymentState.finalPrice}
                   </div>
-                  <input
-                    required
-                    type="text"
-                    placeholder="Enter coupon code"
-                    onChange={(e) =>
-                      setPaymentState({ ...paymentState, code: e.target.value })
-                    }
-                  />
-                  <button onClick={checkCoupon}>Use coupon</button>
+                  <div className={styles.couponCtn}>
+                  <Form onSubmit={checkCoupon}>
+                    <Form.Row className="align-items-center">
+                    <Col sm={8}>
+                      <Form.Control
+                        required
+                      
+                        id="inlineFormInput"
+                        placeholder="Enter coupon code"
+                        onChange={(e) =>
+                          setPaymentState({ ...paymentState, code: e.target.value })
+                        }
+                      />
+                    </Col>
+                    {/* <input
+                      required
+                      type="text"
+                      placeholder="Enter coupon code"
+                    /> */}
+                    <Col sm={4}>
+                      <Button variant='info' type="submit">Use coupon</Button>
+                    </Col>
+                    </Form.Row>
+                  </Form>
+                  </div>
                 </>
               ) : null}
+              </div>
             </div>
           </div>
         </div>

@@ -140,6 +140,21 @@ const SecondHeader = () => {
     );
   }
 
+  const checkoutIcon = isAuthenticated ? (
+      <Link className={styles.checkoutLink} to="/cart/checkout">
+        <i className="fa fa-shopping-cart"></i>
+        {payment &&
+        payment.checkout &&
+        payment.checkout.length > 0 ? (
+          <span className={styles.checkoutNumber}>
+            {payment &&
+              payment.checkout &&
+              payment.checkout.length}
+          </span>
+        ) : null}
+      </Link>
+  ) : null
+
   return (
     <>
       <div className={styles.secondHeader}>
@@ -153,11 +168,12 @@ const SecondHeader = () => {
                   className={styles.logo}
                 />
               </Link>
+
               <div
                 className={styles.mobileMenu}
-                onClick={() => handleDropdown(mobileMenu, setMobileMenu)}
               >
-                <i ref={burgerMenuIcon} className="fas fa-bars"></i>
+                { checkoutIcon }
+                <i ref={burgerMenuIcon} className="fas fa-bars" onClick={() => handleDropdown(mobileMenu, setMobileMenu)}></i>
               </div>
               <ul className={styles.desktopMenu}>
                 <li>
@@ -213,22 +229,7 @@ const SecondHeader = () => {
                     </li>
                   </Fragment>
                 )}
-                {isAuthenticated ? (
-                  <li>
-                    <Link className={styles.checkoutLink} to="/cart/checkout">
-                      <i className="fa fa-shopping-cart"></i>
-                      {payment &&
-                      payment.checkout &&
-                      payment.checkout.length > 0 ? (
-                        <span className={styles.checkoutNumber}>
-                          {payment &&
-                            payment.checkout &&
-                            payment.checkout.length}
-                        </span>
-                      ) : null}
-                    </Link>
-                  </li>
-                ) : null}
+                <li>{ checkoutIcon }</li>
                 {isAuthenticated ? (
                   <li
                     ref={profileIcon}

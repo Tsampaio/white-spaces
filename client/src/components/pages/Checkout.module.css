@@ -1,0 +1,107 @@
+.checkoutCtn {
+  background: linear-gradient(to bottom, #e3ffe7 0%, #d9e7ff 100%);
+  flex: 1 1;
+  padding-top: 20px;
+}
+
+.courseDelete {
+  cursor: pointer;
+}
+
+.paymentCtn {
+  background-color: white;
+  padding: 40px 20px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.paymentCtn h1 {
+  font-size: 22px;
+
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.checkoutCourse {
+  display: inline-block;
+  font-size: 16px;
+}
+
+.courseInCheckout {
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: #fff;
+  margin-left: -20px;
+  margin-right: -20px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px 0 rgb(184 184 184 / 50%);
+}
+
+.courseInCheckout i {
+  margin-right: 20px;
+}
+
+.courseInCheckout > div {
+  display: inline-block;
+}
+
+.paperGray {
+  background-color: #e8e8e8;
+  padding: 40px 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.basketTitle {
+  font-size: 22px;
+  border-bottom: 1px solid lightgray;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.basketTitle + h1 {
+  font-size: 20px;
+}
+
+.checkoutPrice {
+  padding: 15px 0;
+  display: flex;
+  justify-content: flex-end;
+ 
+}
+
+del {
+  margin-right: 5px;
+}
+
+.couponCtn button {
+  margin-top: 15px;
+}
+
+@media(min-width: 768px) {
+  .paperGray, .paymentCtn {
+    padding: 40px 30px;
+    height: 100%;
+  }
+
+  .courseInCheckout {
+    padding: 15px 30px;
+    margin-left: -30px;
+    margin-right: -30px;
+  }
+
+  .couponCtn button {
+    margin-top: 0;
+  }
+
+}
+
