@@ -87,6 +87,10 @@ del {
   margin-top: 15px;
 }
 
+.paymentLoading .braintree-toggle{
+  display: none;
+}
+
 @media(min-width: 768px) {
   .paperGray, .paymentCtn {
     padding: 40px 30px;

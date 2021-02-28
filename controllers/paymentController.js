@@ -193,6 +193,8 @@ exports.processPayment = async (req, res) => {
             submitForSettlement: true
           }
         }, async (error, transactionResult) => {
+          console.log("Transaction amount is");
+          console.log(transactionResult) 
 
           const newTransaction = await Transaction.create({
             date: new Date(),
@@ -225,7 +227,8 @@ exports.processPayment = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      message: error.message
+      status: "fail",
+      message: "Error processing payment, try again!"
     });
   }
 }

@@ -9,7 +9,7 @@ import {
   GET_USER_BILLING
 } from './types';
 
-import { PAY_BUTTON_LOAD_REQUEST, PAY_BUTTON_LOAD_SUCCESS } from '../contants/paymentConstants';
+import { PAY_COURSE_REQUEST } from '../contants/paymentConstants';
 
 export const payAction = (userId, token) => async dispatch => {
   // console.log("pay action");
@@ -42,7 +42,7 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
   console.log(paymentData);
   try {
     dispatch({
-      type: PAY_BUTTON_LOAD_REQUEST
+      type: PAY_COURSE_REQUEST
     });
 
     console.log("inside processPayment actions");
@@ -60,9 +60,6 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
     }
 
     const res = await axios.post(`/api/braintree/payment`, body, config);
-    // dispatch({
-    //   type: PAY_BUTTON_LOAD_SUCCESS
-    // });
 
     console.log(res.data);
 
@@ -79,21 +76,17 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
       dispatch({
         type: PAY_COURSE,
         payload: res2.data
-
       });
     } else {
-      dispatch({
-        type: PAY_ERROR,
-        payload: "Error Getting the payment Token"
-      });
+      throw new Error("Error");
     }
 
-
-
-
   } catch (err) {
-    // const errors = err.response.data.message;
-    console.log(err);
+    const errors = err.response.data
+    dispatch({
+      type: PAY_ERROR,
+      payload: errors
+    });
   }
 }
 

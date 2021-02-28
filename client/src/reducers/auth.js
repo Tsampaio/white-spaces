@@ -24,7 +24,6 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
-  RESET_MESSAGE,
   RESET_NOTIFICATION,
   LOGIN_REQUEST,
   REGISTER_REQUEST,
@@ -101,7 +100,7 @@ export default function (state = initialState, action) {
     case RESET_NOTIFICATION: {
       return {
       ...state,
-      notification: payload
+      notification: {}
       }
     }
     case LOGIN_SUCCESS:
@@ -119,11 +118,6 @@ export default function (state = initialState, action) {
         ...state,
         notification: payload,
         loading: false
-      }
-    case RESET_MESSAGE:
-      return {
-        ...state,
-        message: ""
       }
     // case REGISTER_FAIL:
     case AUTH_ERROR:

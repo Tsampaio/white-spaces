@@ -29,7 +29,7 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAIL,
   ACCOUNT_ACTIVATION_FAIL,
-  RESET_MESSAGE,
+  RESET_NOTIFICATION,
   LOGIN_REQUEST,
   REGISTER_REQUEST,
   FORGOT_PASSWORD,
@@ -342,11 +342,11 @@ export const activateEmailAction = (token) => async dispatch => {
   }
 }
 
-export const resetMessage = () => async dispatch => {
+export const resetNotification = () => async dispatch => {
   console.log("inside reset message action");
   try {
     dispatch({
-      type: RESET_MESSAGE
+      type: RESET_NOTIFICATION
     });
 
   } catch (error) {

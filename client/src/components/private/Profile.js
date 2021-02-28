@@ -3,7 +3,7 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUserAction, loadUser } from '../../actions/auth';
+import { updateUserAction, loadUser, resetNotification } from '../../actions/auth';
 import { Button } from 'react-bootstrap';
 import MessageDisplay from '../utils/MessageDisplay';
 import './Profile.css';
@@ -46,8 +46,14 @@ function Profile() {
   });
 
   useEffect(() => {
-    dispatch(loadUser());
-  }, [notification])
+    dispatch(resetNotification());
+  }, [])
+
+  useEffect(() => {
+    if(notification.status === "success") {
+      dispatch(loadUser());
+    }
+  }, [notification.status])
 
   useEffect(() => {
     console.log('before check membership ');

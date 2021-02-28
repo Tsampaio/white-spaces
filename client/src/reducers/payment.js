@@ -10,10 +10,10 @@ import {
   GET_USER_BILLING
 } from '../actions/types';
 import { GET_COUPON_BY_ID_FAIL, GET_COUPON_BY_ID_REQUEST, GET_COUPON_BY_ID_RESET, GET_COUPON_BY_ID_SUCCESS } from '../contants/couponConstants';
-import { PAY_BUTTON_LOAD_REQUEST, PAY_BUTTON_LOAD_SUCCESS } from '../contants/paymentConstants';
+import { PAY_COURSE_REQUEST, PAY_BUTTON_LOAD_SUCCESS } from '../contants/paymentConstants';
 
 const initialState = {
-  loading: true,
+  loading: false,
   paymentToken: '',
   result: "",
   checkout: [],
@@ -52,8 +52,15 @@ export default function (state = initialState, action) {
     case PAY_COURSE:
       return {
         ...state,
+        loading: false,
         result: payload.status,
         checkout: []
+      }
+    case PAY_ERROR:
+      return {
+        ...state,
+        loading: false,
+        notification: payload
       }
     case ADD_CHECKOUT:
       return {
@@ -101,10 +108,10 @@ export default function (state = initialState, action) {
         ...state,
         coupon: {}
       }
-    case PAY_BUTTON_LOAD_REQUEST:
+    case PAY_COURSE_REQUEST:
       return {
         ...state,
-        buttonLoading: true
+        loading: true
       }
     case PAY_BUTTON_LOAD_SUCCESS:
       return {

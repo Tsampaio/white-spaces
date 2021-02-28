@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
 import DropIn from 'braintree-web-drop-in-react';
 import { Form, Col, Button } from 'react-bootstrap';
-import styles from './Checkout.module.css';
+import './Checkout.css';
 import SecondHeader from '../partials/SecondHeader';
 import {
   payAction,
@@ -25,7 +25,7 @@ const Membership = ({ history }) => {
     checkoutPrice,
     checkout,
     message,
-    buttonLoading,
+    loading,
     result,
   } = payment;
 
@@ -152,7 +152,7 @@ const Membership = ({ history }) => {
     console.log(Object.keys(data.instance).length !== 0);
     console.log(data.instance.constructor === Object);
     console.log(disableButton);
-
+    
     let nonce;
     let getNonce =
       Object.keys(data.instance).length !== 0 &&
@@ -170,7 +170,7 @@ const Membership = ({ history }) => {
 
           // processPayment(userId, token, paymentData)
           // processPayment('131asdasd', 'adasdadad', paymentData)
-
+          setDisableButton(true);
           await dispatch(
             processPayment(
               paymentData,
@@ -183,7 +183,7 @@ const Membership = ({ history }) => {
           // console.log( payment.result );
           // console.log( payment.result.success );
 
-          setDisableButton(true);
+          
         })
         .catch((error) => {
           console.log('dropin error: ', error);
@@ -202,23 +202,21 @@ const Membership = ({ history }) => {
           }}
           onInstance={(instance) => (data.instance = instance)}
         />
+        { !disableButton && 
         <button
           onClick={buy}
           className={
-            styles.disableButton ? 'btn btn-primary invisible mt-4' : 'btn btn-primary mt-4'
+            disableButton ? 'btn btn-primary disabled mt-4' : 'btn btn-primary mt-4'
           }
-        >
-          {buttonLoading ? (
-            <>
-              <div class={`spinner-border ${styles.spinner}`} role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
-              Loading...
-            </>
-          ) : (
-            'Finish Payment'
-          )}
-        </button>
+        >Finish Payment</button> }
+        {loading && (
+          <button className="btn btn-primary mt-4">
+            <div class="spinner-border spinner" role="status">
+              <span class="sr-only">Processing payment...</span>
+            </div>
+            Processing payment...
+          </button>
+        )}
       </Fragment>
     );
 
@@ -234,17 +232,17 @@ const Membership = ({ history }) => {
     }
 
     return (
-      <div className={styles.courseInCheckout} key={i}>
+      <div className="courseInCheckout" key={i}>
         <div>
           <span
-            className={styles.courseDelete}
+            className="courseDelete"
             onClick={() => refreshCheckout(course._id)}
           >
             <i className="fas fa-trash"></i>
           </span>
-          <h3 className={styles.checkoutCourse}>{course.name}</h3>
+          <h3 className="checkoutCourse">{course.name}</h3>
         </div>
-        <span className={styles.coursePrice}>
+        <span className="coursePrice">
           {' '}
           {sale ? (
             <>
@@ -305,12 +303,12 @@ const Membership = ({ history }) => {
   return (
     <Fragment>
       <SecondHeader />
-      <div className={styles.checkoutCtn}>
+      <div className="checkoutCtn">
         <div className="container">
           <div className="row">
             {payment && payment.checkout.length > 0 ? (
               <div className="col-12 col-lg-6 my-4">
-                <div className={styles.paymentCtn}>
+                <div className={`paymentCtn ${loading ? 'paymentLoading' : ''}`}>
                   <h1>Confirm your purchase:</h1>
                   {showDropIn()}
                 </div>
@@ -323,8 +321,8 @@ const Membership = ({ history }) => {
                   :  'offset-1 col-10 col-md-8 offset-md-2'
               }
             >
-              <div className={styles.paperGray}>
-              <h1 className={styles.basketTitle}>Products in Basket:</h1>
+              <div className="paperGray">
+              <h1 className="basketTitle">Products in Basket:</h1>
               {checkoutItems && checkoutItems.length > 0 ? (
                 checkoutItems
               ) : (
@@ -347,14 +345,14 @@ const Membership = ({ history }) => {
                   ) : null}
 
                   {/* {message && <h5 className="my-4">Coupon is not valid</h5>} */}
-                  <div className={styles.checkoutPrice}>
+                  <div className="checkoutPrice">
                     Total:{' '}
                     {couponIsValid() && paymentState.checkoutSale.length > 0 ? (
                       <del>${checkoutPrice}</del>
                     ) : null}{' '}
                     ${paymentState.finalPrice}
                   </div>
-                  <div className={styles.couponCtn}>
+                  <div className="couponCtn">
                   <Form onSubmit={checkCoupon}>
                     <Form.Row className="align-items-center">
                     <Col sm={8}>

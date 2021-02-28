@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { activateEmail } from '../../actions/auth';
 import SecondHeader from '../partials/SecondHeader';
-import { RESET_MESSAGE } from '../../contants/authConstants';
+import { RESET_NOTIFICATION } from '../../contants/authConstants';
 const Activate = ({ history }) => {
 
   // if (!isAuthenticated) {
@@ -20,7 +20,7 @@ const Activate = ({ history }) => {
 
   useEffect(() => {
     if(user && !loading) {
-      dispatch({ type: RESET_MESSAGE });
+      dispatch({ type: RESET_NOTIFICATION });
     } else if (!loading && !user) {
       history.push('/');
     }
