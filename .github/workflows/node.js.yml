@@ -27,6 +27,3 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm ci --prefix client
-    - run: npm run build --prefix client
-    - run: pm2 restart 0;
-    - run: pm2 save;
