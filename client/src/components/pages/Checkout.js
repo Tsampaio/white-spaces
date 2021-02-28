@@ -12,6 +12,7 @@ import {
 } from '../../actions/payments';
 import { removeCheckout, loadCheckout } from '../../actions/courses';
 import { GET_COUPON_BY_ID_RESET } from '../../contants/couponConstants';
+import MessageDisplay from '../utils/MessageDisplay';
 
 const Membership = ({ history }) => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const Membership = ({ history }) => {
     message,
     loading,
     result,
+    notification
   } = payment;
 
   const [data, setData] = useState({
@@ -336,13 +338,7 @@ const Membership = ({ history }) => {
 
               {checkoutItems && checkoutItems.length > 0 ? (
                 <>
-                  {couponIsValid() && paymentState.checkoutSale.length > 0 ? (
-                    <h5 className="my-4">
-                      Coupon {coupon.code} - {coupon.name} applied
-                    </h5>
-                  ) : message || coupon.name ? (
-                    <h5 className="my-4">Coupon is not valid</h5>
-                  ) : null}
+                  
 
                   {/* {message && <h5 className="my-4">Coupon is not valid</h5>} */}
                   <div className="checkoutPrice">
@@ -354,8 +350,8 @@ const Membership = ({ history }) => {
                   </div>
                   <div className="couponCtn">
                   <Form onSubmit={checkCoupon}>
-                    <Form.Row className="align-items-center">
-                    <Col sm={8}>
+                    <Form.Row className="align-items-center m-0">
+                    <div className="couponInputCol">
                       <Form.Control
                         required
                       
@@ -365,17 +361,35 @@ const Membership = ({ history }) => {
                           setPaymentState({ ...paymentState, code: e.target.value })
                         }
                       />
-                    </Col>
+                    </div>
                     {/* <input
                       required
                       type="text"
                       placeholder="Enter coupon code"
                     /> */}
-                    <Col sm={4}>
+                    <div>
                       <Button variant='info' type="submit">Use coupon</Button>
-                    </Col>
+                    </div>
                     </Form.Row>
                   </Form>
+
+                  {couponIsValid() && notification && notification.status === "success" && paymentState.checkoutSale.length > 0 ? (
+                    // <h5 className="my-4">
+                    //   Coupon {coupon.code} - {coupon.name} applied
+                    // </h5>
+                    <MessageDisplay
+											header="Coupon applied"
+											status={notification.status} 
+											message={coupon.name}
+										/>
+                  ) : notification.status === "fail" ? (
+                    // <h5 className="my-4">Coupon is not valid</h5>
+                    <MessageDisplay
+											header="Error"
+											status={notification.status} 
+											message={notification.message}
+										/>
+                  ) : null}
                   </div>
                 </>
               ) : null}

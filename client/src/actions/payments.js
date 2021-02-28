@@ -168,7 +168,7 @@ export const findCouponIdAction = (couponCode) => async dispatch => {
 
     dispatch({
       type: GET_COUPON_BY_ID_SUCCESS,
-      payload: data.coupon
+      payload: data
     });
 
   } catch (error) {
@@ -178,7 +178,7 @@ export const findCouponIdAction = (couponCode) => async dispatch => {
 
     dispatch({
       type: GET_COUPON_BY_ID_FAIL,
-      payload: errors.message
+      payload: errors
     });
   
   }

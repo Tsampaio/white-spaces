@@ -901,6 +901,7 @@ exports.getCouponId = async (req, res) => {
     console.log(coupon)
     if (coupon) {
       res.status(200).json({
+        status: "success",
         coupon: coupon
       })
     } else {
@@ -910,6 +911,7 @@ exports.getCouponId = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
+      status: "fail",
       message: error.message
     });
   }

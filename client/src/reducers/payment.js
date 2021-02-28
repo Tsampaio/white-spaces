@@ -23,6 +23,7 @@ const initialState = {
   billing: [],
   coupon: {},
   message: "",
+  notification: {},
   buttonLoading: false,
   checkoutLoaded: false
 }
@@ -95,13 +96,17 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        coupon: payload,
+        coupon: payload.coupon,
+        notification: {
+          status: payload.status,
+          message: payload.coupon.name
+        }
       }
     case GET_COUPON_BY_ID_FAIL:
       return {
         ...state,
         loading: false,
-        message: payload,
+        notification: payload
       }
     case GET_COUPON_BY_ID_RESET:
       return {

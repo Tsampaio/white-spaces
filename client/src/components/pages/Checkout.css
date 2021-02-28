@@ -83,12 +83,16 @@ del {
   margin-right: 5px;
 }
 
-.couponCtn button {
-  margin-top: 15px;
+.braintree-toggle {
+  margin-bottom: 10px;
 }
 
 .paymentLoading .braintree-toggle{
   display: none;
+}
+
+.couponInputCol {
+  flex: 2;
 }
 
 @media(min-width: 768px) {
