@@ -21,8 +21,8 @@ function ProfileSidebar( ) {
     img = auth && auth.user && auth.user.image;
     userPic = <img src={img} className="userAvatar" alt="User Profile"/>
   } catch (error) {
-    img = images(`./default.png`);
-    userPic = <img src={img.default} className="userAvatar" alt="User Profile"/>
+    img = '/uploads/users/default.png';
+    userPic = <img src={img} className="userAvatar" alt="User Profile"/>
   }
 
   console.log(`/uploads/users/${auth && auth.user && auth.user.image}`);

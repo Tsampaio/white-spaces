@@ -102,11 +102,12 @@ function Profile() {
   // const images = require.context('../../images/', true);
   const images = require.context('../../../../uploads/users/', true);
 
-  let img;
 
-  try {
-    // img = images(`./${auth.user._id}.jpg`);
-    img = auth && auth.user && auth.user.image;
+    let img = auth && auth.user && auth.user.image;
+
+    if(!img) {
+      img = '/uploads/users/default.png'
+    }
     userPic = (
       <img
         src={img}
@@ -115,17 +116,7 @@ function Profile() {
         alt="User Profile"
       />
     );
-  } catch (error) {
-    img = images(`./default.png`);
-    userPic = (
-      <img
-        src={img.default}
-        className="userAvatar"
-        onLoad={() => setPage({ loaded: true })}
-        alt="User Profile"
-      />
-    );
-  }
+  
   // if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
   //   // import Pic from `/${auth.user._id}.jpg`;
   //   // userPic = <img src={`/${auth.user._id}.jpg`} />
