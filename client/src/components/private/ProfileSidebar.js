@@ -17,13 +17,15 @@ function ProfileSidebar( ) {
   let img;
 
   try {
-    img = images(`./${auth.user._id}.jpg`);
-    userPic = <img src={img.default} className="userAvatar" alt="User Profile"/>
+    // img = images(`./${auth.user._id}.jpg`);
+    img = auth && auth.user && auth.user.image;
+    userPic = <img src={img} className="userAvatar" alt="User Profile"/>
   } catch (error) {
     img = images(`./default.png`);
     userPic = <img src={img.default} className="userAvatar" alt="User Profile"/>
   }
 
+  console.log(`/uploads/users/${auth && auth.user && auth.user.image}`);
   return (
     <div className="col-xl-2 col-lg-3 col-md-4 userLeftCol">
       { loading ? <Loader /> : userPic }

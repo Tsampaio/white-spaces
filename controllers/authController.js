@@ -396,28 +396,33 @@ exports.profilePic = async (req, res) => {
         msg: 'No file uploaded'
       })
     }
+    console.log("this is user");
+    console.log(req.user)
 
-    upload(req, res, function (error) {
-      if(error) {
-        console.log("INSIDE UPLOAD ERROR")
-        console.log(error.code)
-        error.message = 'File Size is too large. Allowed file size is 100KB';
-        res.status(500).json({ message: error.message });
-        return
-      }
-    })
-    // console.log(req)
-    // console.log(req.file);
+    //Check later for backend validation
+    // upload(req, res, function (error) {
+    //   if(error) {
+    //     console.log("INSIDE UPLOAD ERROR")
+    //     console.log(error.code)
+    //     error.message = 'File Size is too large. Allowed file size is 100KB';
+    //     res.status(500).json({ message: error.message });
+    //     return
+    //   }
+    // })
+
+    console.log("this is files")
+    console.log(req.file);
     // console.log(req.files);
 
     // const file = req.files.file;
     // const userId = req.body.userId;
 
-    // const user = await User.findById(userId);
+    const user = req.user;
+    user.image = `/uploads/users/${req.file.filename}`;
 
-    // user.hasProfilePic = true;
+    // // user.hasProfilePic = true;
 
-    // await user.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false });
 
     // const path = `${__dirname}/../client/public/${file.name}`;
 

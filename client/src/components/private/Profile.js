@@ -105,10 +105,11 @@ function Profile() {
   let img;
 
   try {
-    img = images(`./${auth.user._id}.jpg`);
+    // img = images(`./${auth.user._id}.jpg`);
+    img = auth && auth.user && auth.user.image;
     userPic = (
       <img
-        src={img.default}
+        src={img}
         className="userAvatar"
         onLoad={() => setPage({ loaded: true })}
         alt="User Profile"
@@ -254,7 +255,7 @@ function Profile() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     try {
       const config = {
         headers: {
@@ -264,13 +265,14 @@ function Profile() {
       console.log(cropState.croppedImage);
       const formData = new FormData();
       formData.append('file', cropState.croppedImage);
-      // formData.append('userId', auth.user._id);
+      formData.append('image', auth.user._id);
 
       console.log(formData);
 
       const res = await axios.post(`/api/users/profilePic`, formData, config);
       console.log('res.data');
       console.log(res.data);
+      closeImagePreview();
     } catch (error) {
       const errors = error.response.data;
       console.log(error);
