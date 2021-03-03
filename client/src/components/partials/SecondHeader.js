@@ -114,32 +114,25 @@ const SecondHeader = () => {
   };
 
   // const images = require.context('../../images/', true, /\.(png|jpe?g|svg)$/);
-  const images = require.context('../../../../uploads/users/', true);
+  // const images = require.context('../../../../uploads/users/', true);
 
   // console.log("+++++++");
   // console.log(images);
 
-  try {
-    let img = images(`./${auth && auth.user && auth.user._id}.jpg`);
+  let img = auth && auth.user && auth.user.image;
 
-    userPic = (
-      <img
-        src={img.default}
-        className={styles.userAvatarNav}
-        alt="user profile"
-      />
-    );
-  } catch (error) {
-    let img = images(`./default.png`);
-    userPic = (
-      <img
-        src={img.default}
-        className={styles.userAvatarNav}
-        alt="user profile"
-      />
-    );
+  if (!img) {
+    img = '/uploads/users/default.png';
   }
 
+  userPic = (
+    <img
+      src={img}
+      className={styles.userAvatarNav}
+      alt="user profile"
+    />
+  );
+  
   const checkoutIcon = isAuthenticated ? (
       <Link className={styles.checkoutLink} to="/cart/checkout">
         <i className="fa fa-shopping-cart"></i>

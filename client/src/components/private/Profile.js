@@ -3,7 +3,11 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUserAction, loadUser, resetNotification } from '../../actions/auth';
+import {
+  updateUserAction,
+  loadUser,
+  resetNotification,
+} from '../../actions/auth';
 import { Button } from 'react-bootstrap';
 import MessageDisplay from '../utils/MessageDisplay';
 import './Profile.css';
@@ -30,30 +34,38 @@ function Profile() {
     showImagePreview: false,
   });
 
+  useEffect(() => {
+    if (page.showImagePreview) {
+      // document.body.style.overflow = 'hidden';
+      document.body.classList.add("lock");
+    } else {
+      // document.body.style.overflow = 'unset';
+      document.body.classList.remove("lock");
+    }
+  }, [page.showImagePreview]);
+
   const [userDetails, setUserDetails] = useState({
     name: '',
     newPassword: '',
     newPasswordConfirm: '',
     password: '',
     showError: false,
-    formChanged: false
+    formChanged: false,
+    isPhoto: false,
+    message: ""
   });
 
-  const { showError, formChanged } = userDetails;
-
-  const [imageUpload, setImageUpload] = useState({
-    error: '',
-  });
+  const { showError, formChanged, isPhoto } = userDetails;
 
   useEffect(() => {
     dispatch(resetNotification());
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if(notification.status === "success") {
+    if (notification.status === 'success') {
       dispatch(loadUser());
     }
-  }, [notification.status])
+  }, [notification.status]);
 
   useEffect(() => {
     console.log('before check membership ');
@@ -71,21 +83,38 @@ function Profile() {
       ...userDetails,
       showError: false,
       formChanged: true,
+      isPhoto: false,
       [event.target.name]: event.target.value,
     });
   };
 
   const submitUserDetails = (event) => {
     event.preventDefault();
-    if ((userDetails.newPassword || userDetails.newPasswordConfirm) && userDetails.newPassword !== userDetails.newPasswordConfirm) {
-      setUserDetails({
-        ...userDetails,
-        showError: true
-      });
-      console.log("Setting error")
-    } else {
-      console.log("Dispatching Update")
-      dispatch(updateUserAction(auth && auth.token, userDetails));
+    if (formChanged) {
+      if (
+        (userDetails.newPassword || userDetails.newPasswordConfirm) &&
+        userDetails.newPassword !== userDetails.newPasswordConfirm
+      ) {
+        setUserDetails({
+          ...userDetails,
+          showError: true,
+          isPhoto: false,
+          message: "Passwords do not match"
+        });
+        console.log('Setting error');
+      } else {
+        console.log('Dispatching Update');
+        setUserDetails({
+          ...userDetails,
+          showError: false,
+          isPhoto: false,
+          newPassword: '',
+          newPasswordConfirm: '',
+          password: '',
+        })
+
+        dispatch(updateUserAction(auth && auth.token, userDetails));
+      }
     }
   };
 
@@ -98,25 +127,23 @@ function Profile() {
   let imageRef = useRef();
   let fileRef = useRef();
 
-  let userPic = null;
   // const images = require.context('../../images/', true);
-  const images = require.context('../../../../uploads/users/', true);
+  // const images = require.context('../../../../uploads/users/', true);
 
+  let img = auth && auth.user && auth.user.image;
 
-    let img = auth && auth.user && auth.user.image;
+  if (!img) {
+    img = '/uploads/users/default.png';
+  }
+  let userPic = (
+    <img
+      src={img}
+      className="userAvatar"
+      onLoad={() => setPage({ loaded: true })}
+      alt="User Profile"
+    />
+  );
 
-    if(!img) {
-      img = '/uploads/users/default.png'
-    }
-    userPic = (
-      <img
-        src={img}
-        className="userAvatar"
-        onLoad={() => setPage({ loaded: true })}
-        alt="User Profile"
-      />
-    );
-  
   // if (auth && auth.user && auth.user._id && auth.user.hasProfilePic) {
   //   // import Pic from `/${auth.user._id}.jpg`;
   //   // userPic = <img src={`/${auth.user._id}.jpg`} />
@@ -129,21 +156,47 @@ function Profile() {
 
   const onSelectFile = (e) => {
     if (e.target.files.length < 1) {
-      setImageUpload({ error: 'No image selected' });
+      setUserDetails({ ...userDetails, isPhoto: true, showError: true, message: 'No image selected' });
       return;
     }
     console.log('INSIDE onSelectFile');
+    console.log(e.target.files[0]);
     console.log(e.target.files[0].size);
     console.log(e.target.files[0].type);
     console.log(acceptedFileTypesArray);
 
+    // const reader = new FileReader();
+
+    // //Read the contents of Image File.
+    // reader.readAsDataURL(e.target.files[0]);
+    // reader.onload = function (e) {
+
+    //   //Initiate the JavaScript Image object.
+    //   const image = new Image();
+
+    //   //Set the Base64 string return from FileReader as source.
+    //   image.src = e.target.result;
+
+    //   //Validate the File Height and Width.
+    //   image.onload = function () {
+    //     var height = this.height;
+    //     var width = this.width;
+    //     if (height > 500 || width > 500) {
+    //       alert("Height and Width must not exceed 100px.");
+      
+    //       return false;
+    //     } else {
+    //     alert("Uploaded image has valid Height and Width.");
+    //     return true;
+    //     }
+    //   };
+    // };
+
     if (e.target.files[0].size > imageMaxSize) {
-      setImageUpload({ error: 'Image size should be less than 2 MB' });
+      setUserDetails({ ...userDetails, isPhoto: true, showError: true, message: 'Image size should be less than 2 MB' });
       return;
     } else if (!acceptedFileTypesArray.includes(e.target.files[0].type)) {
-      setImageUpload({
-        error: 'Image should be of the type JPG, JPEG, PNG or GIF',
-      });
+      setUserDetails({ ...userDetails, isPhoto: true, showError: true, message: 'Image should be of the type JPG, JPEG, PNG or GIF'});
       return;
     }
 
@@ -267,7 +320,7 @@ function Profile() {
     } catch (error) {
       const errors = error.response.data;
       console.log(error);
-      setImageUpload({ error: 'Image size should be less than 2 MB' });
+      setUserDetails({ ...userDetails, isPhoto: true, showError: true, message: 'Image size should be less than 2 MB' });
       // console.log("File Size is too large. Allowed file size is 100KB");
       closeImagePreview();
       console.log(errors.message);
@@ -296,10 +349,11 @@ function Profile() {
   // console.log(page);
   // console.log(cropState)
 
+  console.log(userDetails)
+
   return (
     <div className="userRightCol">
       <div className="userDetails">
-        {imageUpload.error && <h1>{imageUpload.error}</h1>}
         {!page.loaded && (
           <div className="preLoaderProfilePic">
             <div className="spinner-border " role="status">
@@ -307,6 +361,13 @@ function Profile() {
             </div>
           </div>
         )}
+        {!loading && showError && isPhoto && (
+              <MessageDisplay
+                header="Update error"
+                status="Fail"
+                message={userDetails.message}
+              />
+            )}
         <div className="uploadButtonCtn">
           <label htmlFor="file">{userPic}</label>
           <input
@@ -317,6 +378,8 @@ function Profile() {
             onChange={onSelectFile}
           />
         </div>
+
+        
 
         {page.showImagePreview && (
           <div className="imagePreviewOverlay">
@@ -371,6 +434,7 @@ function Profile() {
               name="newPassword"
               id="newPassword"
               onChange={updateUserDetails}
+              value={userDetails.newPassword}
             />
             <label htmlFor="newPasswordConfirm">Confirm Password</label>
             <input
@@ -378,33 +442,36 @@ function Profile() {
               name="newPasswordConfirm"
               id="newPasswordConfirm"
               onChange={updateUserDetails}
+              value={userDetails.newPasswordConfirm}
             />
 
             <hr />
-            <label htmlFor="">To save new password, enter current password</label>
+            <label htmlFor="">
+              To save new password, enter current password
+            </label>
             <input
               type="password"
               name="password"
               onChange={updateUserDetails}
+              value={userDetails.password}
             />
-            </div>
-            
-            <Button variant="primary" type="submit" disabled={!formChanged}>
-              Update Profile
-            </Button>
-          
+          </div>
+
+          <Button variant="primary" type="submit">
+            Update Profile
+          </Button>
         </form>
-        {!loading && showError && (
+        {!loading && showError && !isPhoto && (
           <MessageDisplay
             header="Update error"
-            status="Fail" 
-            message="Passwords do not match"
+            status="Fail"
+            message={userDetails.message}
           />
         )}
         {!loading && notification && notification.status && (
           <MessageDisplay
-            header={notification.status === "success" ? "Success" : "Error"}
-            status={notification.status} 
+            header={notification.status === 'success' ? 'Success' : 'Error'}
+            status={notification.status}
             message={notification.message}
           />
         )}

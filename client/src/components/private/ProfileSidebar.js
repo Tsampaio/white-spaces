@@ -10,20 +10,18 @@ function ProfileSidebar( ) {
   const auth = useSelector(state => state.auth);
   const { loading } = auth;
 
-  let userPic = null;
-  // const images = require.context('../../images/', true);
-  const images = require.context('../../../../uploads/users/', true);
+  let img = auth && auth.user && auth.user.image;
 
-  let img;
-
-  try {
-    // img = images(`./${auth.user._id}.jpg`);
-    img = auth && auth.user && auth.user.image;
-    userPic = <img src={img} className="userAvatar" alt="User Profile"/>
-  } catch (error) {
+  if (!img) {
     img = '/uploads/users/default.png';
-    userPic = <img src={img} className="userAvatar" alt="User Profile"/>
   }
+  let userPic = (
+    <img
+      src={img}
+      className="userAvatar"
+      alt="User Profile"
+    />
+  );
 
   console.log(`/uploads/users/${auth && auth.user && auth.user.image}`);
   return (

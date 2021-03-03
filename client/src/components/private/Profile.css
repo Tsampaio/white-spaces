@@ -108,6 +108,8 @@
     text-align: center;
     padding: 30px 40px;
     width: 550px;
+    margin-bottom: 50px;
+    margin-top: 50px;
 }
 
 .userDetails form {
@@ -165,7 +167,8 @@
 }
 
 .imagePreviewOverlay .ReactCrop {
-    width: 50%;
+    max-width: 600px;
+    max-height: 60vh;
 }
 
 /* .imagePreviewOverlay .ReactCrop div:first-child {
@@ -175,7 +178,6 @@
 .imagePreviewOverlay img {
     width: 100%;
     margin: 0 auto;
-    max-height: 60vh;
 }
 
 .imagePreviewOverlay h2 {
@@ -282,6 +284,10 @@
     margin-bottom: 30px;
 }
 
+.lock {
+    overflow: hidden;
+}
+
 @media only screen and (max-width: 1300px) {
     .billingScroll {
         min-width: 900px;
@@ -321,10 +327,10 @@
 
 
 @media only screen and (max-width: 500px) {
-    .profileCtn {
+    /* .profileCtn {
         padding-top: 50px;
         padding-bottom: 50px;
-    }
+    } */
     
     .billingCtn {
         padding: 10px;
@@ -349,5 +355,10 @@
 
     .userDetails img {
         margin: 0;
+    }
+
+    .imagePreviewOverlay .ReactCrop {
+        width: 300px;
+        max-height: 60vh;
     }
 }

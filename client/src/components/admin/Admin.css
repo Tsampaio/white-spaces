@@ -164,9 +164,9 @@
   cursor: pointer;
 }
 
-.imagePreviewOverlay .ReactCrop {
+/* .imagePreviewOverlay .ReactCrop {
   width: 50%;
-}
+} */
 
 .imagePreviewOverlay img {
   width: 100%;
@@ -304,9 +304,9 @@
 
 
 @media only screen and (max-width: 500px) {
-  .profileCtn {
+  /* .profileCtn {
       padding-bottom: 30px;
-  }
+  } */
   
   .billingCtn {
       padding: 10px;
