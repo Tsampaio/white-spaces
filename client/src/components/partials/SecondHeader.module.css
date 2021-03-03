@@ -204,7 +204,7 @@
 
 .mobileMenu > a i{
   color: #fff;
-  font-size: 25px;
+  font-size: 30px;
 }
 
 .mobileMenuPicCtn {
@@ -230,6 +230,12 @@
 .mobileMenuPicCtn p {
   color: #000;
   margin: 0
+}
+
+@media(min-width: 500px) {
+  .mobileMenuDiv {
+    width: 300px;
+  }
 }
 
 @media(min-width: 991px) {
