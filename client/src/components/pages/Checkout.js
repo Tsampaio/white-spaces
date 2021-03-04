@@ -25,10 +25,10 @@ const Membership = ({ history }) => {
     coupon,
     checkoutPrice,
     checkout,
-    message,
     loading,
     result,
-    notification
+    notification,
+    buttonLoading
   } = payment;
 
   const [data, setData] = useState({
@@ -211,7 +211,7 @@ const Membership = ({ history }) => {
             disableButton ? 'btn btn-primary disabled mt-4' : 'btn btn-primary mt-4'
           }
         >Finish Payment</button> }
-        {loading && (
+        {buttonLoading && (
           <button className="btn btn-primary mt-4">
             <div class="spinner-border spinner" role="status">
               <span class="sr-only">Processing payment...</span>
@@ -388,6 +388,12 @@ const Membership = ({ history }) => {
 											header="Error"
 											status={notification.status} 
 											message={notification.message}
+										/>
+                  ) : coupon && coupon.active && !couponIsValid() ? (
+                    <MessageDisplay
+											header="Error"
+											status="fail"
+											message="Coupon not valid"
 										/>
                   ) : null}
                   </div>

@@ -10,7 +10,7 @@ import {
   GET_USER_BILLING
 } from '../actions/types';
 import { GET_COUPON_BY_ID_FAIL, GET_COUPON_BY_ID_REQUEST, GET_COUPON_BY_ID_RESET, GET_COUPON_BY_ID_SUCCESS } from '../contants/couponConstants';
-import { PAY_COURSE_REQUEST, PAY_BUTTON_LOAD_SUCCESS } from '../contants/paymentConstants';
+import { PAY_COURSE_REQUEST, PAY_BUTTON_LOAD_SUCCESS, PAY_BUTTON_LOAD_REQUEST } from '../contants/paymentConstants';
 
 const initialState = {
   loading: false,
@@ -117,6 +117,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: true
+      }
+    case PAY_BUTTON_LOAD_REQUEST:
+      return {
+        ...state,
+        buttonLoading: true
       }
     case PAY_BUTTON_LOAD_SUCCESS:
       return {

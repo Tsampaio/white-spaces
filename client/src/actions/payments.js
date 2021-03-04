@@ -9,7 +9,7 @@ import {
   GET_USER_BILLING
 } from './types';
 
-import { PAY_COURSE_REQUEST } from '../contants/paymentConstants';
+import { PAY_COURSE_REQUEST, PAY_BUTTON_LOAD_REQUEST, PAY_BUTTON_LOAD_SUCCESS } from '../contants/paymentConstants';
 
 export const payAction = (userId, token) => async dispatch => {
   // console.log("pay action");
@@ -45,6 +45,10 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
       type: PAY_COURSE_REQUEST
     });
 
+    dispatch({
+      type: PAY_BUTTON_LOAD_REQUEST 
+    });
+
     console.log("inside processPayment actions");
     const config = {
       headers: {
@@ -72,6 +76,10 @@ export const processPayment = (paymentData, code, courses) => async dispatch => 
       res2 = await axios.post(`/api/braintree/checkout/success`, body2, config);
       console.log("email response");
       console.log(res2.data.message);
+
+      dispatch({
+        type: PAY_BUTTON_LOAD_SUCCESS
+      });
 
       dispatch({
         type: PAY_COURSE,
