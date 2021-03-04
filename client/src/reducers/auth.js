@@ -124,11 +124,7 @@ export default function (state = initialState, action) {
     case LOGOUT_FAIL:
     case LOGOUT:
       return {
-        ...state,
-        token: null,
-        isAuthenticated: false,
-        user: null,
-        message: null
+        
       }
     case UPDATE_USER_ERROR:
       return {

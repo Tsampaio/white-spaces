@@ -31,6 +31,7 @@ import {
   FIND_USER_REQUEST,
   FIND_USER_SUCCESS
 } from '../contants/userConstants';
+import { LOGOUT } from '../actions/types'
 
 const initialState = {
   loading: true,
@@ -120,6 +121,10 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
         coupons: payload
+      }
+    case LOGOUT:
+      return {
+
       }
     default:
       return state;

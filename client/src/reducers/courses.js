@@ -3,7 +3,8 @@ import {
   GET_LESSONS_WATCHED,
   GET_COURSES,
   UPDATE_COURSE,
-  FINISH_LESSON
+  FINISH_LESSON,
+  LOGOUT
 } from '../actions/types';
 import {
   COURSE_LIST_REQUEST,
@@ -99,6 +100,8 @@ export default function (state = initialState, action) {
         loading: false,
         data: payload
       }
+    case LOGOUT:
+      return { }
     default:
       return state;
   }
