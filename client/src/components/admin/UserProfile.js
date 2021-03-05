@@ -43,17 +43,17 @@ const Courses = ({ match, history }) => {
     dispatch(getUserDetails(subPage));
     dispatch(getUserPurchases(subPage));
     dispatch(getCourses());
-    theUserCoursesFunc();
+    // theUserCoursesFunc();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setUserCourses(courses);
-
   }, [courses]);
 
   useEffect(() => {
     theUserCoursesFunc();
-  }, [userCourses])
+  }, [userCourses, all])
 
   // const images = require.context('../../images/', true);
   const images = require.context('../../../../uploads/users/', true);
@@ -70,6 +70,10 @@ const Courses = ({ match, history }) => {
   const allPurchases = userPurchases.map((purchase, i) => {
     const date = new Date(purchase.date);
     const newDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const products = purchase.productName.map((product, i) => {
+      console.log(product)
+      return <><span>{product}</span>{purchase.productName.length - 1 !== i ? <hr /> : ""}</>
+    })
 
     return (
       <tr key={i}>
@@ -77,7 +81,7 @@ const Courses = ({ match, history }) => {
         <td>{purchase.price}</td>
         <td>None</td>
         <td>{purchase.price}</td>
-        <td>{purchase.productName}</td>
+        <td>{products}</td>
       </tr>
     )
   });
@@ -116,6 +120,8 @@ const Courses = ({ match, history }) => {
 
   const theUserCoursesFunc = () => {
     console.log("calling theUserCoursesFunc");
+    console.log(userCourses);
+    console.log(all);
     let courses = [];
     if (userCourses && userCourses.length > 0) {
       for (let i = 0; i < all.length; i++) {
@@ -175,7 +181,7 @@ const Courses = ({ match, history }) => {
       <div className="adminCtn col-xl-10">
         <div className="row">
           <div className="col-2">
-            <img className="userAvatar" src={img.default} style={{ width: "100%" }} />
+            <img className="userAvatar" src={img.default} style={{ width: "100%" }} alt="user avatar" />
           </div>
           <div className="col-10">
             <div className="card userCard">

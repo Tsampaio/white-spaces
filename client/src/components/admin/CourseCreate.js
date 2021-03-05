@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState, convertToRaw } from 'draft-js';
 
@@ -8,8 +8,6 @@ import draftToHtml from 'draftjs-to-html';
 
 import { createCourseAction } from '../../actions/courses';
 import './Admin.css'
-import ImageUpload from '../utils/imageUpload';
-
 
 const CourseCreate = () => {
 
@@ -30,6 +28,7 @@ const CourseCreate = () => {
 			url: "",
 			duration: 0
 		}],
+		image: null
 	});
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -75,11 +74,6 @@ const CourseCreate = () => {
 		)
 	});
 
-
-	const saveBlogDetails = () => {
-		setEditorState(editorState);
-	}
-
 	const createCourse = () => {
 		// editor.save().then((outputData) => {
 		// 	console.log(outputData);
@@ -88,13 +82,15 @@ const CourseCreate = () => {
 		// 		courseDescription: outputData
 		// 	})
 		// })
+		console.log(courseState);
+		dispatch(createCourseAction(courseState));
 	}
 
-	useEffect(() => {
-		if (courseState.courseDescription.length > 0) {
-			dispatch(createCourseAction(courseState));
-		}
-	}, [courseState.courseDescription]);
+	// useEffect(() => {
+	// 	if (courseState.courseDescription.length > 0) {
+	// 		dispatch(createCourseAction(courseState));
+	// 	}
+	// }, [courseState.courseDescription]);
 
 	const onEditorStateChange = (editorState) => {
 		setEditorState(editorState);
@@ -114,7 +110,6 @@ const CourseCreate = () => {
 						<div className="col-10">
 							<div>
 								<h1>Create your Course</h1>
-								<ImageUpload courseTag={courseState.courseTag} />
 								<label>Name</label><input required type="text" name="courseName" onChange={updateCourse} /><br />
 								<label>Course Intro</label><input required type="text" name="courseIntro" onChange={updateCourse} /><br />
 								<label>Course Tag</label><input required type="text" name="courseTag" onChange={updateCourse} /><br />

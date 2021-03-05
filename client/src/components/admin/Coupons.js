@@ -336,7 +336,6 @@ const Coupon = () => {
       )
     });
 
-
     for (let i = 0; i < coupon.courses.length; i++) {
       courses.push(coupon.courses[i].name);
     }

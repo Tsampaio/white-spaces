@@ -28,7 +28,7 @@ const Sales = () => {
 
   const [salesState, setSalesState] = useState([]);
   const [pageSales, setPageSales] = useState({
-    salesPerPage: 10,
+    salesPerPage: 2,
     values: [],
     number: 1,
     firstPage: 0,

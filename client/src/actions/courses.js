@@ -133,14 +133,32 @@ export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
   }
 }
 
-export const createCourseAction = ({ courseName, courseIntro, courseTag, courseDescription, coursePrice, classes }) => async dispatch => {
+export const createCourseAction = (
+  { courseName, 
+    courseIntro, 
+    courseTag, 
+    courseDescription, 
+    coursePrice, 
+    classes
+  }) => async (dispatch, getState) => {
   console.log("Inside Create COURSE ACTION");
   try {
-    const body = JSON.stringify({ courseName, courseIntro, courseTag, courseDescription, coursePrice, classes });
+    const { auth } = getState();
+
+    const body = JSON.stringify(
+      { courseName, 
+        courseIntro, 
+        courseTag, 
+        courseDescription, 
+        coursePrice, 
+        classes
+      });
 
     const res = await axios.post(`/api/createCourse`, body, {
       headers: {
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${auth.token}`
       }
     });
 

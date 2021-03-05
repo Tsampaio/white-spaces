@@ -141,7 +141,7 @@ const Courses = () => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-12">
-              <div className="adminCourseTop">
+              {/* <div className="adminCourseTop"> */}
                 <h1>Courses</h1>
                 <div>
                   <Button variant="outline-primary" onClick={saveFeaturedCourses} className="mr-4">
@@ -152,7 +152,7 @@ const Courses = () => {
                     <Link to="/admin/courses/create">New Course</Link>
                   </Button>
                 </div>
-
+              </div>
                 <DragDropContext onDragEnd={handleOnDragEnd}>
                   <Droppable
                     droppableId="coursesSequence"
@@ -171,8 +171,8 @@ const Courses = () => {
                     )}
                   </Droppable>
                 </DragDropContext>
-              </div>
-            </div>
+              {/* </div> */}
+            {/* </div> */}
           </div>
         </div>
       </div>
