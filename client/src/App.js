@@ -24,9 +24,11 @@ import RST_PASSWORD from './components/pages/ResetPassword';
 import Activate from './components/pages/Activate';
 import ActivateEmail from './components/pages/ActivateEmail';
 import Admin from './components/admin/AdminCtn';
+import Privacy from './components/pages/Privacy';
 // import CourseCreate from './components/admin/CourseCreate';
 // import CourseUpdate from './components/pages/CourseUpdate';
 import ProfileCtn from './components/private/ProfileCtn';
+import CookiePolicy from './components/utils/CookiePolicy';
 
 function App() {
   useEffect( () => {
@@ -52,6 +54,7 @@ function App() {
           
           <Route exact path="/activate" component={Activate} />
           <Route exact path="/activate/:token" component={ActivateEmail} />
+          <Route path="/privacy" component={Privacy} />
           <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
           <Route path="/forgotPassword" component={FGT_PASSWORD} />
@@ -63,7 +66,8 @@ function App() {
           <Route exact path="/profile" component={ProfileCtn} />
           <Route exact path="/profile/:page" component={ProfileCtn} />
         </Switch>
-          <Footer />
+        <CookiePolicy />
+        <Footer />
       </BrowserRouter>
     </Provider>
   );

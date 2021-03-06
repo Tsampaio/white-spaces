@@ -1,6 +1,7 @@
 import React from 'react'
 import footerLogo from '../../images/telmoacademy-logo1.png';
 import { Container, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import styles from './Footer.module.css';
 
 const Footer = () => {
@@ -19,7 +20,7 @@ const Footer = () => {
           </div>
 
           <div className={styles.footerLinks}>
-            <a href="#">Privacy</a>
+            <Link to="/privacy">Privacy</Link>
             <a href="#">Terms</a>
             <a href="#">Blog</a>
             <a href="#">Contact</a>
