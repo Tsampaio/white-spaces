@@ -28,4 +28,4 @@ jobs:
     - run: | 
         npm i
         npm i --prefix client
-        npm run client
+        npm run install
