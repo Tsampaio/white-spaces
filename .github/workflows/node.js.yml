@@ -25,15 +25,15 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: |
-         npm i
-         cd client
-         npm i
-         CI=false npm run build
-         cd .. 
-         pm2 stop 0
-         pm2 start 0
-         pm2 save
-         sudo service nginx restart
-    - env: 
-      EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+      run: |
+        npm i
+        cd client
+        npm i
+        CI=false npm run build
+        cd .. 
+        pm2 stop 0
+        pm2 start 0
+        pm2 save
+        sudo service nginx restart
+      env: 
+        EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
