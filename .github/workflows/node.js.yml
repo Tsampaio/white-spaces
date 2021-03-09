@@ -25,10 +25,20 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: |        
-        npm i
-        #npm i --prefix client
-        cd client
-        npm i
-        #npm i --prefix client
-        CI=false npm run build
+    - name: Install Backend
+        run: npm i
+    - name: Install Frontend
+        run: |
+          cd client
+          npm i
+          CI=false npm run build
+    - name: Create .Env file
+      run:
+          cd .. 
+          touch .env
+          echo EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }} >> .env
+    - name: Restart server
+        run: |
+          pm2 stop 0
+          pm2 start 0
+          service nginx restart
