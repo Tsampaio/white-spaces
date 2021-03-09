@@ -32,7 +32,7 @@ jobs:
          CI=false npm run build
          cd .. 
          touch .env
-         echo EMAIL_USERNAME=${{ myEnv.EMAIL_USERNAME }} >> .env
+         echo EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }} >> .env
          pm2 stop 0
          pm2 start 0
          pm2 save
