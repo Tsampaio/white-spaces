@@ -33,7 +33,7 @@ jobs:
           npm i
           CI=false npm run build
     - name: Create .Env file
-      run:
+      run: |
           cd .. 
           touch .env
           echo EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }} >> .env
