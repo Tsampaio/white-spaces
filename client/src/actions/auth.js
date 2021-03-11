@@ -223,6 +223,7 @@ export const logout = () => async dispatch => {
 
     // dispatch(loadUser());
   } catch (err) {
+    console.log(err)
     const errors = err.response.data.errors;
     console.log(errors);
     // if(errors) {

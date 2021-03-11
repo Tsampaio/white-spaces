@@ -32,8 +32,23 @@ jobs:
         CI=false npm run build
         cd ..
         touch .env
-        echo EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }} >> .env
+        echo DATABASE = ${{ secrets.DATABASE }} >> .env
         echo PORT=${{ secrets.PORT }} >> .env
+        echo JWT_SECRET = ${{ secrets.JWT_SECRET }} >> .env
+        echo JWT_EXPIRES_IN = ${{ secrets.JWT_EXPIRES_IN }} >> .env
+        echo JWT_COOKIE_EXPIRES_IN = ${{ secrets.JWT_COOKIE_EXPIRES_IN }} >> .env
+        echo EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }} >> .env
+        echo EMAIL_PASSWORD = ${{ secrets.EMAIL_PASSWORD }} >> .env
+        echo EMAIL_HOST = ${{ secrets.EMAIL_HOST }} >> .env
+        echo EMAIL_PORT = ${{ secrets.EMAIL_PORT }} >> .env
+        echo EMAIL_FROM = ${{ secrets.EMAIL_FROM }} >> .env
+        echo SENDGRID_USERNAME = ${{ secrets.SENDGRID_USERNAME }} >> .env
+        echo SENDGRID_PASSWORD = ${{ secrets.SENDGRID_PASSWORD }} >> .env
+        echo SENDINBLUE_USERNAME = ${{ secrets.SENDINBLUE_USERNAME }} >> .env
+        echo SENDINBLUE_PASSWORD = ${{ secrets.SENDINBLUE_PASSWORD }} >> .env
+        echo BRAINTREE_MERCHANT_ID = ${{ secrets.BRAINTREE_MERCHANT_ID }} >> .env
+        echo BRAINTREE_PUBLIC_KEY = ${{ secrets.BRAINTREE_PUBLIC_KEY }} >> .env
+        echo BRAINTREE_PRIVATE_KEY = ${{ secrets.BRAINTREE_PRIVATE_KEY }} >> .env
         pm2 stop 0
         pm2 start 0
         pm2 save

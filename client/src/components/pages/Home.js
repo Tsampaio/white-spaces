@@ -10,7 +10,7 @@ const Home = () => {
   const dispatch = useDispatch();
 
   const courses = useSelector((state) => state.courses);
-  const { coursesLoaded } = courses;
+  const { coursesLoaded, all } = courses;
 
   useEffect(() => {
     if (!coursesLoaded) {
@@ -21,18 +21,18 @@ const Home = () => {
   console.log(courses);
 
   const coursesFiltered =
-    courses.all.length > 0 &&
-    courses.all.filter((course) => {
+    all && all.length > 0 &&
+    all.filter((course) => {
       return course.featured;
     });
 
-  coursesFiltered.length > 0 &&
+    coursesFiltered && coursesFiltered.length > 0 &&
     coursesFiltered.sort((a, b) => {
       return a.position - b.position;
     });
 
   const allFeatured =
-    coursesFiltered.length > 0 &&
+  coursesFiltered && coursesFiltered.length > 0 &&
     coursesFiltered.map((course, i) => {
       return (
         <CourseCard

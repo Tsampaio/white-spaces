@@ -124,7 +124,7 @@ export default function (state = initialState, action) {
     case LOGOUT_FAIL:
     case LOGOUT:
       return {
-        
+        ...initialState
       }
     case UPDATE_USER_ERROR:
       return {
