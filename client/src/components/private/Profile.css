@@ -208,6 +208,7 @@
 
 .billingCtn {
     padding: 50px;
+    flex: 1;
 }
 
 .billingCtn .card-header {
@@ -286,6 +287,12 @@
 
 .lock {
     overflow: hidden;
+}
+
+.myCoursesRightCol {
+    padding-right: 15px;
+    padding-left: 15px;
+    flex: 1;
 }
 
 @media only screen and (max-width: 1300px) {

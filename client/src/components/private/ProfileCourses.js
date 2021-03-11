@@ -37,7 +37,7 @@ function ProfileCourses() {
       img = coursesimage(`./${course.tag}.jpg`);
 
       return (
-        <div className="col-xl-3 col-lg-4 col-md-6 mb-4" key={index}>
+        <div className="col-xl-3 col-lg-4 col-md-4 mb-4" key={index}>
           <div className="cardBorder">
             <div className="courseThumbnail courseFeatured1">
               <Link to={`/courses/${course.tag}/lessons/1`}>
@@ -60,7 +60,7 @@ function ProfileCourses() {
     });
 
   return (
-    <div className="col-lg-9 col-md-8">
+    <div className="myCoursesRightCol">
       <div className="myCoursesCtn">
         <h1>My Courses</h1>
         <div className="row">
