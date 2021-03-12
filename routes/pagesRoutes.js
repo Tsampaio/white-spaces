@@ -6,7 +6,6 @@ const {
   getCoursesOwned,
   createCourse,
   coursePic,
-  updateCourse,
   deleteVideoClass,
   courseThumbnail,
   courseAccess,
@@ -32,7 +31,6 @@ router.post(
   upload.single('course'),
   coursePic
 );
-router.post('/updateCourse', updateCourse);
 router.post('/deleteVideoClass', protect, deleteVideoClass);
 router.post('/courseThumbnail', courseThumbnail);
 router.post('/courseAccess', courseAccess);

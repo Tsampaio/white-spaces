@@ -148,33 +148,6 @@ exports.getLessonsWatched = async (req, res, next) => {
   }
 }
 
-exports.updateCourse = async (req, res, next) => {
-  try {
-    const { id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes } = req.body;
-    // console.log("inside of update Course");
-    // console.log(req.body);
-    //const course = await Course.findOne({ tag });
-
-    await Course.findByIdAndUpdate(id, {
-      name: courseName,
-      intro: courseIntro,
-      tag: courseTag,
-      description: courseDescription,
-      price: coursePrice,
-      classes
-    });
-
-    res.status(200).json({
-      status: 'success',
-      message: "Course updated"
-    });
-
-  } catch (error) {
-    console.log(error);
-  }
-
-}
-
 exports.createCourse = async (req, res, next) => {
   try {
     // console.log("inside Create course");

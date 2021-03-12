@@ -338,3 +338,35 @@ exports.updateCoupon = async (req, res) => {
     });
   }
 };
+
+exports.updateCourse = async (req, res, next) => {
+  try {
+    if (req.user.role === 'admin') {
+      const { id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes, courseLevel } = req.body;
+      // console.log("inside of update Course");
+      // console.log(req.body);
+      //const course = await Course.findOne({ tag });
+
+      await Courses.findByIdAndUpdate(id, {
+        name: courseName,
+        intro: courseIntro,
+        tag: courseTag,
+        description: courseDescription,
+        price: coursePrice,
+        classes,
+        courseLevel
+      });
+
+      res.status(200).json({
+        status: 'success',
+        message: "Course updated"
+      });
+    } else {
+      throw new Error('You are not an admin');
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+
+}

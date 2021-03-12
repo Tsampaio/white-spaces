@@ -11,7 +11,8 @@ const {
   createCoupon,
   getCoupons,
   getCoupon,
-  updateCoupon
+  updateCoupon,
+  updateCourse,
 } = require('../controllers/adminController');
 
 const { protect } = require('../controllers/authController');
@@ -26,5 +27,6 @@ router.post('/admin/createCoupon', protect, createCoupon);
 router.get('/admin/getCoupons', protect, getCoupons);
 router.get('/admin/getCoupon/:couponId', protect, getCoupon);
 router.put('/admin/updateCoupon/:couponId', protect, updateCoupon);
+router.post('/admin/updateCourse', protect, updateCourse);
 
 module.exports = router;

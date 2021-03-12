@@ -39,6 +39,7 @@ const CourseUpdate = () => {
     courseTag: '',
     courseDescription: ' ',
     coursePrice: '',
+    courseLevel: 'DEFAULT',
     classes: [
       {
         id: '',
@@ -95,6 +96,7 @@ const CourseUpdate = () => {
       coursePrice: parseInt(course && course.data && course.data.price),
       classes: course && course.data && course.data.classes,
       loaded: true,
+      courseLevel: course && course.data && course.data.courseLevel,
     });
   };
 
@@ -208,12 +210,14 @@ const CourseUpdate = () => {
           </div>
           <div className="card-body">
             <button
-              onClick={() => dispatch(
-                deleteVideoClassAction(
-                  courseState.id,
-                  courseState.classes[i]._id
+              onClick={() =>
+                dispatch(
+                  deleteVideoClassAction(
+                    courseState.id,
+                    courseState.classes[i]._id
+                  )
                 )
-              )}
+              }
             >
               <i className="fas fa-trash-alt"></i> Delete Video
             </button>
@@ -267,7 +271,7 @@ const CourseUpdate = () => {
         formData,
         config
       );
-      console.log(res.data)
+      console.log(res.data);
       setImage(res.data);
       setUploading(false);
     } catch (error) {
@@ -280,7 +284,7 @@ const CourseUpdate = () => {
   let img = '';
   try {
     img = images(`./${data && data.tag}.jpg`);
-  } catch(error) {
+  } catch (error) {
     img = images(`./default-course.jpg`);
   }
   // if( data && data.tag ) {
@@ -292,8 +296,8 @@ const CourseUpdate = () => {
 
   // console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())));
   // console.log(courseState);
- console.log(course);
- console.log(data && data.tag)
+  console.log(courseState);
+  // console.log(data && data.tag);
   return (
     <>
       <div className="adminCtn">
@@ -347,6 +351,16 @@ const CourseUpdate = () => {
                   value={courseState.loaded ? courseState.courseTag : ''}
                   size="50"
                 />
+                <br />
+                <label>Course Level</label>
+                <select name="courseLevel" onChange={updateCourse} value={courseState.courseLevel}>
+                  <option value="DEFAULT" disabled>
+                    Level
+                  </option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
                 <br />
 
                 <label>Course Description</label>

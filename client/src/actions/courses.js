@@ -222,14 +222,18 @@ export const removeCheckout = (courseId) => async dispatch => {
   }
 }
 
-export const updateCourseAction = ({ id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes }) => async dispatch => {
+export const updateCourseAction = ({ id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes, courseLevel }) => async (dispatch, getState) => {
   try {
 
-    const body = JSON.stringify({ id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes });
+    const { auth } = getState();
+
+    const body = JSON.stringify({ id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes, courseLevel });
     console.log(body);
-    const res = await axios.post("/api/updateCourse", body, {
+    const res = await axios.post("/api/admin/updateCourse", body, {
       headers: {
-        "Content-Type": "application/json"
+        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${auth.token}`
       }
     });
 

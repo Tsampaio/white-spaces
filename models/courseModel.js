@@ -9,7 +9,7 @@ const courseSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  level: {
+  courseLevel: {
     type: String,
   },
   position: {
