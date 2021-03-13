@@ -1,7 +1,12 @@
 import React from 'react';
 import {Col} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { RiMedal2Line } from 'react-icons/ri';
+// import { RiMedal2Line } from 'react-icons/ri';
+import { RiVipCrownFill, RiVipCrownLine, RiVipCrown2Fill } from 'react-icons/ri';
+import { CgCrown } from 'react-icons/cg';
+import { FaCrown } from 'react-icons/fa';
+
+
 import './CourseCard.css';
 
 const CourseCard = (props) => {
@@ -21,10 +26,27 @@ const CourseCard = (props) => {
         <div className="courseTitleCtn">
           <Link className="courseTitle" to={`/courses/${props.tag}`}>{props.name}</Link>
         </div>
-        <div className="separator"></div>
-        <div className="priceCtn">
-          <span className="studentNumbers"><RiMedal2Line/> Advanced</span><span className="price">${props.price}</span>
-        </div>
+        { props.price ? (
+          <>
+            <div className="separator"></div>
+            <div className="priceCtn">
+              
+                <span className="studentNumbers">
+                  { props.courseLevel === "beginner" ? 
+                    ( <><RiVipCrownLine /> Beginner</> ) : props.courseLevel === "intermediate" ? 
+                    ( <><RiVipCrownFill /> Intermediate</> ) : (<><FaCrown /> Advanced</>)
+                  }
+                </span>
+                <span className="price">${props.price}</span>
+            </div>
+          </> ) : (
+            <div className="courseProgressBorder">
+              <div className="courseProgressCtn">
+                <div style={{backgroundColor: "darkgrey", width: "0%", height: "100%"}}></div>
+              </div>
+              <p>0% Complete</p>
+            </div>
+          )}
       </div>
     </Col>
   )

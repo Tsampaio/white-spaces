@@ -40,6 +40,7 @@ const Home = () => {
           price={course.price}
           key={i}
           tag={course.tag}
+          courseLevel={course.courseLevel}
         />
       );
     });

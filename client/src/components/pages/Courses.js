@@ -6,6 +6,7 @@ import { Col } from 'react-bootstrap';
 import SecondHeader from '../partials/SecondHeader';
 import Loader from '../utils/Loader';
 import { Form } from 'react-bootstrap';
+import CourseCard from './CourseCard';
 import './Courses.css';
 
 const Courses = () => {
@@ -49,28 +50,35 @@ const Courses = () => {
     // let img = `/images/${course.tag}.jpg`;
     if (course.tag !== 'monthly-plan') {
       return (
-        <div
-          className="offset-1 col-10 offset-md-0 col-md-4 col-lg-3"
+        <CourseCard
+          name={course.name}
+          price={course.price}
           key={index}
-        >
-          <div className="cardBorder">
-            <div className="courseThumbnail courseFeatured1">
-              <Link to={`/courses/${course.tag}`}>
-                <img src={img.default} alt="courseThumbnail" />
-              </Link>
-            </div>
-            <div className="courseTitleCtn">
-              <Link to={`/courses/${course.tag}`}>{course.name}</Link>
-            </div>
-            <div className="separator"></div>
-            <div className="priceCtn">
-              <span className="studentNumbers">
-                <i className="fas fa-user"></i> Telmo Sampaio
-              </span>
-              <span className="price">${course.price}</span>
-            </div>
-          </div>
-        </div>
+          tag={course.tag}
+          courseLevel={course.courseLevel}
+        />
+        // <div
+        //   className="offset-1 col-10 offset-md-0 col-md-4 col-lg-3"
+        //   key={index}
+        // >
+        //   <div className="cardBorder">
+        //     <div className="courseThumbnail courseFeatured1">
+        //       <Link to={`/courses/${course.tag}`}>
+        //         <img src={img.default} alt="courseThumbnail" />
+        //       </Link>
+        //     </div>
+        //     <div className="courseTitleCtn">
+        //       <Link to={`/courses/${course.tag}`}>{course.name}</Link>
+        //     </div>
+        //     <div className="separator"></div>
+        //     <div className="priceCtn">
+        //       <span className="studentNumbers">
+        //         <i className="fas fa-user"></i> Telmo Sampaio
+        //       </span>
+        //       <span className="price">${course.price}</span>
+        //     </div>
+        //   </div>
+        // </div>
       );
     }
   });

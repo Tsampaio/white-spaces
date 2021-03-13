@@ -79,3 +79,14 @@
     padding: 2px 5px;
     border-radius: 5px;
 }
+
+.courseProgressBorder {
+  padding: 0px 20px 10px 20px;
+}
+
+.courseProgressCtn {
+  width: 100%;
+  background-color: rgb(224, 224, 224);
+  height: 5px;
+  margin-bottom: 5px;
+}
