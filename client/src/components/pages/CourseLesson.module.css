@@ -126,6 +126,7 @@
     align-items: center;
     width: 90%;
     margin: 0 auto;
+    max-width: 1200px;
 }
 
 .currentLessonTitle i {
@@ -141,6 +142,7 @@
     margin: 0 auto 30px;
     text-align: center;
     width: 90%;
+    max-width: 1200px;
 }
 
 .videoIframe .vp-center {

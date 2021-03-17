@@ -2,6 +2,7 @@ import axios from 'axios';
 import {
   COURSE_ACCESS,
   GET_ONE_COURSE,
+  GET_ONE_COURSE_REQUEST,
   GET_LESSONS_WATCHED,
   GET_COURSES,
   GET_COURSES_OWNED,
@@ -84,6 +85,9 @@ export const getCourse = (courseTag) => async dispatch => {
 
   try {
     // console.log("inside getCourse");
+    dispatch({
+      type: GET_ONE_COURSE_REQUEST,
+    });
 
     const body = JSON.stringify({ courseTag });
     // console.log(body);

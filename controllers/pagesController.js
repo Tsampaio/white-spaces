@@ -1,7 +1,6 @@
 const Course = require('./../models/courseModel');
 const User = require('./../models/userModel');
-const FeaturedCourses = require('./../models/courseModel');
-const { promisify } = require('util');
+const ClassesWatched = require('./../models/classesWatchedModel');
 const { upload } = require('../utils/imageUpload');
 
 exports.getCourses = async (req, res, next) => {
@@ -118,29 +117,36 @@ exports.getLessonsWatched = async (req, res, next) => {
     const course = await Course.findOne({ tag: courseTag });
     // console.log("this is course ", course);
 
-    const userClasses = course.classes.map((theClass) => {
+    const userClasses = await ClassesWatched.find({ userId: req.user._id })
 
-      return theClass.watched.find((watched, i) => {
-        // lessonCounter = i;
-        return JSON.stringify(watched.user) === JSON.stringify(req.user._id);
-      })
-    });
+    const courseClasses = userClasses[0].classesWatched.find(loopCourse => {
+      return JSON.stringify(loopCourse.courseId) === JSON.stringify(course._id);
+    })
 
-    for (let i = 0; i < userClasses.length; i++) {
-      if (!userClasses[i]) {
-        course.classes[i].watched = { complete: false }
-      } else {
-        course.classes[i].watched = userClasses[i];
-      }
+    console.log("the course Classes are");
+    console.log(courseClasses)
+    // const userClasses = course.classes.map((theClass) => {
 
-    }
+    //   return theClass.watched.find((watched, i) => {
+    //     return JSON.stringify(watched.user) === JSON.stringify(req.user._id);
+    //   })
+    // });
+
+    // for (let i = 0; i < userClasses.length; i++) {
+    //   if (!userClasses[i]) {
+    //     course.classes[i].watched = { complete: false }
+    //   } else {
+    //     course.classes[i].watched = userClasses[i];
+    //   }
+
+    // }
 
     console.log('my course is');
     console.log(course);
 
     res.status(200).json({
       status: 'success',
-      course: course
+      userClasses: courseClasses.classes.length > 0 ? courseClasses.classes : []
     });
 
   } catch (error) {
@@ -309,44 +315,154 @@ exports.courseAccess = async (req, res) => {
 
 exports.finishLesson = async (req, res) => {
   try {
-    const course = await Course.findById(req.body.courseId);
-    console.log("INSIDE FINISH LESSON");
-    //console.log(course);
-    let lessonCounter = 0;
-    // let foundUserLesson = "";
-    // console.log("Total watched is: ", course.classes[req.body.lesson].watched.length);
+    const userClasses = await ClassesWatched.find({ userId: req.user._id })
+    console.log("userClass is:")
+    console.log(userClasses);
+    let courseIndex;
+    let lessonIndex;
 
-    // for(let i=0; i < course.classes[req.body.lesson].watched.length; i++ ) {
-    //   console.log("My i is: ", i);
-    //   if( course.classes[req.body.lesson].watched[i].user && JSON.stringify(course.classes[req.body.lesson].watched[i].user) === JSON.stringify(req.user._id) ) {
-    //     lessonCounter = i;
-    //     foundUserLesson = course.classes[req.body.lesson].watched[i].user;
-    //   }
-    // }
+    if(userClasses.length < 1) {
 
-    const foundUserLesson = course.classes[req.body.lesson].watched.find((theLesson, i) => {
-      lessonCounter = i;
-      return JSON.stringify(theLesson.user) === JSON.stringify(req.user._id);
-    });
+      const saveClass = await ClassesWatched.create({
+        userId: req.user._id,
+        classesWatched: [
+        {
+          courseId: req.body.courseId,
+          classes: [
+            {
+              lessonNumber: req.body.lesson,
+              complete: true
+            }
+          ]
+        }
+      ]
+      });
 
-    console.log(lessonCounter);
-    console.log("FOUND THE USER")
-    console.log(foundUserLesson);
+      courseIndex=0;
+      lessonIndex=0;
 
-    if (foundUserLesson) {
-      // foundUserLesson.complete = !foundUserLesson.complete
-      course.classes[req.body.lesson].watched[lessonCounter].complete = !course.classes[req.body.lesson].watched[lessonCounter].complete;
+      console.log("save class is")
+      console.log(saveClass)
+
+      return res.status(200).json({
+        userClasses: saveClass.classesWatched[courseIndex].classes
+      })
+
     } else {
-      course.classes[req.body.lesson].watched = [...course.classes[req.body.lesson].watched, { user: req.user._id, complete: true }];
+      // let courseIndex;
+      console.log(req.body.courseId);
+      const findCourse = userClasses[0].classesWatched.find((course, i) => {
+        courseIndex = i;
+        return JSON.stringify(course.courseId) === JSON.stringify(req.body.courseId);
+      })
+      console.log("find course is: position " + courseIndex);
+      console.log(findCourse);
+      
+      if(!findCourse) {
+        userClasses[0].classesWatched = [
+          ...userClasses[0].classesWatched,
+          {
+            courseId: req.body.courseId,
+            classes: [
+              {
+                lessonNumber: req.body.lesson,
+                complete: true
+              }
+            ]
+          }
+        ]
+        courseIndex=0;
+        lessonIndex=0;
+      } else {
+        // let lessonIndex;
+        const findLesson = findCourse.classes.find((lesson, i) => {
+          lessonIndex = i;
+          return lesson.lessonNumber === req.body.lesson
+        })
+        console.log("found the lesson");
+        console.log(findLesson)
+        if(!findLesson) {
+          console.log("courseIndex is " + courseIndex);
+          console.log(userClasses[0].classesWatched[courseIndex]._id)
+
+          const userFound = await ClassesWatched.findOne({ 
+            "userId": req.user._id, 
+            "classesWatched._id":userClasses[0].classesWatched[courseIndex]._id })
+            console.log(userFound)
+
+          const updatedLesson = await ClassesWatched.findOneAndUpdate({ 
+            "userId": req.user._id, 
+            "classesWatched._id":userClasses[0].classesWatched[courseIndex]._id }, {
+            "$push": { 
+              "classesWatched.$.classes": {
+                lessonNumber: req.body.lesson,
+                complete: true
+              } 
+            } 
+          }, {new: true})
+
+          lessonIndex = req.body.lesson
+
+          console.log("updated lesson is");
+          console.log(updatedLesson.classesWatched[courseIndex].classes);
+
+          return res.status(200).json({
+            userClasses: updatedLesson.classesWatched[courseIndex].classes
+          })
+
+          // userClasses[0].classesWatched[courseIndex] = {
+          //   ...userClasses[0].classesWatched[courseIndex],
+          //   classes: [
+          //     ...userClasses[0].classesWatched[courseIndex].classes,
+          //     {
+          //       lessonNumber: req.body.lesson,
+          //       complete: true
+          //     }
+          //   ]
+          // }
+          // console.log(userClasses[0].classesWatched);
+          // console.log(userClasses[0].classesWatched[courseIndex].classes)
+          
+        } else {
+          
+          userClasses[0].classesWatched[courseIndex].classes[lessonIndex].complete = !findLesson.complete;
+         
+        }
+
+      }
+      userClasses[0].save({ validateBeforeSave: false });
+      // console.log(findLesson);
     }
-    console.log("before save");
-    console.log(course.classes[req.body.lesson].watched[lessonCounter]);
+    // const course = await Course.findById(req.body.courseId);
+    // console.log("INSIDE FINISH LESSON");
+    // let lessonCounter = 0;
+   
+    // const foundUserLesson = course.classes[req.body.lesson].watched.find((theLesson, i) => {
+    //   lessonCounter = i;
+    //   return JSON.stringify(theLesson.user) === JSON.stringify(req.user._id);
+    // });
 
-    await course.save({ validateBeforeSave: false });
+    // console.log(lessonCounter);
+    // console.log("FOUND THE USER")
+    // console.log(foundUserLesson);
 
+    // if (foundUserLesson) {
+    //   course.classes[req.body.lesson].watched[lessonCounter].complete = !course.classes[req.body.lesson].watched[lessonCounter].complete;
+    // } else {
+    //   course.classes[req.body.lesson].watched = [...course.classes[req.body.lesson].watched, { user: req.user._id, complete: true }];
+    // }
+    // console.log("before save");
+    // console.log(course.classes[req.body.lesson].watched[lessonCounter]);
+
+    // await course.save({ validateBeforeSave: false });
+
+    // res.status(200).json({
+    //   lesson: req.body.lesson,
+    //   watched: course.classes[req.body.lesson].watched[lessonCounter]
+    // })
+    console.log("before saving")
     res.status(200).json({
-      lesson: req.body.lesson,
-      watched: course.classes[req.body.lesson].watched[lessonCounter]
+      userClasses: userClasses[0].classesWatched[courseIndex].classes
     })
 
   } catch (error) {

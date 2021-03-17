@@ -1,5 +1,6 @@
 import {
   GET_ONE_COURSE,
+  GET_ONE_COURSE_REQUEST,
   GET_LESSONS_WATCHED,
   GET_COURSES,
   UPDATE_COURSE,
@@ -20,6 +21,7 @@ const initialState = {
   data: null,
   all: [],
   message: "",
+  classesWatched: null,
   coursesLoaded: false
 }
 
@@ -34,10 +36,16 @@ export default function (state = initialState, action) {
         loading: true,
         all: []
       }
+    case GET_ONE_COURSE_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
     case GET_ONE_COURSE:
       // console.log("inside reducer get one course");
       return {
         ...state,
+        loading: false,
         data: payload.course
       }
     case GET_COURSES:
@@ -57,23 +65,21 @@ export default function (state = initialState, action) {
       }
     case FINISH_LESSON:
       // console.log(payload);
-      const updatedClasses = state.data.classes;
-      updatedClasses[payload.lesson].watched[0] = payload.watched;
+      // const updatedClasses = state.data.classes;
+      // updatedClasses[payload.lesson].watched[0] = payload.watched;
 
       return {
         ...state,
-        data: {
-          ...state.data,
-          classes: updatedClasses
-        }
+        classesWatched: [
+          ...payload.userClasses
+        ]
       }
     case GET_LESSONS_WATCHED:
       return {
         ...state,
-        data: {
-          ...state.data,
-          classes: payload.course.classes
-        }
+        classesWatched: [
+          ...payload.userClasses
+        ]
       }
     case SAVE_FEATURED_COURSES_REQUEST:
     case DELETE_COURSE_VIDEOCLASS_REQUEST:

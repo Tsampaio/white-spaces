@@ -49,6 +49,9 @@ const CourseLessons = ({
 		return () => (isSubscribed = false);
 	}, [auth.coursesOwned])
 
+	useEffect(() => {
+		lessonsWatchedAction(courseTag, auth.token);
+	}, [course && course.loading])
 
 	useEffect(() => {
 		lessonsWatchedAction(courseTag, auth.token);
@@ -71,22 +74,36 @@ const CourseLessons = ({
 	// console.log(course);
 	// console.log(lesson)
 
-	const checkLesson = (theClass, i) => {
+	const checkLesson = (i) => {
 		// console.log("INSIDE Checking Lesson");
 		// console.log(theClass.watched)
-		for (let y = 0; y <= theClass.watched.length; y++) {
+		let classLength = course && course.classesWatched && course.classesWatched.length;
+		console.log("ClassLength is" + classLength);
+		for (let y = 0; y < classLength; y++) {
 			// console.log("Are there classes");
 			// console.log(theClass.watched.length > 0)
-			if (theClass.watched.length > 0 && JSON.stringify(theClass.watched[y].user) === JSON.stringify(auth && auth.user && auth.user._id)) {
-				// console.log("We found a CLASS");
-				return theClass.watched[y].complete ?
-					<i className="fas fa-check-circle complete"></i>
-					: <i className="far fa-circle"></i>
-			} else {
-				return <i className="far fa-circle"></i>
-			}
+			console.log("++++++++++++++++++++++++++++++");
+			console.log("My Y is");
+			console.log(y);
+			console.log((course && course.classesWatched && course.classesWatched[y].lessonNumber))
+			console.log("My INDEX is");
+			console.log(i);
+			console.log("CLASS IS WATCHED:")
+			console.log(course && course.classesWatched && course.classesWatched[y].complete)
+			console.log("-------------------------------");
+			
+			if ((course && course.classesWatched && course.classesWatched[y].lessonNumber === i) && (course && course.classesWatched && course.classesWatched[y].complete)) {
+				console.log("We found a CLASS");
+				return true
+			} 
+			
+			// else {
+			// 	return <i className="far fa-circle"></i>
+			// }
 
 		}
+
+		return false
 	}
 
 	let classes = course && course.data && course.data.classes && course.data.classes.map((theClass, i) => {
@@ -99,7 +116,9 @@ const CourseLessons = ({
 						: <i className="far fa-circle"></i>
 						}  */}
 						{console.log("CHECKING LESSON")}
-						{checkLesson(theClass, i)}
+						{checkLesson(i) ? (
+							<i className="fas fa-check-circle complete"></i>
+						): <i className="far fa-circle"></i>}
 
 
 					</div>
@@ -158,6 +177,8 @@ const CourseLessons = ({
 			return <Redirect to="/courses" />
 		}
 	}
+
+	console.log(course.classesWatched);
 
 	return (
 		<Fragment>
