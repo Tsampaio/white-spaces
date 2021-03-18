@@ -3,6 +3,14 @@ const User = require('./../models/userModel');
 const ClassesWatched = require('./../models/classesWatchedModel');
 const { upload } = require('../utils/imageUpload');
 
+const courseProgress = (classesWatched, allClasses) => {
+  const classComplete =  classesWatched.filter((theClass, i) => (
+    theClass.complete
+  ))
+
+  return ((classComplete.length * 100) / allClasses).toFixed(0);
+}
+
 exports.getCourses = async (req, res, next) => {
   console.log("inside pagesController");
   try {
@@ -96,7 +104,7 @@ exports.getCourse = async (req, res, next) => {
     // console.log("inside getCourse Controller");
     const { courseTag } = req.body;
     // console.log("this is courseTag ", courseTag);
-    const course = await Course.findOne({ tag: courseTag });
+    const course = await Course.findOne({ tag: courseTag }).select("-sold -revenue");
     // console.log("this is course ", course);
 
     res.status(200).json({
@@ -146,7 +154,7 @@ exports.getLessonsWatched = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      userClasses: courseClasses.classes.length > 0 ? courseClasses.classes : []
+      userClasses: courseClasses && courseClasses.classes && courseClasses.classes.length > 0 ? courseClasses.classes : []
     });
 
   } catch (error) {
@@ -316,6 +324,9 @@ exports.courseAccess = async (req, res) => {
 exports.finishLesson = async (req, res) => {
   try {
     const userClasses = await ClassesWatched.find({ userId: req.user._id })
+    const currentCourse = await Course.findOne({ _id: req.body.courseId})
+    console.log("current course is")
+    console.log(currentCourse)
     console.log("userClass is:")
     console.log(userClasses);
     let courseIndex;
@@ -371,7 +382,7 @@ exports.finishLesson = async (req, res) => {
             ]
           }
         ]
-        courseIndex=0;
+        courseIndex= userClasses[0].classesWatched.length - 1;
         lessonIndex=0;
       } else {
         // let lessonIndex;
@@ -405,9 +416,11 @@ exports.finishLesson = async (req, res) => {
 
           console.log("updated lesson is");
           console.log(updatedLesson.classesWatched[courseIndex].classes);
+          const progress = courseProgress(updatedLesson.classesWatched[courseIndex].classes, currentCourse.classes.length)
 
           return res.status(200).json({
-            userClasses: updatedLesson.classesWatched[courseIndex].classes
+            userClasses: updatedLesson.classesWatched[courseIndex].classes,
+            progress
           })
 
           // userClasses[0].classesWatched[courseIndex] = {
@@ -424,45 +437,20 @@ exports.finishLesson = async (req, res) => {
           // console.log(userClasses[0].classesWatched[courseIndex].classes)
           
         } else {
-          
           userClasses[0].classesWatched[courseIndex].classes[lessonIndex].complete = !findLesson.complete;
-         
         }
 
       }
       userClasses[0].save({ validateBeforeSave: false });
-      // console.log(findLesson);
     }
-    // const course = await Course.findById(req.body.courseId);
-    // console.log("INSIDE FINISH LESSON");
-    // let lessonCounter = 0;
-   
-    // const foundUserLesson = course.classes[req.body.lesson].watched.find((theLesson, i) => {
-    //   lessonCounter = i;
-    //   return JSON.stringify(theLesson.user) === JSON.stringify(req.user._id);
-    // });
 
-    // console.log(lessonCounter);
-    // console.log("FOUND THE USER")
-    // console.log(foundUserLesson);
+    const progress = courseProgress(userClasses[0].classesWatched[courseIndex].classes, currentCourse.classes.length)
+    console.log("progress is: " + progress);
 
-    // if (foundUserLesson) {
-    //   course.classes[req.body.lesson].watched[lessonCounter].complete = !course.classes[req.body.lesson].watched[lessonCounter].complete;
-    // } else {
-    //   course.classes[req.body.lesson].watched = [...course.classes[req.body.lesson].watched, { user: req.user._id, complete: true }];
-    // }
-    // console.log("before save");
-    // console.log(course.classes[req.body.lesson].watched[lessonCounter]);
-
-    // await course.save({ validateBeforeSave: false });
-
-    // res.status(200).json({
-    //   lesson: req.body.lesson,
-    //   watched: course.classes[req.body.lesson].watched[lessonCounter]
-    // })
     console.log("before saving")
     res.status(200).json({
-      userClasses: userClasses[0].classesWatched[courseIndex].classes
+      userClasses: userClasses[0].classesWatched[courseIndex].classes,
+      progress: progress
     })
 
   } catch (error) {

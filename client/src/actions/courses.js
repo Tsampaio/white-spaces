@@ -2,8 +2,8 @@ import axios from 'axios';
 import {
   COURSE_ACCESS,
   GET_ONE_COURSE,
-  GET_ONE_COURSE_REQUEST,
   GET_LESSONS_WATCHED,
+  GET_LESSONS_WATCHED_REQUEST,
   GET_COURSES,
   GET_COURSES_OWNED,
   ADD_CHECKOUT,
@@ -85,10 +85,7 @@ export const getCourse = (courseTag) => async dispatch => {
 
   try {
     // console.log("inside getCourse");
-    dispatch({
-      type: GET_ONE_COURSE_REQUEST,
-    });
-
+  
     const body = JSON.stringify({ courseTag });
     // console.log(body);
     const res = await axios.post(`/api/getCourse`, body, {
@@ -115,6 +112,10 @@ export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
   try {
     console.log("inside lessonsWatchedAction");
     console.log(token)
+
+    dispatch({
+      type: GET_LESSONS_WATCHED_REQUEST,
+    });
 
     const body = JSON.stringify({ courseTag });
     console.log(body);

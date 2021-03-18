@@ -1,7 +1,7 @@
 import {
   GET_ONE_COURSE,
-  GET_ONE_COURSE_REQUEST,
   GET_LESSONS_WATCHED,
+  GET_LESSONS_WATCHED_REQUEST,
   GET_COURSES,
   UPDATE_COURSE,
   FINISH_LESSON
@@ -22,6 +22,7 @@ const initialState = {
   all: [],
   message: "",
   classesWatched: null,
+  courseProgress: 0,
   coursesLoaded: false
 }
 
@@ -36,7 +37,7 @@ export default function (state = initialState, action) {
         loading: true,
         all: []
       }
-    case GET_ONE_COURSE_REQUEST:
+    case GET_LESSONS_WATCHED_REQUEST:
       return {
         ...state,
         loading: true
@@ -72,11 +73,13 @@ export default function (state = initialState, action) {
         ...state,
         classesWatched: [
           ...payload.userClasses
-        ]
+        ],
+        courseProgress: payload.progress
       }
     case GET_LESSONS_WATCHED:
       return {
         ...state,
+        loading: false,
         classesWatched: [
           ...payload.userClasses
         ]

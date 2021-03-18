@@ -50,7 +50,9 @@ const CourseLessons = ({
 	}, [auth.coursesOwned])
 
 	useEffect(() => {
-		lessonsWatchedAction(courseTag, auth.token);
+		if( course && course.loading ) {
+			lessonsWatchedAction(courseTag, auth.token);
+		}
 	}, [course && course.loading])
 
 	useEffect(() => {
@@ -188,7 +190,7 @@ const CourseLessons = ({
 					<div className={styles.courseLinksCtn}>
 						<h1><i className="far fa-play-circle"></i><span>{course && course.data && course.data.name}</span></h1>
 
-						<h5 className={styles.courseCurriculum}>Progress: {percentageWatched()}% <span>complete</span></h5>
+						<h5 className={styles.courseCurriculum}>Progress: {course && course.courseProgress}% <span>complete</span></h5>
 						<div className={styles.lessonsCtn}>
 							{classes}
 						</div>
