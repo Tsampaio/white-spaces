@@ -286,6 +286,15 @@
   background-color: rgb(0, 0, 0, 0.1);
 }
 
+.removePadding {
+  padding: 0;
+}
+
+.btnStart {
+  padding: 10px 12px;
+  display: inline-block;
+}
+
 iframe {
   width: 100%;
 }

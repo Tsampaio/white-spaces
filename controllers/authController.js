@@ -179,6 +179,7 @@ exports.logout = (req, res) => {
 exports.protect = async (req, res, next) => {
   // 1) Getting token and check of it's there
   // console.log("inside protect");
+  try {
   let token;
   if (
     req.headers.authorization &&
@@ -217,6 +218,13 @@ exports.protect = async (req, res, next) => {
   req.user = currentUser;
   req.token = token;
   next();
+
+  } catch(error) {
+    res.status(401).json({
+      status: 'fail',
+      message: 'The user belonging to this token does no longer exist.'
+    })
+  }
 
   // res.status(200).json({
   //   status: 'success',

@@ -156,22 +156,22 @@ const CourseLessons = ({
 
 	// console.log(checkCourseAccess);
 
-	const percentageWatched = () => {
-		if (course && course.data && course.data.classes) {
-			const totalLessons = course && course.data && course.data.classes.length;
+	// const percentageWatched = () => {
+	// 	if (course && course.data && course.data.classes) {
+	// 		const totalLessons = course && course.data && course.data.classes.length;
 
-			let totalLessonsWatched = 0;
+	// 		let totalLessonsWatched = 0;
 
-			for (let i = 0; i < course.data.classes.length; i++) {
-				//  console.log(course.data.classes[i]);
-				if (course.data.classes[i].watched.length > 0 && course.data.classes[i].watched[0].complete) {
-					totalLessonsWatched += 1;
-				}
-			}
+	// 		for (let i = 0; i < course.data.classes.length; i++) {
+	// 			//  console.log(course.data.classes[i]);
+	// 			if (course.data.classes[i].watched.length > 0 && course.data.classes[i].watched[0].complete) {
+	// 				totalLessonsWatched += 1;
+	// 			}
+	// 		}
 
-			return (totalLessonsWatched * 100 / totalLessons).toFixed(0);
-		}
-	}
+	// 		return (totalLessonsWatched * 100 / totalLessons).toFixed(0);
+	// 	}
+	// }
 
 
 	const redirectUser = () => {

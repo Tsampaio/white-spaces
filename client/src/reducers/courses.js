@@ -4,7 +4,8 @@ import {
   GET_LESSONS_WATCHED_REQUEST,
   GET_COURSES,
   UPDATE_COURSE,
-  FINISH_LESSON
+  FINISH_LESSON,
+  FINISH_LESSON_ERROR
 } from '../actions/types';
 import {
   COURSE_LIST_REQUEST,
@@ -47,7 +48,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        data: payload.course
+        data: payload.course,
+        courseProgress: payload.courseProgress
       }
     case GET_COURSES:
       // console.log("Reducer ALL courses");
@@ -75,6 +77,12 @@ export default function (state = initialState, action) {
           ...payload.userClasses
         ],
         courseProgress: payload.progress
+      }
+    case FINISH_LESSON_ERROR:
+      return {
+        ...state,
+        classesWatched: [],
+        courseProgress: 0
       }
     case GET_LESSONS_WATCHED:
       return {

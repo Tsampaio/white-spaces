@@ -101,15 +101,30 @@ exports.getCoursesOwned = async (req, res, next) => {
 
 exports.getCourse = async (req, res, next) => {
   try {
-    // console.log("inside getCourse Controller");
+    console.log("inside getCourse Controller");
     const { courseTag } = req.body;
     // console.log("this is courseTag ", courseTag);
     const course = await Course.findOne({ tag: courseTag }).select("-sold -revenue");
     // console.log("this is course ", course);
+    
+    const userClasses = await ClassesWatched.find({ userId: req.body.userId })
+
+    let courseIndex;
+    let courseClasses;
+
+    if(req.body.userId) {
+      courseClasses = userClasses[0].classesWatched.find((loopCourse, i) => {
+        courseIndex = i;
+        return JSON.stringify(loopCourse.courseId) === JSON.stringify(course._id);
+      })
+    }
+
+    const progress = courseClasses ? courseProgress(userClasses[0].classesWatched[courseIndex].classes, course.classes.length) : 0
 
     res.status(200).json({
       status: 'success',
-      course: course
+      course: course,
+      courseProgress: progress
     });
 
   } catch (error) {
@@ -454,7 +469,12 @@ exports.finishLesson = async (req, res) => {
     })
 
   } catch (error) {
-    console.log(error)
+    console.log("THIs is error")
+    res.status(400).json({
+      userClasses: [],
+      progress: 0
+    })
+    
   }
 }
 

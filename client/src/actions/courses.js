@@ -11,7 +11,8 @@ import {
   LOAD_CHECKOUT,
   // CREATE_COURSE,
   UPDATE_COURSE,
-  FINISH_LESSON
+  FINISH_LESSON,
+  FINISH_LESSON_ERROR
 } from './types';
 import { COURSE_LIST_REQUEST, 
   DELETE_COURSE_VIDEOCLASS_FAIL, 
@@ -78,24 +79,26 @@ export const getCoursesOwned = (userId) => async dispatch => {
   }
 }
 
-export const getCourse = (courseTag) => async dispatch => {
+export const getCourse = (courseTag) => async (dispatch, getState) => {
   // if(localStorage.token) {
   //     setAuthToken(localStorage.token);
   // }
 
   try {
-    // console.log("inside getCourse");
-  
-    const body = JSON.stringify({ courseTag });
-    // console.log(body);
+    console.log("inside getCourse");
+    const { auth } = getState();
+    const userId  = auth && auth.user && auth.user._id;
+    const body = userId ? JSON.stringify({ courseTag, userId }) : JSON.stringify({ courseTag });
+    console.log(body);
     const res = await axios.post(`/api/getCourse`, body, {
       headers: {
         Accept: 'application/json',
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: auth.token ? `Bearer ${auth.token}` : 'Bearer'
       }
     });
 
-    // console.log(res.data);
+    console.log(res.data);
 
     dispatch({
       type: GET_ONE_COURSE,
@@ -321,7 +324,11 @@ export const finishLessonAction = (lesson, courseId, token) => async dispatch =>
     });
 
   } catch (error) {
-    console.log(error);
+    console.log("There is an error finishing the class");
+    dispatch({
+      type: FINISH_LESSON_ERROR,
+    });
+    
   }
 }
 

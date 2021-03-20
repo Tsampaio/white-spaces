@@ -117,8 +117,9 @@ const Course = () => {
             </h1>
             {(userGotCourse && userGotCourse.length > 0) ||
             (auth && auth.membership && auth.membership.active) ? (
-              <Button variant="dark">
+              <Button variant="dark" className="removePadding">
                 <Link
+                  className="btnStart"
                   to={`/courses/${
                     course && course.data && course.data.tag
                   }/lessons/1`}
