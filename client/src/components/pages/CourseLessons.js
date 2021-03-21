@@ -150,7 +150,7 @@ const CourseLessons = ({
 		}
 	}
 
-	const checkCourseAccess = auth && auth.coursesOwned.length > 0 && auth.coursesOwned.find((theCourse) => {
+	const checkCourseAccess = auth && auth.coursesOwned && auth.coursesOwned.length > 0 && auth.coursesOwned.find((theCourse) => {
 		return theCourse.tag === courseTag
 	});
 

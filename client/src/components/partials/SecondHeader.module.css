@@ -149,13 +149,14 @@
 
 .mobileMenuDiv {
   width: 70%;
-  height: 100%;
+  height: calc(100% + 50px);
   background-color: #fff;
   position: absolute;
   left: -300px;
   transition: all 0.5s ease-in-out;
   visibility: hidden;
   z-index: 3;
+  top: 0;
 }
 
 .mobileMenuDiv.slide {

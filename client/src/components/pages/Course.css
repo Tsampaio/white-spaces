@@ -210,6 +210,14 @@
   color: white;
 }
 
+.card-body .buyLifetime {
+  background-color: #007bff;
+}
+
+.purchaseButtons .card-body .buyLifetime:hover {
+  background-color: #004c9c;
+}
+
 .buyLifetime.membershipPay {
   margin-top: 0;
   width: 160px;

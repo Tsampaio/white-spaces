@@ -81,6 +81,8 @@ exports.getCoursesOwned = async (req, res, next) => {
     console.log(user );
 
     const userClasses = await ClassesWatched.find({ userId: req.user._id })
+    console.log("this is user classes");
+    console.log(userClasses)
 
     if (user && user.courses.length > 0) {
       Promise.all(user.courses.map(async (course) => {
@@ -91,7 +93,7 @@ exports.getCoursesOwned = async (req, res, next) => {
         allCourses = values;
         console.log(values)
         let allProgress = [];
-        if(userClasses) {
+        if(userClasses.length > 0) {
           // Promise.all(userClasses.classesWatched.find(async (course) => {
           //   return await ClassesWatched.findOne({ "userId": req.user._id, "classesWatched._id": course._id })
           // })).then(values => {
@@ -133,17 +135,35 @@ exports.getCoursesOwned = async (req, res, next) => {
 exports.getCourse = async (req, res, next) => {
   try {
     console.log("inside getCourse Controller");
-    const { courseTag } = req.body;
+    const { courseTag, userId } = req.body;
     // console.log("this is courseTag ", courseTag);
     const course = await Course.findOne({ tag: courseTag }).select("-sold -revenue");
     // console.log("this is course ", course);
+    console.log(typeof course);
+    // for(let i=0; i < course.classes.length; i++ ) {
+    //   console.log(course.classes[i].url);
+    //   delete course.classes[i].url
+    // }
+    const user = await User.find({_id: userId});
+
+    const theCourse = course.toObject();
+    
+    if(user.length < 1) {
+      for(let i=0; i < theCourse.classes.length; i++ ) {
+        console.log(theCourse.classes[i].url);
+        delete theCourse.classes[i].url
+      }
+    }
+
+    console.log("course classes are ");
+    console.log(theCourse.classes)
     
     const userClasses = await ClassesWatched.find({ userId: req.body.userId })
 
     let courseIndex;
     let courseClasses;
 
-    if(req.body.userId) {
+    if(req.body.userId && userClasses.length > 0) {
       courseClasses = userClasses[0].classesWatched.find((loopCourse, i) => {
         courseIndex = i;
         return JSON.stringify(loopCourse.courseId) === JSON.stringify(course._id);
@@ -151,14 +171,16 @@ exports.getCourse = async (req, res, next) => {
     }
 
     const progress = courseClasses ? courseProgress(userClasses[0].classesWatched[courseIndex].classes, course.classes.length) : 0
-
+    console.log("THIS IS COURSE +++++");
+    console.log(theCourse)
     res.status(200).json({
       status: 'success',
-      course: course,
+      course: theCourse,
       courseProgress: progress
     });
 
   } catch (error) {
+    console.log("Error in getting course")
     console.log(error);
   }
 }
@@ -173,7 +195,7 @@ exports.getLessonsWatched = async (req, res, next) => {
 
     const userClasses = await ClassesWatched.find({ userId: req.user._id })
 
-    const courseClasses = userClasses[0].classesWatched.find(loopCourse => {
+    const courseClasses = userClasses && userClasses.length > 0 && userClasses[0].classesWatched.find(loopCourse => {
       return JSON.stringify(loopCourse.courseId) === JSON.stringify(course._id);
     })
 

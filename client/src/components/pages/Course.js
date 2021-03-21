@@ -12,7 +12,7 @@ const Course = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector((state) => state.auth);
-  const { user } = auth;
+  const { user, membership } = auth;
   const course = useSelector((state) => state.courses);
   const payment = useSelector((state) => state.payment);
   console.log(course);
@@ -25,7 +25,7 @@ const Course = () => {
 
   useEffect(() => {
     dispatch(getCourse(courseTag));
-  }, [courseTag, dispatch]);
+  }, [courseTag, dispatch, user]);
 
   useEffect(() => {
     dispatch(getCoursesOwned(user && user._id));
@@ -34,10 +34,10 @@ const Course = () => {
   }, [dispatch, user]);
 
   useEffect(() => {
-    if (auth && auth.membership && auth.membership.active) {
+    if (membership && membership.active) {
       setPage({ loaded: true });
     }
-  }, [auth && auth.membership && auth.membership.active]);
+  }, [membership]);
 
   // useEffect(() => {
   //   store.dispatch(getCourse(courseTag, auth && auth.token));
@@ -101,7 +101,7 @@ const Course = () => {
     return <Redirect to="/cart/checkout" />;
   }
 
-  if (auth && auth.membership && auth.membership.active) {
+  if (membership && membership.active) {
     console.log('final check');
   }
 
@@ -116,7 +116,7 @@ const Course = () => {
               {course && course.data && course.data.name}
             </h1>
             {(userGotCourse && userGotCourse.length > 0) ||
-            (auth && auth.membership && auth.membership.active) ? (
+            (membership && membership.active) ? (
               <Button variant="dark" className="removePadding">
                 <Link
                   className="btnStart"
@@ -143,7 +143,7 @@ const Course = () => {
               ></iframe>
             </div>
             <div className="row">
-              <div className="col-lg-8 col-sm-12">
+              <div className={membership && membership.active && userGotCourse && userGotCourse.length > 0 ? "col-lg-12 col-sm-12" : "col-lg-8 col-sm-12"}col-lg-8 col-sm-12>
                 <div className="card">
                   <div className="card-header">Description</div>
                   <div className="courseDescription card-body">
@@ -161,9 +161,8 @@ const Course = () => {
 
               <div className="col-lg-4 offset-sm-2 offset-lg-0 col-sm-8">
                 {page.loaded &&
-                auth &&
-                auth.membership &&
-                auth.membership.active ? null : (
+                membership &&
+                membership.active ? null : (
                   <div className="card purchaseButtons membershipCardCtn">
                     <div className="card-header">
                       Unlimited access all courses
@@ -184,7 +183,7 @@ const Course = () => {
                   </div>
                 )}
 
-                {userGotCourse && userGotCourse.length < 1 && (
+                {(!userGotCourse || (userGotCourse && userGotCourse.length < 1)) && (
                   <div className="card purchaseButtons">
                     <div className="card-header">Buy Lifetime Access:</div>
                     <div className="card-body">
@@ -198,11 +197,9 @@ const Course = () => {
                           <span className="buyCoursePrice">Buy Course</span>
                         </button>
                       ) : (
-                        <button className="buyButton buyLifetime">
-                          <Link to="/register" className="buyCoursePrice">
-                            Buy Course
-                          </Link>
-                        </button>
+                        <Link to="/register" className="membershipPay btn-primary buyLifetime">
+                          Buy Course
+                        </Link>
                       )}
                     </div>
                   </div>

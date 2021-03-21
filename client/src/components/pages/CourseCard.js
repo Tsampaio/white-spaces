@@ -51,9 +51,9 @@ const CourseCard = (props) => {
           </> ) : (
             <div className="courseProgressBorder">
               <div className="courseProgressCtn">
-                <div style={{backgroundColor: "#537ddc", width: `${coursesProgress ? coursesProgress[props.index] : "0"}%`, height: "100%"}}></div>
+                <div style={{backgroundColor: "#537ddc", width: `${coursesProgress && coursesProgress.length > 0 ? coursesProgress[props.index] : "0"}%`, height: "100%"}}></div>
               </div>
-              <p>{coursesProgress ? coursesProgress[props.index] : "0"}% Complete</p>
+              <p>{coursesProgress && coursesProgress.length > 0 ? coursesProgress[props.index] : "0"}% Complete</p>
             </div>
           )}
       </div>

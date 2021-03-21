@@ -27,6 +27,7 @@ import { COURSE_LIST_REQUEST,
 export const getCourses = (courses) => async dispatch => {
 
   try {
+
     dispatch({
       type: COURSE_LIST_REQUEST
     });
