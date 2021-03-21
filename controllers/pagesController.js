@@ -8,6 +8,11 @@ const courseProgress = (classesWatched, allClasses) => {
     theClass.complete
   ))
 
+  console.log("CLASS complete is ");
+  console.log(classComplete)
+  console.log("All classes length is ");
+  console.log(allClasses)
+console.log(((classComplete.length * 100) / allClasses).toFixed(0))
   return ((classComplete.length * 100) / allClasses).toFixed(0);
 }
 
@@ -69,9 +74,13 @@ exports.getCourses = async (req, res, next) => {
 
 exports.getCoursesOwned = async (req, res, next) => {
   try {
+    console.log("INSIDE GETCOURSES OWNED CONTROLLER");
     let allCourses;
-    const user = await User.findById(req.body.userId);
-    // console.log(user );
+    const user = await User.findById(req.user._id);
+    console.log("Found the user for courses owned");
+    console.log(user );
+
+    const userClasses = await ClassesWatched.find({ userId: req.user._id })
 
     if (user && user.courses.length > 0) {
       Promise.all(user.courses.map(async (course) => {
@@ -80,11 +89,33 @@ exports.getCoursesOwned = async (req, res, next) => {
       })
       ).then(values => {
         allCourses = values;
-        // console.log(values)
+        console.log(values)
+        let allProgress = [];
+        if(userClasses) {
+          // Promise.all(userClasses.classesWatched.find(async (course) => {
+          //   return await ClassesWatched.findOne({ "userId": req.user._id, "classesWatched._id": course._id })
+          // })).then(values => {
+          //   console.log("My courses classes found")
+          //   console.log(values)
+          // })
 
+          for(let i=0; i < allCourses.length; i++) {
+            allProgress[i] = 0;
+            for(let j=0; j < userClasses[0].classesWatched.length; j++) {
+              if(JSON.stringify(allCourses[i]._id) === JSON.stringify(userClasses[0].classesWatched[j].courseId)) {
+                const progress = courseProgress(userClasses[0].classesWatched[j].classes, allCourses[i].classes.length);
+                allProgress[i] = progress;
+                
+              }
+            }
+          }
+        }
+        console.log("ALL Progress")
+        console.log(allProgress);
         return res.status(200).json({
           status: 'success',
-          courses: allCourses
+          courses: allCourses,
+          coursesProgress: allProgress
         });
       });
     } else {

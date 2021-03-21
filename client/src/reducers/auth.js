@@ -41,6 +41,7 @@ const initialState = {
   loading: true,
   notification: {},
   coursesOwned: [],
+  coursesProgress: [],
   coursesOwnedLoaded: false,
   membership: {
     active: false
@@ -148,6 +149,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         coursesOwned: payload.courses,
+        coursesProgress: payload.coursesProgress,
         coursesOwnedLoaded: true
       }
     case COURSE_ACCESS:

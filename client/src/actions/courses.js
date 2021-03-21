@@ -52,20 +52,16 @@ export const getCourses = (courses) => async dispatch => {
   }
 }
 
-export const getCoursesOwned = (userId) => async dispatch => {
+export const getCoursesOwned = () => async dispatch => {
   try {
     // console.log("inside actions getCoursesOwned");
     // console.log( userId )
 
-    const body = JSON.stringify({ userId });
+    // const userId  = auth && auth.token;
 
-    const res = await axios.post(`/api/getCoursesOwned`, body, {
-      headers: {
-        Accept: 'application/json',
-        "Content-Type": "application/json"
-        // Authorization: `Bearer ${token}`
-      }
-    });
+    // const body = JSON.stringify({ userId });
+    console.log("<<<<<< Trying to find CoursesOwned ACTION")
+    const res = await axios.get(`/api/getCoursesOwned`);
 
     console.log(res.data)
 

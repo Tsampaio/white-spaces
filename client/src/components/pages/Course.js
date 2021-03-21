@@ -87,7 +87,7 @@ const Course = () => {
   const courseId = course && course.data && course.data._id;
 
   const userGotCourse =
-    auth &&
+    auth && auth.coursesOwned &&
     auth.coursesOwned.filter((course) => {
       console.log(course._id);
       console.log(courseId);

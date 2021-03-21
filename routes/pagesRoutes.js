@@ -23,7 +23,7 @@ router.post('/getCourse', getCourse);
 // router.post('/uploadCourseImage', pagesController.uploadCourseImage);
 router.post('/getLessonsWatched', protect, getLessonsWatched);
 router.post('/getCourses', getCourses);
-router.post('/getCoursesOwned', getCoursesOwned);
+router.get('/getCoursesOwned', protect, getCoursesOwned);
 router.post('/createCourse', createCourse);
 router.post(
   '/coursePic/:courseTag',

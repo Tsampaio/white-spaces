@@ -1,6 +1,5 @@
-import React, { useEffect, Fragment, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { checkMembership } from '../../actions/membership';
@@ -15,7 +14,7 @@ function ProfileCourses() {
 
   useEffect(() => {
     if(!loading && !coursesOwnedLoaded) {
-      dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
+      dispatch(getCoursesOwned());
     }
 
     console.log('before check membership ');
@@ -60,8 +59,10 @@ function ProfileCourses() {
         <CourseCard
           name={course.name}
           key={index}
+          index={index}
           tag={course.tag}
           courseLevel={course.courseLevel}
+          courseOwned={true}
         />
       );
     });
