@@ -148,7 +148,7 @@ exports.getCourse = async (req, res, next) => {
 
     const theCourse = course.toObject();
     
-    if(user.length < 1) {
+    if(!req.userHasCourse) {
       for(let i=0; i < theCourse.classes.length; i++ ) {
         console.log(theCourse.classes[i].url);
         delete theCourse.classes[i].url

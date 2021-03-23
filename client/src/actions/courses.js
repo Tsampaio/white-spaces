@@ -80,7 +80,6 @@ export const getCourse = (courseTag) => async (dispatch, getState) => {
   // if(localStorage.token) {
   //     setAuthToken(localStorage.token);
   // }
-
   try {
     console.log("inside getCourse");
     const { auth } = getState();
