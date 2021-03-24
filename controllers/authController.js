@@ -178,52 +178,59 @@ exports.logout = (req, res) => {
 
 exports.protect = async (req, res, next) => {
   // 1) Getting token and check of it's there
-  // console.log("inside protect");
+  console.log("inside protect");
   try {
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    console.log("checking req header authorization");
-    token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    console.log("inside browser cookies");
-    token = req.cookies.jwt;
-  } else {
-    return res.status(200).json({
-      status: 'guest',
-      message: 'Failed to authenticate'
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      console.log("checking req header authorization");
+      token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.jwt) {
+      console.log("inside browser cookies");
+      token = req.cookies.jwt;
+    } else {
+      return res.status(200).json({
+        status: 'guest',
+        message: 'Failed to authenticate'
 
-    });
-  }
+      });
+    }
 
-  console.log(token);
-  // 2) Verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  //console.log(decoded);
+    console.log(token);
+    // 2) Verification token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    console.log("Decoded is");
+    console.log(decoded);
 
-  // 3) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
-  //console.log(currentUser);
-  if (!currentUser) {
-    return next(
-      res.status(401).json({
-        status: 'fail',
-        message: 'The user belonging to this token does no longer exist.'
-      })
-    );
-  }
+    // 3) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    //console.log(currentUser);
+    if (!currentUser) {
+      console.log("No current user")
+      return next(
+        res.status(401).json({
+          status: 'fail',
+          message: 'The user belonging to this token does no longer exist.'
+        })
+      );
+    }
 
-  req.user = currentUser;
-  req.token = token;
-  next();
+    req.user = currentUser;
+    req.token = token;
+    console.log("before protect next")
+    next();
 
   } catch(error) {
+
+    console.log("error in login")
+    console.log(error);
     res.status(401).json({
       status: 'fail',
       message: 'The user belonging to this token does no longer exist.'
     })
+    
   }
 
   // res.status(200).json({
@@ -555,7 +562,7 @@ exports.getUserPurchases = async (req, res) => {
 exports.lastLogin = async (req, res) => {
   try {
     console.log("last login");
-    console.log(req.user);
+    // console.log(req.user);
     const dateNow = new Date();
 
     const user = await User.findById(req.user._id);

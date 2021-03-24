@@ -2,16 +2,16 @@ import React, { Fragment, useEffect, useState } from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import styles from './CourseLesson.module.css';
 import { useParams, Link, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCourse, getCoursesOwned, finishLessonAction, lessonsWatchedAction } from '../../actions/courses';
 
-const CourseLessons = ({ 
-	course, 
-	auth, 
-	getCoursesOwned, 
-	getCourse, 
-	finishLessonAction, 
-	lessonsWatchedAction }) => {
+const CourseLessons = () => {
+	const dispatch = useDispatch();
+
+	const auth = useSelector((state) => state.auth);
+  const { user, token } = auth;
+  const course = useSelector((state) => state.courses);
+	const { loading } = course;
 
 	const [page, setPage] = useState({
 		loaded: false
@@ -23,13 +23,12 @@ const CourseLessons = ({
 
 	useEffect(() => {
 		let isSubscribed = true;
-		if (isSubscribed) {
-			setPage({ loaded: true });
-			getCourse(courseTag);
+		if (isSubscribed && token) {
+			dispatch(getCourse(courseTag, user && user._id));
 		}
 
 		return () => (isSubscribed = false);
-	}, []);
+	}, [courseTag, user && user._id]);
 
 	useEffect(() => {
 		let isSubscribed = true;
@@ -50,14 +49,11 @@ const CourseLessons = ({
 	}, [auth.coursesOwned])
 
 	useEffect(() => {
-		if( course && course.loading ) {
-			lessonsWatchedAction(courseTag, auth.token);
-		}
-	}, [course && course.loading])
+			console.log("CALLING LESSONS WATCHED ACTION")
+			dispatch(lessonsWatchedAction(courseTag, user && user._id));
+		
+	}, [courseTag, user && user._id])
 
-	useEffect(() => {
-		lessonsWatchedAction(courseTag, auth.token);
-	}, [auth && auth.token])
 	// useEffect(() => {
 	// 	console.log("calling redirect user")
 	// 	if ( (page.loaded && auth && auth.user && auth.user.role !== "admin" && !checkCourseAccess) || (auth && auth.membership && auth.membership.active)) {
@@ -66,7 +62,7 @@ const CourseLessons = ({
 	// }, [page.loaded, auth.membership, auth.user]);
 
 	const setCoursesOwned = async () => {
-		await getCoursesOwned(auth && auth.user && auth.user._id);
+		// await dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
 
 	}
 
@@ -80,22 +76,22 @@ const CourseLessons = ({
 		// console.log("INSIDE Checking Lesson");
 		// console.log(theClass.watched)
 		let classLength = course && course.classesWatched && course.classesWatched.length;
-		console.log("ClassLength is" + classLength);
+		// console.log("ClassLength is" + classLength);
 		for (let y = 0; y < classLength; y++) {
 			// console.log("Are there classes");
 			// console.log(theClass.watched.length > 0)
-			console.log("++++++++++++++++++++++++++++++");
-			console.log("My Y is");
-			console.log(y);
-			console.log((course && course.classesWatched && course.classesWatched[y].lessonNumber))
-			console.log("My INDEX is");
-			console.log(i);
-			console.log("CLASS IS WATCHED:")
-			console.log(course && course.classesWatched && course.classesWatched[y].complete)
-			console.log("-------------------------------");
+			// console.log("++++++++++++++++++++++++++++++");
+			// console.log("My Y is");
+			// console.log(y);
+			// console.log((course && course.classesWatched && course.classesWatched[y].lessonNumber))
+			// console.log("My INDEX is");
+			// console.log(i);
+			// console.log("CLASS IS WATCHED:")
+			// console.log(course && course.classesWatched && course.classesWatched[y].complete)
+			// console.log("-------------------------------");
 			
 			if ((course && course.classesWatched && course.classesWatched[y].lessonNumber === i) && (course && course.classesWatched && course.classesWatched[y].complete)) {
-				console.log("We found a CLASS");
+				// console.log("We found a CLASS");
 				return true
 			} 
 			
@@ -112,12 +108,12 @@ const CourseLessons = ({
 		return (
 			<div className={lesson === (i + 1) ? styles.lessonActiveCtn : ''}>
 				<div className={i % 2 === 0 ? styles.lesson : `${styles.lesson} ${styles.stripe}`} key={i}>
-					<div className={styles.lessonComplete} onClick={() => finishLessonAction(i, course && course.data && course.data._id, auth && auth.token)}>
+					<div className={styles.lessonComplete} onClick={() => dispatch(finishLessonAction(i, course && course.data && course.data._id, auth && auth.token))}>
 						{/* {	theClass.watched.complete ? 
 							<i className="fas fa-check-circle complete"></i>
 						: <i className="far fa-circle"></i>
 						}  */}
-						{console.log("CHECKING LESSON")}
+						{/* {console.log("CHECKING LESSON")} */}
 						{checkLesson(i) ? (
 							<i className="fas fa-check-circle complete"></i>
 						): <i className="far fa-circle"></i>}
@@ -180,7 +176,7 @@ const CourseLessons = ({
 		}
 	}
 
-	console.log(course.classesWatched);
+	// console.log(course.classesWatched);
 
 	return (
 		<Fragment>
@@ -218,14 +214,10 @@ const CourseLessons = ({
 
 }
 
-const mapStateToProps = state => ({
-	course: state.courses,
-	auth: state.auth
-	// profile: state.profile
-});
+// const mapStateToProps = state => ({
+// 	course: state.courses,
+// 	auth: state.auth
+// 	// profile: state.profile
+// });
 
-export default connect(mapStateToProps, 
-	{ getCoursesOwned, 
-		getCourse, 
-		finishLessonAction,
-		lessonsWatchedAction })(CourseLessons);
+export default CourseLessons;

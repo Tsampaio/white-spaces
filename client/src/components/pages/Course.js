@@ -12,7 +12,7 @@ const Course = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector((state) => state.auth);
-  const { user, membership } = auth;
+  const { user, membership, token } = auth;
   const course = useSelector((state) => state.courses);
   const payment = useSelector((state) => state.payment);
   console.log(course);
@@ -24,8 +24,8 @@ const Course = () => {
   const { courseTag } = useParams();
 
   useEffect(() => {
-    dispatch(getCourse(courseTag));
-  }, [courseTag, dispatch, user]);
+    dispatch(getCourse(courseTag, token));
+  }, [courseTag, dispatch, user, token]);
 
   useEffect(() => {
     dispatch(getCoursesOwned(user && user._id));

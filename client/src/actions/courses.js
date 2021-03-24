@@ -76,26 +76,24 @@ export const getCoursesOwned = () => async dispatch => {
   }
 }
 
-export const getCourse = (courseTag) => async (dispatch, getState) => {
+export const getCourse = (courseTag, userId) => async (dispatch, getState) => {
   // if(localStorage.token) {
   //     setAuthToken(localStorage.token);
   // }
   try {
     console.log("inside getCourse");
-    const { auth } = getState();
-    const userId  = auth && auth.user && auth.user._id;
     const body = userId ? JSON.stringify({ courseTag, userId }) : JSON.stringify({ courseTag });
     console.log(body);
+   
     const res = await axios.post(`/api/getCourse`, body, {
       headers: {
         Accept: 'application/json',
         "Content-Type": "application/json",
-        Authorization: auth.token ? `Bearer ${auth.token}` : 'Bearer'
       }
     });
 
     console.log(res.data);
-
+    
     dispatch({
       type: GET_ONE_COURSE,
       payload: res.data
