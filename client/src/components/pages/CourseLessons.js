@@ -50,9 +50,9 @@ const CourseLessons = () => {
 
 	useEffect(() => {
 			console.log("CALLING LESSONS WATCHED ACTION")
-			dispatch(lessonsWatchedAction(courseTag, user && user._id));
+			dispatch(lessonsWatchedAction(courseTag, token));
 		
-	}, [courseTag, user && user._id])
+	}, [dispatch, courseTag, token])
 
 	// useEffect(() => {
 	// 	console.log("calling redirect user")

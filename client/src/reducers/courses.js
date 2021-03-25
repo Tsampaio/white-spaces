@@ -2,6 +2,7 @@ import {
   GET_ONE_COURSE,
   GET_LESSONS_WATCHED,
   GET_LESSONS_WATCHED_REQUEST,
+  GET_LESSONS_WATCHED_FAIL,
   GET_COURSES,
   UPDATE_COURSE,
   FINISH_LESSON,
@@ -91,6 +92,12 @@ export default function (state = initialState, action) {
         classesWatched: [
           ...payload.userClasses
         ]
+      }
+    case GET_LESSONS_WATCHED_FAIL:
+      return {
+        ...state,
+        loading: false,
+        classesWatched: []
       }
     case SAVE_FEATURED_COURSES_REQUEST:
     case DELETE_COURSE_VIDEOCLASS_REQUEST:

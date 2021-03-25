@@ -4,12 +4,12 @@ import {
   GET_ONE_COURSE,
   GET_LESSONS_WATCHED,
   GET_LESSONS_WATCHED_REQUEST,
+  GET_LESSONS_WATCHED_FAIL,
   GET_COURSES,
   GET_COURSES_OWNED,
   ADD_CHECKOUT,
   REMOVE_CHECKOUT,
   LOAD_CHECKOUT,
-  // CREATE_COURSE,
   UPDATE_COURSE,
   FINISH_LESSON,
   FINISH_LESSON_ERROR
@@ -108,7 +108,7 @@ export const getCourse = (courseTag, userId) => async (dispatch, getState) => {
 export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
   try {
     console.log("inside lessonsWatchedAction");
-    console.log(token)
+    // console.log(token)
 
     dispatch({
       type: GET_LESSONS_WATCHED_REQUEST,
@@ -120,7 +120,7 @@ export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
       headers: {
         Accept: 'application/json',
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: token ? `Bearer ${token}` : 'No'
       }
     });
 
@@ -131,7 +131,11 @@ export const lessonsWatchedAction = (courseTag, token) => async dispatch => {
       payload: res.data
     });
   } catch (error) {
+    console.log("GET LESSONS WATCHED FAIL")
     console.log(error);
+    dispatch({
+      type: GET_LESSONS_WATCHED_FAIL,
+    });
   }
 }
 

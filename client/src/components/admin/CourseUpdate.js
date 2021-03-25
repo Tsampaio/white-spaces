@@ -28,6 +28,7 @@ const CourseUpdate = () => {
   const { data } = course;
 
   const auth = useSelector((state) => state.auth);
+  const { user, token } = auth;
 
   const [image, setImage] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -59,7 +60,7 @@ const CourseUpdate = () => {
 
   useEffect(() => {
     setCourseValues();
-  }, [courseState.loaded, course.loading]);
+  }, [courseState.loaded, course.loading, auth]);
 
   useEffect(() => {
     if (courseState.courseDescription) {
@@ -78,7 +79,7 @@ const CourseUpdate = () => {
   }, [saveCourse]);
 
   const setCourseValues = async () => {
-    await store.dispatch(getCourse(courseTag));
+    await dispatch(getCourse(courseTag, user && user._id));
 
     // if (course && course.data && course.data._id) {
     // 	for (let i = 0; i < course.data.classes.length; i++) {

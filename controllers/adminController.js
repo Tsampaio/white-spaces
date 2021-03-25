@@ -342,6 +342,8 @@ exports.updateCoupon = async (req, res) => {
 exports.updateCourse = async (req, res, next) => {
   try {
     if (req.user.role === 'admin') {
+      console.log("Inside course update controller");
+      console.log("User is admin")
       const { id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes, courseLevel } = req.body;
       // console.log("inside of update Course");
       // console.log(req.body);

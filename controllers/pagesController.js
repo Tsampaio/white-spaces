@@ -166,11 +166,15 @@ exports.getCourse = async (req, res, next) => {
     // }
   
     const theCourse = course.toObject();
-    
-    if(!hasCourse) {
-      for(let i=0; i < theCourse.classes.length; i++ ) {
-        console.log(theCourse.classes[i].url);
-        delete theCourse.classes[i].url
+    console.log("User role is ");
+    // console.log(user.role)
+    if(!user || (user && user.role !== 'admin')) {
+      console.log("REMOVING THE URLS")
+      if(!hasCourse) {
+        for(let i=0; i < theCourse.classes.length; i++ ) {
+          console.log(theCourse.classes[i].url);
+          delete theCourse.classes[i].url
+        }
       }
     }
 

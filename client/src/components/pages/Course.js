@@ -24,7 +24,8 @@ const Course = () => {
   const { courseTag } = useParams();
 
   useEffect(() => {
-    dispatch(getCourse(courseTag, token));
+    console.log("getting course");
+    dispatch(getCourse(courseTag, user && user._id));
   }, [courseTag, dispatch, user, token]);
 
   useEffect(() => {
