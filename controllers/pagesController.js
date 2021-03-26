@@ -2,29 +2,118 @@ const Course = require('./../models/courseModel');
 const User = require('./../models/userModel');
 const ClassesWatched = require('./../models/classesWatchedModel');
 const { upload } = require('../utils/imageUpload');
+const braintree = require('braintree');
+
+const gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY
+})
 
 const courseProgress = (classesWatched, allClasses) => {
   const classComplete =  classesWatched.filter((theClass, i) => (
     theClass.complete
   ))
-
-  // console.log("CLASS complete is ");
-  // console.log(classComplete)
-  // console.log("All classes length is ");
-  // console.log(allClasses)
-  console.log(((classComplete.length * 100) / allClasses).toFixed(0))
+  // console.log(((classComplete.length * 100) / allClasses).toFixed(0))
   return ((classComplete.length * 100) / allClasses).toFixed(0);
 }
 
-const userHasCourses = async (user, courseTag) => {
-  const course = await Course.findOne({ tag: courseTag })
-   
+const userHasCourses = async (user, course) => {
+  return new Promise((resolve, reject) => {
     const userHasCourse = user && user.courses.find((theCourse) => {
       return JSON.stringify(theCourse) === JSON.stringify(course && course._id);
     });
     
-    if(userHasCourse) return true
-    return false
+    console.log("user has the course?? " + userHasCourse);
+    if(userHasCourse) {
+      resolve(true)
+    } else {
+      resolve(false)
+    }
+  })
+}
+
+const checkMembership = async (theUser) => {
+  return new Promise( async (resolve, reject) => {
+  console.log('inside checkMembership');
+
+  const dateInPast = function (firstDate, secondDate) {
+    if (firstDate.setHours(0, 0, 0, 0) <= secondDate.setHours(0, 0, 0, 0)) {
+      return true;
+    }
+    return false;
+  };
+
+  const today = new Date();
+  let past;
+  let index;
+
+  let userMembership = theUser.membership.billingHistory.find((bill) => {
+    past = new Date(bill.paidThroughDate);
+    return !dateInPast(past, today);
+  });
+
+  let pendingMembership = theUser.membership.billingHistory.find((bill, i) => {
+    index = i;
+    return bill.status === "Pending";
+  });
+
+  let user = await User.findOne({ email: theUser.email });
+
+  const initialBill = [...theUser.membership.billingHistory];
+
+  const fetchBillInfo = async (bills) => {
+    const requests = bills.map((bill, i) => {
+
+      return new Promise((resolve, reject) => {
+        gateway.subscription.find(bill.subscriptionId, async function (err, result) {
+          if (bill.status != result.status) {
+            bill.status = result.status;
+          }
+          resolve(bill);
+        });
+      });
+    })
+    return Promise.all(requests) // Waiting for all the requests to get resolved.
+  }
+
+  const checkSame = (x, y) => {
+    return JSON.stringify(x) === JSON.stringify(y);
+  }
+
+  fetchBillInfo(user.membership.billingHistory)
+    .then(async (billingUpdated) => {
+
+      const areNotEqual = initialBill.find((obj, i) => {
+        // console.log(checkSame(obj, billingUpdated[i]));
+        return !checkSame(obj, billingUpdated[i]);
+      })
+
+      if (areNotEqual) {
+        console.log("There are changes please update");
+        user.billingHistory = billingUpdated;
+        await user.save({ validateBeforeSave: false });
+      } else {
+        console.log("they are all the same");
+      }
+    });
+
+
+  if (pendingMembership && userMembership) {
+    gateway.subscription.find(pendingMembership.subscriptionId, function (err, result) {
+      resolve(Boolean(userMembership))
+    })
+
+  } else if (userMembership) {
+    gateway.subscription.find(userMembership.subscriptionId, function (err, result) {
+      resolve(Boolean(userMembership))
+    })
+
+  } else {
+    resolve(false)
+  }
+  })
 }
 
 exports.getCourses = async (req, res, next) => {
@@ -151,56 +240,75 @@ exports.getCourse = async (req, res, next) => {
     const { courseTag, userId } = req.body;
     let user;
     let hasCourse;
-    if( userId ) {
-      user = await User.findOne({_id: userId});
-      hasCourse = userHasCourses(user, courseTag);
-    }
     
     // console.log("this is courseTag ", courseTag);
     const course = await Course.findOne({ tag: courseTag }).select("-sold -revenue");
+    const theCourse = course.toObject();
+    if( userId ) {
+      user = await User.findOne({_id: userId});
+      hasCourse = userHasCourses(user, theCourse).then(async (userGotCourse) => {
+        const gotMembership = checkMembership(user).then(async (memberValue) => {
+          console.log("gotMembership is: " + memberValue);
+          console.log("My user userGotCourse is " + userGotCourse);
+
+          if(!user || (!userGotCourse && (user && user.role !== 'admin') && !gotMembership)) {
+            for(let i=0; i < theCourse.classes.length; i++ ) {
+              console.log(theCourse.classes[i].url);
+              delete theCourse.classes[i].url
+            }
+          }
+
+          console.log("course classes are ");
+          console.log(theCourse.classes)
+          
+          const userClasses = await ClassesWatched.find({ userId: req.body.userId })
+
+          let courseIndex;
+          let courseClasses;
+
+          if(req.body.userId && userClasses.length > 0) {
+            courseClasses = userClasses[0].classesWatched.find((loopCourse, i) => {
+              courseIndex = i;
+              return JSON.stringify(loopCourse.courseId) === JSON.stringify(course._id);
+            })
+          }
+
+          const progress = courseClasses ? courseProgress(userClasses[0].classesWatched[courseIndex].classes, course.classes.length) : 0
+          // console.log("THIS IS COURSE +++++");
+          // console.log(theCourse)
+          res.status(200).json({
+            status: 'success',
+            course: theCourse,
+            courseProgress: progress
+          });
+
+        })
+
+        
+      }).catch(error => console.log("The error is " + error));
+    }
     // console.log("this is course ", course);
     // console.log(typeof course);
     // for(let i=0; i < course.classes.length; i++ ) {
     //   console.log(course.classes[i].url);
     //   delete course.classes[i].url
     // }
-  
-    const theCourse = course.toObject();
-    console.log("User role is ");
-    // console.log(user.role)
-    if(!user || (user && user.role !== 'admin')) {
-      console.log("REMOVING THE URLS")
-      if(!hasCourse) {
-        for(let i=0; i < theCourse.classes.length; i++ ) {
-          console.log(theCourse.classes[i].url);
-          delete theCourse.classes[i].url
-        }
-      }
-    }
-
-    console.log("course classes are ");
-    console.log(theCourse.classes)
     
-    const userClasses = await ClassesWatched.find({ userId: req.body.userId })
+    // console.log("User role is ");
+    // console.log(user.role)
+    // if(!user || (user && user.role !== 'admin')) {
+    //   console.log("REMOVING THE URLS");
+    //   console.log("User has course is " + hasCourse);
+    //   if(!hasCourse) {
+    //     console.log("user has no course, lets delete urls")
+    //     for(let i=0; i < theCourse.classes.length; i++ ) {
+    //       console.log(theCourse.classes[i].url);
+    //       delete theCourse.classes[i].url
+    //     }
+    //   }
+    // }
 
-    let courseIndex;
-    let courseClasses;
-
-    if(req.body.userId && userClasses.length > 0) {
-      courseClasses = userClasses[0].classesWatched.find((loopCourse, i) => {
-        courseIndex = i;
-        return JSON.stringify(loopCourse.courseId) === JSON.stringify(course._id);
-      })
-    }
-
-    const progress = courseClasses ? courseProgress(userClasses[0].classesWatched[courseIndex].classes, course.classes.length) : 0
-    // console.log("THIS IS COURSE +++++");
-    // console.log(theCourse)
-    res.status(200).json({
-      status: 'success',
-      course: theCourse,
-      courseProgress: progress
-    });
+    
 
   } catch (error) {
     console.log("Error in getting course")
