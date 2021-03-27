@@ -418,8 +418,9 @@ function Profile() {
         <h3>Upload image</h3>
         <hr />
         <form onSubmit={submitUserDetails}>
-          <label htmlFor="">Full Name</label>
+          <label className="userNameLabel" htmlFor="userName">Full Name</label>
           <input
+            id="userName"
             type="text"
             placeholder="My name"
             value={userDetails.name || ''}

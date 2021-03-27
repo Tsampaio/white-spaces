@@ -136,6 +136,7 @@
     margin-top: 20px;
     margin-bottom: 20px;
     font-size: 18px;
+    font-weight: 700;
 }
 
 .userDetails img {
@@ -311,6 +312,11 @@
         box-shadow: 0 0 1px rgba(255,255,255,.5);
         -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
     }
+}
+
+.userNameLabel {
+    font-weight: 700;
+    font-size: 18px;
 }
 
 @media only screen and (max-width: 1024px) {

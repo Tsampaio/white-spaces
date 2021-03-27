@@ -276,7 +276,7 @@ exports.getCourse = async (req, res, next) => {
           const progress = courseClasses ? courseProgress(userClasses[0].classesWatched[courseIndex].classes, course.classes.length) : 0
           // console.log("THIS IS COURSE +++++");
           // console.log(theCourse)
-          res.status(200).json({
+          return res.status(200).json({
             status: 'success',
             course: theCourse,
             courseProgress: progress
@@ -286,29 +286,19 @@ exports.getCourse = async (req, res, next) => {
 
         
       }).catch(error => console.log("The error is " + error));
-    }
-    // console.log("this is course ", course);
-    // console.log(typeof course);
-    // for(let i=0; i < course.classes.length; i++ ) {
-    //   console.log(course.classes[i].url);
-    //   delete course.classes[i].url
-    // }
-    
-    // console.log("User role is ");
-    // console.log(user.role)
-    // if(!user || (user && user.role !== 'admin')) {
-    //   console.log("REMOVING THE URLS");
-    //   console.log("User has course is " + hasCourse);
-    //   if(!hasCourse) {
-    //     console.log("user has no course, lets delete urls")
-    //     for(let i=0; i < theCourse.classes.length; i++ ) {
-    //       console.log(theCourse.classes[i].url);
-    //       delete theCourse.classes[i].url
-    //     }
-    //   }
-    // }
+    } else {
 
-    
+      for(let i=0; i < theCourse.classes.length; i++ ) {
+        console.log(theCourse.classes[i].url);
+        delete theCourse.classes[i].url
+      }
+
+      res.status(200).json({
+        status: 'success',
+        course: theCourse,
+        courseProgress: 0
+      });
+    }
 
   } catch (error) {
     console.log("Error in getting course")

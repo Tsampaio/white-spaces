@@ -63,6 +63,17 @@
     margin: 0 20px;
 }
 
+.loginInput {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #cbcbd0;
+    box-shadow: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    height: 40px;
+    margin-bottom: 10px;
+}
+
 @media(min-width: 500px) {
     .loginCtn .loginCard {
         margin-top: 70px;

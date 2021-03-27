@@ -1,71 +1,82 @@
 .registerTitle {
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 28px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
 }
 
 .registerCtn {
-    background: linear-gradient(to bottom, #e3ffe7 0%, #d9e7ff 100%);
-    flex: 1 1;
+  background: linear-gradient(to bottom, #e3ffe7 0%, #d9e7ff 100%);
+  flex: 1 1;
 }
 
 .registerCard {
-    margin-top: 70px;
-    padding: 30px 30px;
+  margin-top: 70px;
+  padding: 30px 30px;
 }
 
-.registerCtn input {
+.registerInput {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #cbcbd0;
+  box-shadow: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.registerBtn {
     width: 100%;
 }
 
 .antiBot:global(#anti-bot) {
-    /* background-color: lightgray; */
-    border: 1px solid black;
-    padding: 10px 20px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    text-align: center;
+  /* background-color: lightgray; */
+  border: 1px solid black;
+  padding: 10px 20px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .antiBot:global(#anti-bot) h3 {
-    font-size: 20px;
-    line-height: 28px;
+  font-size: 20px;
+  line-height: 28px;
 }
 
 #anti-bot input {
-    width: 100px;
-    margin-left: 15px;
+  width: 100px;
+  margin-left: 15px;
 }
 
 .registerError {
-    text-align: center;
-    background-color: #ea8383;
-    padding: 10px 20px;
-    margin-top: 20px;
+  text-align: center;
+  background-color: #ea8383;
+  padding: 10px 20px;
+  margin-top: 20px;
 }
 
 .registerSuccess {
-    text-align: center;
-    background-color: #00FF84;
-    padding: 10px 20px;
-    margin-top: 20px;
+  text-align: center;
+  background-color: #00ff84;
+  padding: 10px 20px;
+  margin-top: 20px;
 }
 
 .registerError h1,
 .registerSuccess h1 {
-    font-size: 20px;
-    margin: 0;
+  font-size: 20px;
+  margin: 0;
 }
 
 .goLogin {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 50px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 50px;
 }
 
-@media(min-width: 500px) {
-    .registerCard {
-        margin-top: 70px;
-        padding: 30px 45px;
-    }
+@media (min-width: 500px) {
+  .registerCard {
+    margin-top: 70px;
+    padding: 30px 45px;
+  }
 }

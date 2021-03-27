@@ -50,19 +50,7 @@ const courseSchema = new mongoose.Schema({
       },
       duration: {
         type: Number
-      },
-      watched: [
-        {
-          user: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'User'
-          },
-          complete: {
-            type: Boolean,
-            default: false
-          }
-        }
-      ]
+      }
     }
   ],
   users: [

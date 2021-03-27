@@ -60,6 +60,7 @@ const Login = () => {
 									<div className="form-group">
 										
 										<input type="email" name="email" required
+											className={styles.loginInput}
 											value={email}
 											onChange={e => onChange(e)}
 											placeholder="Email"
@@ -67,6 +68,7 @@ const Login = () => {
 									</div>
 									<div className="form-group">
 										<input
+											className={styles.loginInput}
 											type="password"
 											name="password"
 											minLength="6"

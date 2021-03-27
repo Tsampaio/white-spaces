@@ -112,6 +112,7 @@ const Register = () => {
                 <form className="form" onSubmit={(e) => onSubmit(e)}>
                   <div className="form-group">
                     <input
+                      className={styles.registerInput}
                       type="text"
                       placeholder="Name"
                       name="name"
@@ -122,6 +123,7 @@ const Register = () => {
                   </div>
                   <div className="form-group">
                     <input
+                      className={styles.registerInput}
                       type="email"
                       placeholder="Email Address"
                       name="email"
@@ -132,6 +134,7 @@ const Register = () => {
                   </div>
                   <div className="form-group">
                     <input
+                      className={styles.registerInput}
                       type="password"
                       placeholder="Password"
                       name="password"
@@ -142,6 +145,7 @@ const Register = () => {
                   </div>
                   <div className="form-group">
                     <input
+                      className={styles.registerInput}
                       type="password"
                       placeholder="Confirm Password"
                       name="passwordConfirm"
@@ -158,13 +162,13 @@ const Register = () => {
                       <span>+</span>
                       <span>{randNumber2}</span>
                       <span>=</span>
-                      <input type="number" onChange={checkResult} />
+                      <input className={styles.registerInput} type="number" onChange={checkResult} />
                     </div>
                   )}
 
                   <input
                     type="submit"
-                    className="btn btn-primary"
+                    className={`btn btn-primary ${styles.registerBtn}`}
                     value="Register"
                   />
                 </form>
