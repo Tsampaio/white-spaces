@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCoursesOwned } from '../../actions/courses';
 import { resetPaymentResult } from '../../actions/payments';
 import { Redirect, Link } from 'react-router-dom';
+import { Card } from 'react-bootstrap'
 import './CheckoutSuccess.css';
 
 const CheckoutSuccess = ({ history }) => {
@@ -50,15 +51,21 @@ const CheckoutSuccess = ({ history }) => {
   return (
     <>
       <SecondHeader />
-      <div className="container checkoutSuccessCtn">
+      <div className="checkoutSuccessCtn">
+      <div className="container">
         <div className="row">
           <div className="col-12 checkoutSuccess">
-            <h1>Thank you! Your Order is Complete</h1>
-            <h4>You will receive an email confirmation shortly.</h4>
-            <Link className="checkoutSuccessBtn" to="/courses">Start Learning</Link>
-
+            <Card>
+              <Card.Header></Card.Header>
+              <Card.Body>
+                <h1>Thank you! Your Order is Complete</h1>
+                <p>You will receive an email confirmation shortly.</p>
+                <Link className="btn checkoutSuccessBtn" to="/courses">Start Learning</Link>
+              </Card.Body>
+            </Card>
           </div>
         </div>
+      </div>
       </div>
     </>
   )

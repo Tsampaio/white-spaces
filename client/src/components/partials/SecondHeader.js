@@ -134,7 +134,7 @@ const SecondHeader = () => {
   );
   
   const checkoutIcon = isAuthenticated ? (
-      <Link className={styles.checkoutLink} to="/cart/checkout">
+      <Link className={`${styles.checkoutLink} ${styles.checkoutIcon}`} to="/cart/checkout">
         <i className="fa fa-shopping-cart"></i>
         {payment &&
         payment.checkout &&

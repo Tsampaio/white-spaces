@@ -27,7 +27,7 @@
   text-decoration: none;
   color: #fff;
   padding: 12px 15px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   display: inline-block;
 }
@@ -48,17 +48,22 @@
   position: relative;
 }
 
+.checkoutLink.checkoutIcon {
+  padding-right: 20px;
+}
+
 .checkoutNumber {
   display: inline-block;
   background-color: red;
   color: white;
   width: 20px;
   height: 20px;
+  line-height: 20px;
   border-radius: 50%;
   text-align: center;
   position: absolute;
   top: 0;
-  right: 0px;
+  right: 5px;
 }
 
 
@@ -194,14 +199,14 @@
 
 .mobileMenu .checkoutNumber {
   top: 0px;
-  right: 5px;
+  right: 10px;
   line-height: 20px;
   font-size: 18px;
 }
 
 .mobileMenu > a {
   display: inline-block;
-  padding: 0 15px;
+  padding: 0 25px;
 }
 
 .mobileMenu > a i{

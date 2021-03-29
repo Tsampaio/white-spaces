@@ -31,7 +31,7 @@ function ProfileCourses() {
   const coursesimage = require.context('../../../../uploads/courses/', true);
 
   const allCourses =
-    auth &&
+    auth && auth.coursesOwned &&
     auth.coursesOwned.map((course, index) => {
       // let img = '';
       // img = coursesimage(`./${course.tag}.jpg`);
