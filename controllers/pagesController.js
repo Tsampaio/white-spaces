@@ -250,8 +250,13 @@ exports.getCourse = async (req, res, next) => {
         const gotMembership = checkMembership(user).then(async (memberValue) => {
           console.log("gotMembership is: " + memberValue);
           console.log("My user userGotCourse is " + userGotCourse);
-
-          if(!user || (!userGotCourse && (user && user.role !== 'admin') && !gotMembership)) {
+          // console.log(!user || (!userGotCourse && (user && user.role !== 'admin') && !gotMembership))
+          // console.log(!userGotCourse)
+          // console.log(user && user.role !== 'admin')
+          // console.log(!memberValue)
+          
+          if(!user || (!userGotCourse && (user && user.role !== 'admin') && !memberValue)) {
+            console.log("This is TRUE")
             for(let i=0; i < theCourse.classes.length; i++ ) {
               console.log(theCourse.classes[i].url);
               delete theCourse.classes[i].url

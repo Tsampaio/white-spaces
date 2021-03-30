@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import DropIn from 'braintree-web-drop-in-react';
 import SecondHeader from '../partials/SecondHeader';
 import { payAction, membershipPayment } from '../../actions/payments';
+import { Card, Form, Button } from 'react-bootstrap';
 import './MembershipCheckout.css';
 
 const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershipPayment }) => {
@@ -47,7 +48,17 @@ const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershi
       }} onInstance={instance => (data.instance = instance)} />
       {
         duration === "monthly" ? (
+          <>
           <button onClick={() => buy("monthly")} className="membershipPay">Finish Payment</button>
+          {true && (
+            <button className="btn membershipPay">
+              <div class="spinner-border spinner" role="status">
+                <span class="sr-only">Processing payment...</span>
+              </div>
+              Processing payment...
+            </button>
+          )}
+          </>
         ) : (
           <button onClick={() => buy("yearly")} className="membershipPay">Finish Payment</button>
         )
@@ -69,18 +80,27 @@ const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershi
         <div className="container">
           <div className="row">
             <div className="col-lg-8 offset-lg-2">
-              <div className="paypal">
-                <h1>{ duration === "monthly" ? "Monthly Subscription" : "Annual Subscription"}</h1>
+              <Card>
+              <Card.Header>
+                <h1 className="membershipCheckoutTitle">{ duration === "monthly" ? "Monthly Subscription" : "Yearly Subscription"}</h1>
+              </Card.Header>
+              <div className="paypal membershipCard">
+                
                 <div className="discountCtn">
-                  <input type="text" placeholder="Discound Code"/><button>Apply</button>
+                    <Form.Control
+                        placeholder="Enter coupon code"
+                    />
+                    <Button>Apply</Button>
                 </div>
                 
                 <div className="MembershipTotal">
                   <span>Total to pay:</span>
-                  <span>${ duration === "monthly" ? "24.99" : "179.88"} USD</span>
+                  <span>${ duration === "monthly" ? "20.00" : "120"} USD</span>
                 </div>
+                <p className="membershipChargingTime">{ duration === "monthly" ? "Billed once a month" : "Billed once a Year"}</p>
                 {showDropIn()}
               </div>
+              </Card>
             </div>
           </div>
 
