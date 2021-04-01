@@ -1,13 +1,21 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector  } from 'react-redux';
 import DropIn from 'braintree-web-drop-in-react';
 import SecondHeader from '../partials/SecondHeader';
 import { payAction, membershipPayment } from '../../actions/payments';
 import { Card, Form, Button } from 'react-bootstrap';
 import './MembershipCheckout.css';
 
-const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershipPayment }) => {
+const MembershipCheckout = ({history}) => {
+  
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const { user, token } = auth;
+
+  const payment = useSelector((state) => state.payment);
+  const { paymentToken, buttonLoading, paymentComplete } = payment;
+  
   const [data, setData] = useState({
     instance: {}
   });
@@ -15,13 +23,14 @@ const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershi
   const { duration } = useParams();
 
   useEffect(() => {
-    payAction();
+    dispatch(payAction());
   }, []);
 
   const buy = (membershipDuration) => {
     let nonce;
     let getNonce = data.instance.requestPaymentMethod()
       .then(data => {
+        console.log("Buy data is:")
         console.log(data);
         nonce = data.nonce
 
@@ -31,7 +40,7 @@ const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershi
         }
 
         // processPayment(userId, token, paymentData)
-        membershipPayment(auth && auth.user, auth && auth.token, paymentData, membershipDuration);
+        dispatch(membershipPayment(user, token, paymentData, membershipDuration));
       })
       .catch(error => {
         console.log('dropin error: ', error)
@@ -47,30 +56,27 @@ const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershi
         }
       }} onInstance={instance => (data.instance = instance)} />
       {
-        duration === "monthly" ? (
-          <>
-          <button onClick={() => buy("monthly")} className="membershipPay">Finish Payment</button>
-          {true && (
-            <button className="btn membershipPay">
-              <div class="spinner-border spinner" role="status">
-                <span class="sr-only">Processing payment...</span>
-              </div>
-              Processing payment...
-            </button>
-          )}
-          </>
+        buttonLoading ? (
+          <button disabled className="btn membershipPay">
+            <div className="spinner-border spinner" role="status">
+              <span className="sr-only">Processing payment...</span>
+            </div>
+            Processing payment...
+          </button>
         ) : (
-          <button onClick={() => buy("yearly")} className="membershipPay">Finish Payment</button>
+          duration === "monthly" ? (        
+            <button onClick={() => buy("monthly")} className="membershipPay">Finish Payment</button>
+          ) : (
+            <button onClick={() => buy("yearly")} className="membershipPay">Finish Payment</button>
+          )
         )
-      
       }
-
     </Fragment>
   )
   console.log(duration)
   
-  if(payment && payment.paymentComplete) {
-    return <Redirect to="/membership/success"/>
+  if(paymentComplete) {
+    history.push("/membership/success");
   }
 
   return (
@@ -110,10 +116,4 @@ const MembershipCheckout = ({ payAction, payment,  paymentToken, auth, membershi
   )
 }
 
-const mapStateToProps = state => ({
-  paymentToken: state.payment.paymentToken,
-  payment: state.payment,
-  auth: state.auth
-})
-
-export default connect(mapStateToProps, { payAction, membershipPayment })(MembershipCheckout);
+export default MembershipCheckout;

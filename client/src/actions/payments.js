@@ -4,6 +4,7 @@ import {
   PAY_COURSE,
   PAY_ERROR,
   GET_PAYMENT_TOKEN,
+  PAY_MEMBERSHIP_REQUEST,
   PAY_MEMBERSHIP,
   RESET_PAYMENT_RESULT,
   GET_USER_BILLING
@@ -119,6 +120,10 @@ export const membershipPayment = (user, token, paymentData, duration) => async d
       name: user.name,
       email: user.email,
       membershipDuration: duration
+    });
+
+    dispatch({
+      type: PAY_MEMBERSHIP_REQUEST,
     });
 
     const res = await axios.post(`/api/braintree/membership/${user._id}`, body, config);

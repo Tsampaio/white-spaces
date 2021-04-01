@@ -1,5 +1,6 @@
 import {
   PAY_MEMBERSHIP,
+  PAY_MEMBERSHIP_REQUEST,
   PAY_COURSE,
   PAY_ERROR,
   GET_PAYMENT_TOKEN,
@@ -43,7 +44,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         paymentToken: payload.clientToken,
-        paymentComplete: payload.paymentComplete
+        paymentComplete: payload.paymentComplete,
+        buttonLoading: false
       }
     case GET_PAYMENT_TOKEN:
       return {
@@ -120,6 +122,7 @@ export default function (state = initialState, action) {
         loading: true
       }
     case PAY_BUTTON_LOAD_REQUEST:
+    case PAY_MEMBERSHIP_REQUEST:
       return {
         ...state,
         buttonLoading: true
