@@ -37,9 +37,10 @@ function ProfileBilling() {
     payment.billing &&
     payment.billing.map((bill, i) => {
       const date = new Date(bill.date);
-      const newDate = `${date.getDate()}/${
-        date.getMonth() + 1
+      const newDate = `${('0' + date.getDate()).slice(-2)}/${
+        ('0' + (date.getMonth() + 1)).slice(-2)
       }/${date.getFullYear()}`;
+
       return (
         <tr key={bill._id}>
           <td>{newDate}</td>

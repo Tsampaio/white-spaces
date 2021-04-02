@@ -48,7 +48,7 @@ const Courses = () => {
 
     // let img = images(`./${course.tag}.jpg`);
     // let img = `/images/${course.tag}.jpg`;
-    if (course.tag !== 'monthly-plan') {
+    if (course.tag !== 'monthly-plan' && course.tag !== 'yearly-plan') {
       return (
         <CourseCard
           name={course.name}

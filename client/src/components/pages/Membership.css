@@ -133,6 +133,13 @@ i.fa-times {
     color: red;
 }
 
+.membershipCtn .membershipBtnDisable {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
 
 @media(max-width: 500px) {
     .membershipCtn {

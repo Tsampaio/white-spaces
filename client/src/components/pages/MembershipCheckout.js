@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { useParams, Redirect } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector  } from 'react-redux';
 import DropIn from 'braintree-web-drop-in-react';
 import SecondHeader from '../partials/SecondHeader';

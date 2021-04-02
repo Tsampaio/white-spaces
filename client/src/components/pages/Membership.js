@@ -1,12 +1,17 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import SecondHeader from '../partials/SecondHeader';
-import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-// import { setAlert } from '../../actions/alert';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { register } from '../../actions/auth';
 import './Membership.css';
 
-const Membership = ({ register, isAuthenticated }) => {
+const Membership = ({history}) => {
+
+	const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
+  const { active, membership } = auth;
+
+
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
@@ -60,12 +65,9 @@ const Membership = ({ register, isAuthenticated }) => {
 	}
 
 	//Redirect if logged in
-	// if (isAuthenticated) {
-	// 	return <Redirect to="/" />
-	// }
-	console.log(result);
-	console.log(randNumber1)
-	console.log(randNumber2)
+	// console.log(result);
+	// console.log(randNumber1)
+	// console.log(randNumber2)
 	return (
 		<Fragment>
 			<SecondHeader />
@@ -75,14 +77,14 @@ const Membership = ({ register, isAuthenticated }) => {
 						<div className="offset-1 col-10 offset-md-0 col-lg-5 offset-lg-1 col-md-10 offset-md-1">
 							<div className="annualCtn">
 								<h2 className="membershipRecommended">MOST POPULAR</h2>
-								<h3 className="membershipTitle">Annual</h3>
+								<h3 className="membershipTitle">Yearly</h3>
 								<h1 className="membershipPrice">
 									<span className="membershipDollar">$</span>
 									<span className="membershipPriceValue">9<span>.99</span></span>
 									<span>/month</span>
 								</h1>
 								<div>
-									<span className="membershipPriceToPay">$120.00</span>
+									<span className="membershipPriceToPay">$119.88</span>
 									<span className="membershipBilled">BILLED YEARLY</span>
 								</div>
 								<ul className="membershipFeatures">
@@ -92,7 +94,11 @@ const Membership = ({ register, isAuthenticated }) => {
 									<li><i className="fa fa-check"></i>Download courses project files</li>
 									<li><i className="fa fa-check"></i>30% Discount in all courses</li>
 								</ul>
-								<Link className="membershipBuyButton" to="/membership/annual">Start Plan</Link>
+								{ membership.status === 'Active' && membership.planId === 'yearly-plan-id' ? (
+									<button className="membershipBuyButton membershipBtnDisable">Currently Active</button>
+								) : (
+									<Link className="membershipBuyButton" to="/membership/yearly">Start Plan</Link>
+								)}
 							</div>
 
 						</div>
@@ -101,7 +107,7 @@ const Membership = ({ register, isAuthenticated }) => {
 								<h3 className="membershipTitle">Monthly</h3>
 								<h1 className="membershipPrice">
 									<span className="membershipDollar">$</span>
-									<span className="membershipPriceValue">24<span>.99</span></span>
+									<span className="membershipPriceValue">22<span>.99</span></span>
 									<span>/Month</span>
 								</h1>
 								
@@ -112,7 +118,11 @@ const Membership = ({ register, isAuthenticated }) => {
 									<li><i className="fa fa-times"></i><span style={{textDecoration: "line-through"}}>Download courses project files</span></li>
 									<li><i className="fa fa-times"></i><span style={{textDecoration: "line-through"}}>30% Discount in all courses</span></li>
 								</ul>
-								<Link className="membershipBuyButton" to="/membership/monthly">Start Plan</Link>
+								{ membership.status === 'Active' && (membership.planId === 'monthly-plan-id' || membership.planId === 'yearly-plan-id') ? (
+									<button className="membershipBuyButton membershipBtnDisable">{membership.planId === 'yearly-plan-id' ? "Yearly plan active" : "Currently Active"}</button>
+								) : (
+									<Link className="membershipBuyButton" to="/membership/monthly">Start Plan</Link>
+								)}
 							</div>
 						</div>
 					</div>
@@ -122,9 +132,4 @@ const Membership = ({ register, isAuthenticated }) => {
 	);
 }
 
-
-const mapStateToProps = state => ({
-	isAuthenticated: state.auth.isAuthenticated
-})
-
-export default connect(mapStateToProps, { register })(Membership);
+export default Membership;

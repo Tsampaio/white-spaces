@@ -270,6 +270,19 @@ exports.membershipPayment = async (req, res) => {
         let nextDay = new Date(day);
         nextDay.setDate(day.getDate() + 1);
         // console.log(nextDay);
+        let index;
+        let userMembershipActivePending = req.user.membership.billingHistory.find((bill, i) => {
+          index = i;
+          return bill.status === "Active" || bill.status === "Pending";
+        });
+        
+        if(userMembershipActivePending) {
+          await gateway.subscription.cancel(userMembershipActivePending.subscriptionId, async function (err, result) {
+            //console.log(result);
+            user.membership.billingHistory[index].status = "Canceled";
+            // await user.save({ validateBeforeSave: false });
+          })
+        }
 
         firstBillingDate = nextDay;
       } else {
@@ -311,8 +324,8 @@ exports.membershipPayment = async (req, res) => {
               userName: user.name,
               userEmail: user.email,
               customerId: user.customerId,
-              productId: req.body.membershipDuration === "monthly" ? "5f837d1ea687101a7cff8d66" : "",
-              productName: req.body.membershipDuration === "monthly" ? "Monthly Membership" : "Annual Membership",
+              productId: req.body.membershipDuration === "monthly" ? "5f837d1ea687101a7cff8d66" : "60678aeefeeb0055e0bc0ebb",
+              productName: req.body.membershipDuration === "monthly" ? "Monthly Membership" : "Yearly Membership",
               price: result.subscription.price,
               transactionId: result.subscription.id
             });
