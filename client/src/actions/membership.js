@@ -2,8 +2,9 @@ import axios from 'axios';
 import {
   CHECK_MEMBERSHIP,
   CANCEL_MEMBERSHIP,
+  CANCEL_MEMBERSHIP_REQUEST,
   RESUBSCRIBE_MEMBERSHIP
-} from './types';
+} from '../contants/membershipConstants';
 
 export const checkMembership = (token) => async dispatch => {
   
@@ -34,6 +35,10 @@ export const checkMembership = (token) => async dispatch => {
 export const cancelMembership = (token) => async dispatch => {
   try {
    console.log("inside cancelMembership");
+
+   dispatch({
+    type: CANCEL_MEMBERSHIP_REQUEST,
+   })
 
     const res = await axios.post(`/api/cancelMembership`, {}, {
       headers: {

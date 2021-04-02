@@ -257,7 +257,7 @@ exports.membershipPayment = async (req, res) => {
       const today = new Date();
 
       let userMembership = req.user.membership.billingHistory.find((bill) => {
-        past = new Date(bill.paidThroughDate);
+        let past = new Date(bill.paidThroughDate);
         //console.log(dateInPast(past, today));
         //console.log(bill);
         return !dateInPast(past, today);
@@ -322,7 +322,7 @@ exports.membershipPayment = async (req, res) => {
             console.log(result);
             console.log("subscription successful");
 
-            const url = `${req.protocol}://localhost:3000/courses`;
+            const url = `${req.protocol}://${req.get('host')}/courses`;
             //Or http://localhost:3000/dashboard   for HOST
             // console.log(url);
             await new Email(user, url).subscriptionWelcome();
@@ -396,7 +396,7 @@ exports.membershipPayment = async (req, res) => {
               await user.save({ validateBeforeSave: false });
               // console.log("Subscription created successfully");
 
-              const url = `${req.protocol}://localhost:3000/courses`;
+              const url = `${req.protocol}://${req.get('host')}/courses`;
               //Or http://localhost:3000/dashboard   for HOST
               // console.log(url);
               await new Email(user, url).subscriptionWelcome();
@@ -475,7 +475,7 @@ exports.emailThankYou = async (req, res) => {
 
     // generateActivationToken(req, user);
 
-    const url = `${req.protocol}://localhost:3000/profile/courses`;
+    const url = `${req.protocol}://${req.get('host')}/profile/courses`;
     //Or http://localhost:3000/dashboard   for HOST
     // console.log(url);
     await new Email(user, url).sendThankYou();
@@ -647,8 +647,10 @@ exports.checkMembership = async (req, res) => {
 
       return new Promise((resolve, reject) => {
         gateway.subscription.find(bill.subscriptionId, async function (err, result) {
-          if (bill.status != result.status) {
+          if (!err && ((bill.status != result.status) || (bill.paidThroughDate != result.paidThroughDate))) {
             bill.status = result.status;
+            bill.firstBillingDate = result.firstBillingDate
+            bill.paidThroughDate = result.paidThroughDate
           }
           resolve(bill);
         });
@@ -684,6 +686,7 @@ exports.checkMembership = async (req, res) => {
       console.log()
       res.status(200).json({
         active: Boolean(userMembership),
+        planId: result.planId,
         status: result.status === "Pending" ? "Active" : result.status,
         nextBillingDate: result.nextBillingDate,
         paidThroughDate: userMembership.paidThroughDate,
@@ -694,6 +697,7 @@ exports.checkMembership = async (req, res) => {
     gateway.subscription.find(userMembership.subscriptionId, function (err, result) {
       res.status(200).json({
         active: Boolean(userMembership),
+        planId: result.planId,
         status: result.status === "Pending" ? "Active" : result.status,
         nextBillingDate: result.nextBillingDate,
         paidThroughDate: result.paidThroughDate,
@@ -727,7 +731,7 @@ exports.cancelMembership = async (req, res) => {
       user.membership.billingHistory[index].status = "Canceled";
       await user.save({ validateBeforeSave: false });
 
-      const url = `${req.protocol}://localhost:3000/membership`;
+      const url = `${req.protocol}://${req.get('host')}/membership`;
       //Or http://localhost:3000/dashboard   for HOST
       // console.log(url);
       await new Email(user, url).subscriptionCancellation();
@@ -813,7 +817,7 @@ exports.resubscribeMembership = async (req, res) => {
           console.log(result);
           console.log("subscription successful");
 
-          const url = `${req.protocol}://localhost:3000/courses`;
+          const url = `${req.protocol}://${req.get('host')}/courses`;
           //Or http://localhost:3000/dashboard   for HOST
           // console.log(url);
           await new Email(user, url).subscriptionWelcome();

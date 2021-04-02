@@ -101,7 +101,7 @@ const MembershipCheckout = ({history}) => {
                 
                 <div className="MembershipTotal">
                   <span>Total to pay:</span>
-                  <span>${ duration === "monthly" ? "20.00" : "120"} USD</span>
+                  <span>${ duration === "monthly" ? "20" : "120"} USD</span>
                 </div>
                 <p className="membershipChargingTime">{ duration === "monthly" ? "Billed once a month" : "Billed once a Year"}</p>
                 {showDropIn()}

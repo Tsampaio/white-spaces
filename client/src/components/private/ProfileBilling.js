@@ -15,17 +15,14 @@ import './Profile.css';
 function ProfileBilling() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
+  const { user, membership, buttonLoading } = auth;
   const payment = useSelector((state) => state.payment);
 
   useEffect(() => {
     dispatch(getCoursesOwned(auth && auth.user && auth.user._id));
     // console.log(auth.user.name);
     // console.log("before check membership ");
-    if (
-      auth &&
-      auth.user &&
-      auth.user.membership &&
-      auth.user.membership.customerId
+    if ( user && user.membership && user.membership.customerId
     ) {
       dispatch(checkMembership(auth.token));
     }
@@ -33,7 +30,7 @@ function ProfileBilling() {
     dispatch(getBilling());
 
     // console.log(auth);
-  }, [auth && auth.user && auth.user._id]);
+  }, [user]);
 
   const userBilling =
     payment &&
@@ -60,10 +57,10 @@ function ProfileBilling() {
       );
     });
 
-  const untilDate = new Date(auth && auth.membership.paidThroughDate);
-  const newUntilDate = `${untilDate.getDate()}/${
-    untilDate.getMonth() + 1
-  }/${untilDate.getFullYear()}`;
+  const billingDateParser = () => {
+    const untilDate = new Date(membership && membership.paidThroughDate);
+    return `${('0' + untilDate.getDate()).slice(-2)}/${('0' + (untilDate.getMonth() + 1)).slice(-2)}/${untilDate.getFullYear()}`
+  }
 
   return (
     <div className="col-lg-9 col-md-12 col-sm-12 billingCtn">
@@ -75,23 +72,44 @@ function ProfileBilling() {
               <b>Membership Status:</b> Not active
             </h3>
           )}
-          {auth && auth.membership.active && (
+          {membership && membership.active && (
             <>
               <h3>
-                <b>Membership Status:</b> {auth && auth.membership.status}
+                <b>Membership Status:</b> {membership && membership.status}
               </h3>
               <h3>
-                <b>Membership Valid Until:</b> {newUntilDate}
+                { membership && membership.status === "Active" ? (
+                  <>
+                    <b>Next billing date: </b> 
+                    {billingDateParser(membership && membership.nextBillingDate)}
+                  </>
+                ) : (
+                  <>
+                  <b>Membership Valid Until: </b> 
+                  {billingDateParser(membership && membership.paidThroughDate)}
+                  </>
+                )}
               </h3>
             </>
           )}
-          {auth && auth.membership.status === 'Active' && (
-            <button
-              className="cancelMembership"
-              onClick={() => dispatch(cancelMembership(auth && auth.token))}
-            >
-              Cancel Membership
-            </button>
+          {membership && membership.status === 'Active' && (
+            <>
+              {buttonLoading ? (
+                <button className="btn btn-info">
+                  <div class="spinner-border spinner" role="status">
+                    <span class="sr-only">Processing payment...</span>
+                  </div>
+                  Cancelling...
+                </button>
+              ) : (
+                <button
+                  className="btn btn-info"
+                  onClick={() => dispatch(cancelMembership(auth && auth.token))}
+                >
+                  Cancel Membership
+                </button>
+              )}
+            </>
           )}
           {auth &&
             auth.membership.status === 'Canceled' &&

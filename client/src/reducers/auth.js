@@ -13,9 +13,6 @@ import {
   ACCOUNT_ACTIVATION,
   GET_COURSES_OWNED,
   COURSE_ACCESS,
-  CHECK_MEMBERSHIP,
-  CANCEL_MEMBERSHIP,
-  RESUBSCRIBE_MEMBERSHIP,
   AUTH_ERROR
 } from '../actions/types';
 import { USER_DETAILS_REQUEST, USER_LAST_LOGIN_FAIL, USER_LAST_LOGIN_SUCCESS } from '../contants/userConstants';
@@ -31,6 +28,12 @@ import {
   FORGOT_PASSWORD_REQUEST,
   FORGOT_PASSWORD_FAIL
 } from '../contants/authConstants';
+import {
+  CHECK_MEMBERSHIP,
+  CANCEL_MEMBERSHIP,
+  RESUBSCRIBE_MEMBERSHIP,
+  CANCEL_MEMBERSHIP_REQUEST
+} from '../contants/membershipConstants';
 
 const initialState = {
   // token: localStorage.getItem('token'),
@@ -46,7 +49,8 @@ const initialState = {
   membership: {
     active: false
   },
-  membershipLoaded: false
+  membershipLoaded: false,
+  buttonLoading: false
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -163,9 +167,15 @@ export default function (state = initialState, action) {
         membership: payload,
         membershipLoaded: true 
       }
+    case CANCEL_MEMBERSHIP_REQUEST:
+      return {
+        ...state,
+        buttonLoading: true
+      }
     case CANCEL_MEMBERSHIP:
       return {
         ...state,
+        buttonLoading: false,
         membership: {
           ...state.membership,
           active: payload.active,
