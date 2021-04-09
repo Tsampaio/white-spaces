@@ -25,7 +25,7 @@ const userHasCourses = async (user, course) => {
       return JSON.stringify(theCourse) === JSON.stringify(course && course._id);
     });
     
-    console.log("user has the course?? " + userHasCourse);
+    // console.log("user has the course?? " + userHasCourse);
     if(userHasCourse) {
       resolve(true)
     } else {
@@ -294,7 +294,7 @@ exports.getCourse = async (req, res, next) => {
     } else {
 
       for(let i=0; i < theCourse.classes.length; i++ ) {
-        console.log(theCourse.classes[i].url);
+        // console.log(theCourse.classes[i].url);
         delete theCourse.classes[i].url
       }
 

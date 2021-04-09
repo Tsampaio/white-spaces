@@ -572,7 +572,7 @@ exports.removeCheckout = async (req, res) => {
 
 exports.loadCheckout = async (req, res) => {
   try {
-    // console.log("inside loadCheckout");
+    console.log("inside loadCheckout");
 
     const user = await User.findById(req.user._id);
 
@@ -585,6 +585,8 @@ exports.loadCheckout = async (req, res) => {
       for (let i = 0; i < user.checkout.length; i++) {
         checkoutPrice += parseInt(user.checkout[i].price)
       }
+
+      console.log("This is checkout price");
 
       res.status(200).json({
         status: 'success',

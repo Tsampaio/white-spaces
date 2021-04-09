@@ -261,7 +261,7 @@ const Membership = ({ history }) => {
 
   const refreshCheckout = async (courseId) => {
     await dispatch(removeCheckout(courseId));
-    loadCheckout();
+    dispatch(loadCheckout());
   };
   console.log(auth && auth.user && !auth.user.authenticated);
 
