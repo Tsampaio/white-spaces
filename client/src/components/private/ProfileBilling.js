@@ -58,8 +58,8 @@ function ProfileBilling() {
       );
     });
 
-  const billingDateParser = () => {
-    const untilDate = new Date(membership && membership.paidThroughDate);
+  const billingDateParser = (dateToParse) => {
+    const untilDate = new Date(dateToParse);
     return `${('0' + untilDate.getDate()).slice(-2)}/${('0' + (untilDate.getMonth() + 1)).slice(-2)}/${untilDate.getFullYear()}`
   }
 

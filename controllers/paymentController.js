@@ -662,6 +662,31 @@ exports.checkMembership = async (req, res) => {
 
       return new Promise((resolve, reject) => {
         gateway.subscription.find(bill.subscriptionId, async function (err, result) {
+          console.log("This is membership")
+          // console.log(result)
+
+          for(let i=0; i < result.transactions.length; i++) {
+
+            const findTransaction = await Transaction.find({transactionId: result.transactions[i].id});
+            console.log("findTransaction is:");
+            console.log(findTransaction);
+
+            if(findTransaction.length < 1) {
+              const newTransaction = await Transaction.create({
+                date: new Date( result.transactions[i].createdAt),
+                user: user._id,
+                userName: user.name,
+                userEmail: user.email,
+                customerId: result.transactions[i].customer.id,
+                productName: [result.transactions[i].planId],
+                coupon: "",
+                price: result.transactions[i].amount,
+                transactionId: result.transactions[i].id,
+              });
+            }
+
+          }
+
           if (!err && ((bill.status != result.status) || (bill.paidThroughDate != result.paidThroughDate))) {
             bill.status = result.status;
             bill.firstBillingDate = result.firstBillingDate
@@ -693,6 +718,9 @@ exports.checkMembership = async (req, res) => {
       } else {
         console.log("they are all the same");
       }
+    }).catch((error) => {
+      console.log("There was an error find the membership history")
+      console.log(error)
     });
 
 
