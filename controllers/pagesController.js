@@ -519,13 +519,38 @@ exports.finishLesson = async (req, res) => {
   try {
     const userClasses = await ClassesWatched.find({ userId: req.user._id })
     const currentCourse = await Course.findOne({ _id: req.body.courseId})
-    console.log("current course is")
-    console.log(currentCourse)
-    console.log("userClass is:")
-    console.log(userClasses);
+    // console.log("current course is")
+    // console.log(currentCourse)
+    // console.log("userClass is:")
+    // console.log(userClasses);
     let courseIndex;
     let lessonIndex;
 
+    const hasCourse = req.user.courses.includes(req.body.courseId);
+    
+    const userHasMembership = await checkMembership(req.user).then(async (memberValue) => {
+      console.log("checking course and membership");
+      if(!hasCourse && !memberValue) {
+        throw new Error("User doesn't have the course");
+      }
+
+      return true
+      
+    }).catch(error => {
+      console.log("error course and membership");
+      return false
+    });
+
+    console.log("user has course");
+    console.log(hasCourse);
+    console.log("user has membership");
+    console.log(userHasMembership);
+
+    if(!hasCourse && !userHasMembership) {
+      throw new Error("User does not have the course");
+    }
+    
+    console.log("checking after error");
     if(userClasses.length < 1) {
 
       const saveClass = await ClassesWatched.create({
@@ -648,7 +673,8 @@ exports.finishLesson = async (req, res) => {
     })
 
   } catch (error) {
-    console.log("THIs is error")
+    console.log("THIs is error");
+    console.log(error);
     res.status(400).json({
       userClasses: [],
       progress: 0
