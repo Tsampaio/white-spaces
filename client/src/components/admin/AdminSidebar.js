@@ -46,6 +46,11 @@ function AdminSidebar( ) {
         <li>
           <NavLink to="/admin/coupons" activeClassName="activeProfilePage"><i className="fa fa-percent"></i>Coupons</NavLink>
         </li>
+        <li>
+          <NavLink to="/admin/memberships" activeClassName="activeProfilePage">
+            <i className="far fa-credit-card"></i>Memberships
+          </NavLink>
+        </li>
       </ul>
     </div>
   );

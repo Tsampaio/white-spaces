@@ -12,6 +12,7 @@ import Sales from './Sales';
 import Coupons from './Coupons';
 import NewCoupon from './NewCoupon';
 import EditCoupon from './EditCoupon';
+import ActiveMemberships from './ActiveMemberships';
 
 const AdminCtn = ({match, history}) => {
   // console.log(match);
@@ -45,7 +46,7 @@ const AdminCtn = ({match, history}) => {
             { match.params.page === "coupons" && !match.params.subPage ? <Coupons /> : null }
             { match.params.page === "coupons" ? (match.params.subPage === "new" ? <NewCoupon /> : null) : null }
             { match.params.page === "coupons" ? (match.params.subPage === "edit" ? <EditCoupon /> :null) : null }
-            
+            { match.params.page === "memberships" ? <ActiveMemberships /> : null }
             
           </div>
         </div>
