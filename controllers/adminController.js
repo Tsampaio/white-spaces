@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const Courses = require('../models/courseModel');
 const Transactions = require('../models/transactionModel');
 const Coupon = require('../models/couponModel');
+const Membership = require('../models/membershipModel');
 const fs = require('fs');
 
 exports.getUsers = async (req, res) => {
@@ -342,9 +343,18 @@ exports.updateCoupon = async (req, res) => {
 exports.updateCourse = async (req, res, next) => {
   try {
     if (req.user.role === 'admin') {
-      console.log("Inside course update controller");
-      console.log("User is admin")
-      const { id, courseName, courseIntro, courseTag, courseDescription, coursePrice, classes, courseLevel } = req.body;
+      console.log('Inside course update controller');
+      console.log('User is admin');
+      const {
+        id,
+        courseName,
+        courseIntro,
+        courseTag,
+        courseDescription,
+        coursePrice,
+        classes,
+        courseLevel,
+      } = req.body;
       // console.log("inside of update Course");
       // console.log(req.body);
       //const course = await Course.findOne({ tag });
@@ -356,19 +366,54 @@ exports.updateCourse = async (req, res, next) => {
         description: courseDescription,
         price: coursePrice,
         classes,
-        courseLevel
+        courseLevel,
       });
 
       res.status(200).json({
         status: 'success',
-        message: "Course updated"
+        message: 'Course updated',
       });
     } else {
       throw new Error('You are not an admin');
     }
-
   } catch (error) {
     console.log(error);
   }
+};
 
+exports.createMembershipRecord = async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+      await Membership.create({
+        userId: '6066fcb666baa71564702d15',
+        userName: 'John Membership',
+        userEmail: 'johnmember@email.com',
+        customerId: '140866606',
+        paidThrough: new Date('05/10/2021'),
+        firstBillDate: new Date('10/11/2020'),
+        status: 'Active',
+        subscriptionId: '8d63cw',
+        transactionId: '1gh20gkq',
+        price: 14.99,
+      });
+    }
+    console.log("Created new record")
+    res.status(200).json({
+      status: 'success'
+    })
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getMemberships = async (req, res) => {
+  try {
+    const memberships = await Membership.find();
+    
+    res.status(200).json({
+      memberships
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }

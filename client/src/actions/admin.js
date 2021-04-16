@@ -28,7 +28,10 @@ import {
   ADMIN_GET_COUPONS_FAIL,
   ADMIN_UPDATE_COUPON_REQUEST,
   ADMIN_UPDATE_COUPON_SUCCESS,
-  ADMIN_UPDATE_COUPON_FAIL
+  ADMIN_UPDATE_COUPON_FAIL,
+  ADMIN_MEMBERSHIPS_REQUEST,
+  ADMIN_MEMBERSHIPS_SUCCESS,
+  ADMIN_MEMBERSHIPS_FAIL
 } from '../contants/adminConstants';
 import axios from 'axios';
 import { FIND_USER_PURCHASES_FAIL, FIND_USER_PURCHASES_REQUEST, FIND_USER_PURCHASES_SUCCESS } from '../contants/userConstants';
@@ -373,6 +376,25 @@ export const updateCouponAction = (courses, couponDetails, couponId) => async di
       type: ADMIN_UPDATE_COUPON_FAIL,
       payload: errors.message
     })
+  }
+}
+
+export const getMemberships = (id) => async dispatch => {
+  try {
+    dispatch({
+      type: ADMIN_MEMBERSHIPS_REQUEST
+    });
+
+    const { data } = await axios.get('/api/admin/updateCoupon/')
+    console.log(data);
+    dispatch({
+      type: ADMIN_MEMBERSHIPS_SUCCESS,
+      memberships: data.memberships
+    });
+  } catch (error) {
+    dispatch({
+      type: ADMIN_MEMBERSHIPS_FAIL
+    });
   }
 }
 

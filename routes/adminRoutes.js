@@ -13,6 +13,8 @@ const {
   getCoupon,
   updateCoupon,
   updateCourse,
+  createMembershipRecord,
+  getMemberships
 } = require('../controllers/adminController');
 
 const { protect } = require('../controllers/authController');
@@ -28,5 +30,7 @@ router.get('/admin/getCoupons', protect, getCoupons);
 router.get('/admin/getCoupon/:couponId', protect, getCoupon);
 router.put('/admin/updateCoupon/:couponId', protect, updateCoupon);
 router.post('/admin/updateCourse', protect, updateCourse);
+router.get('/admin/createMembershipRecord', protect, createMembershipRecord);
+router.get('/admin/getMemberships', protect, getMemberships);
 
 module.exports = router;

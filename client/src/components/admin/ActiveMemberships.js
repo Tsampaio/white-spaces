@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { allUsersAction } from '../../actions/admin';
-import { saveUsersAction, deleteUsersAction } from '../../actions/admin';
+import { getMemberships, deleteUsersAction, saveUsersAction } from '../../actions/admin';
 // import ModalWindow from '../utils/ModalWindow';
 import { Button, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -47,7 +47,7 @@ const ActiveMemberships = () => {
   })
 
   useEffect(() => {
-    dispatch(allUsersAction());
+    dispatch(getMemberships());
   }, []);
 
   useEffect(() => {
