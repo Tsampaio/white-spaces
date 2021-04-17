@@ -409,7 +409,8 @@ exports.createMembershipRecord = async (req, res) => {
 exports.getMemberships = async (req, res) => {
   try {
     const memberships = await Membership.find();
-    
+    console.log("this is membership")
+    console.log(memberships);
     res.status(200).json({
       memberships
     })

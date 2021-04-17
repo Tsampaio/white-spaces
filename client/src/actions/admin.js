@@ -385,11 +385,11 @@ export const getMemberships = (id) => async dispatch => {
       type: ADMIN_MEMBERSHIPS_REQUEST
     });
 
-    const { data } = await axios.get('/api/admin/updateCoupon/')
-    console.log(data);
+    const { data } = await axios.get('/api/admin/getMemberships')
+    console.log(data.memberships);
     dispatch({
       type: ADMIN_MEMBERSHIPS_SUCCESS,
-      memberships: data.memberships
+      payload: data.memberships
     });
   } catch (error) {
     dispatch({

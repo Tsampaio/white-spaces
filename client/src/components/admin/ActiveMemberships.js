@@ -13,10 +13,10 @@ const ActiveMemberships = () => {
   const dispatch = useDispatch();
 
   const admin = useSelector(state => state.admin);
-  const { users, loading } = admin;
+  const { users, loading, memberships } = admin;
   // const courses = useSelector(state => state.courses);
 
-  const [stateUsers, setStateUsers] = useState([]);
+  const [stateMemberships, setStateMemberships] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [userSelected, setUserSelected] = useState(false);
   const [show, setShow] = useState(false);
@@ -42,9 +42,9 @@ const ActiveMemberships = () => {
     lastPage: 1
   });
 
-  const removeAdminFromUsers = users.filter(user => {
-    return user.role !== "admin";
-  })
+  // const removeAdminFromUsers = users.filter(user => {
+  //   return user.role !== "admin";
+  // })
 
   useEffect(() => {
     dispatch(getMemberships());
@@ -52,20 +52,20 @@ const ActiveMemberships = () => {
 
   useEffect(() => {
     if (!loading) {
-      setStateUsers(removeAdminFromUsers);
+      setStateMemberships(memberships);
     }
   }, [loading]);
 
   useEffect(() => {
-    setStateUsers(removeAdminFromUsers);
+    setStateMemberships(memberships);
     setChangePages(false)
     setOrderByState(true)
-  }, [users])
+  }, [memberships])
 
   useEffect(() => {
     // console.log(stateUsers);
     
-    const findSelected = stateUsers.find(user => {
+    const findSelected = stateMemberships.find(user => {
       // console.log(user);
       return user.selected
     });
@@ -73,12 +73,12 @@ const ActiveMemberships = () => {
 
     setUserSelected(Boolean(findSelected));
     
-    console.log(paginate(stateUsers, pageUsers.usersPerPage, 1))
+    console.log(paginate(stateMemberships, pageUsers.usersPerPage, 1))
 
     if( changePages ) {
       setPageUsers({
         ...pageUsers,
-        values: paginate(stateUsers, pageUsers.usersPerPage, 1),
+        values: paginate(stateMemberships, pageUsers.usersPerPage, 1),
         number: pageUsers.number,
         firstPage: pageUsers.firstPage,
         // lastPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number + 1).length
@@ -87,14 +87,14 @@ const ActiveMemberships = () => {
     } else if( orderByState ) {
       setPageUsers({
         ...pageUsers,
-        values: paginate(stateUsers, pageUsers.usersPerPage, 1),
+        values: paginate(stateMemberships, pageUsers.usersPerPage, 1),
         number: 1,
         firstPage: 0,
         // lastPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number + 1).length
         lastPage: 1
       });
     }
-  }, [stateUsers]);
+  }, [stateMemberships]);
 
   function paginate(array, page_size, page_number) {
     // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
@@ -105,7 +105,7 @@ const ActiveMemberships = () => {
     // console.log(stateUsers);
     console.log(event.target.type)
     if (usersSelected === "all") {
-      const selectAllUsers = stateUsers.map((user, i) => {
+      const selectAllUsers = stateMemberships.map((user, i) => {
         // if () {
         // console.log(user);
         // console.log(selectAll)
@@ -125,10 +125,10 @@ const ActiveMemberships = () => {
       setChangePages(true);
       setOrderByState(false);
 
-      setStateUsers(filteredUsers);
+      setStateMemberships(filteredUsers);
       setSelectAll(!selectAll);
     } else {
-      const selectAllCopy = [...stateUsers];
+      const selectAllCopy = [...stateMemberships];
       
 
       const globalUserSelected = (pageUsers.number-1) * pageUsers.usersPerPage + usersSelected;
@@ -139,18 +139,37 @@ const ActiveMemberships = () => {
 
       setChangePages(false);
       setOrderByState(false);
-      setStateUsers(selectAllCopy);
+      setStateMemberships(selectAllCopy);
     }
 
   }
 
   const allUsers = pageUsers.values.map((user, i) => {
-    if (user.role !== "admin") {
+    
       const today = new Date();
-      const joinedDate = new Date(user.joined);
-      const newJoinedDate = `${('0' + joinedDate.getDate()).slice(-2)}/${('0' + (joinedDate.getMonth() + 1)).slice(-2)}/${joinedDate.getFullYear()}`;
+      const paidThrough = new Date(user.paidThrough);
+      const newPaidThrough = `${('0' + paidThrough.getDate()).slice(-2)}/${('0' + (paidThrough.getMonth() + 1)).slice(-2)}/${paidThrough.getFullYear()}`;
       // console.log("Inside all Users");
       // console.log(user.selected)
+      
+      const isActive = (active, paidDate) => {
+        if(active) return "TRUE"
+
+        const past = new Date(paidDate);
+        const today = new Date();
+
+        const dateInPast = function(past, today) {
+          if (past.setHours(0, 0, 0, 0) <= today.setHours(0, 0, 0, 0)) {
+            return true;
+          }
+        
+          return false;
+        };
+        console.log(dateInPast(past, today));
+
+        return dateInPast(past, today) ? "TRUE" : "FALSE"
+      }
+
       const lastLogin = new Date(user.lastLogin);
       const lastLoginDate = () => {
         if (today.getDate() === lastLogin.getDate() &&
@@ -171,31 +190,31 @@ const ActiveMemberships = () => {
               value={user.selected}
               onChange={(e) => { selectUsers(i, e) }}
             />
-            <div className="allUsersTableDiv"><Link to={`/admin/user/${user._id}`}>{user.name}</Link></div>
+            <div className="allUsersTableDiv"><Link to={`/admin/user/${user.userId}`}>{user.userName}</Link></div>
           </td>
           <td>
-            <div className="allUsersTableDiv">{user.email}</div>
+            <div className="allUsersTableDiv">{user.userEmail}</div>
           </td>
           <td>
-            <div className="allUsersTableDiv">{user.active}</div>
+            <div className="allUsersTableDiv">{user.firstBillDate}</div>
           </td>
           <td>
-            <div className="allUsersTableDiv">${user.purchases} USD</div>
+            <div className="allUsersTableDiv">{newPaidThrough}</div>
           </td>
           <td>
-            <div className="allUsersTableDiv">{newJoinedDate}</div>
+            <div className="allUsersTableDiv">{isActive(user.status, user.paidThrough)}</div>
           </td>
           <td>
-            <div className="allUsersTableDiv">{lastLoginDate()}</div>
+            <div className="allUsersTableDiv">{user.status}</div>
           </td>
         </tr>
       )
-    }
+    
   })
 
   const orderBy = (order) => {
     console.log("ordering by date");
-    removeAdminFromUsers.sort(function (a, b) {
+    memberships.sort(function (a, b) {
       // Turn your strings into dates, and then subtract them
       // to get a value that is either negative, positive, or zero.
       if (order === "date") {
@@ -256,7 +275,7 @@ const ActiveMemberships = () => {
 
     setChangePages(false);
     setOrderByState(true);
-    setStateUsers(removeAdminFromUsers);
+    setStateMemberships(memberships);
     // setTest({ loading: false })
     setOrderState({
       orderName: order,
@@ -270,7 +289,7 @@ const ActiveMemberships = () => {
   const handleChange = (e) => {
     console.log(e.target.value);
 
-    const selectedUsers = stateUsers.filter((user) => {
+    const selectedUsers = stateMemberships.filter((user) => {
       return user.selected
     });
 
@@ -310,20 +329,20 @@ const ActiveMemberships = () => {
     if (direction === "previous") {
       setPageUsers({
         ...pageUsers,
-        values: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number - 1),
+        values: paginate(stateMemberships, pageUsers.usersPerPage, pageUsers.number - 1),
         number: pageUsers.number - 1,
-        firstPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number - 2).length,
-        lastPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number).length
+        firstPage: paginate(stateMemberships, pageUsers.usersPerPage, pageUsers.number - 2).length,
+        lastPage: paginate(stateMemberships, pageUsers.usersPerPage, pageUsers.number).length
       })
     } else {
       console.log(pageUsers.number);
-      console.log(paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number).length);
+      console.log(paginate(stateMemberships, pageUsers.usersPerPage, pageUsers.number).length);
       setPageUsers({
         ...pageUsers,
-        values: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number + 1),
+        values: paginate(stateMemberships, pageUsers.usersPerPage, pageUsers.number + 1),
         number: pageUsers.number + 1,
-        firstPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number).length,
-        lastPage: paginate(stateUsers, pageUsers.usersPerPage, pageUsers.number + 2).length
+        firstPage: paginate(stateMemberships, pageUsers.usersPerPage, pageUsers.number).length,
+        lastPage: paginate(stateMemberships, pageUsers.usersPerPage, pageUsers.number + 2).length
       })
     }
   }
@@ -333,13 +352,13 @@ const ActiveMemberships = () => {
     // console.log(e.target.value);
     const text = e.target.value.toLowerCase();
     console.log(text);
-    const filteredusers = removeAdminFromUsers.filter((user) => {
+    const filteredusers = memberships.filter((user) => {
       console.log(user.name)
       return (user.name.toLowerCase().indexOf(text) > -1 || user.email.toLowerCase().indexOf(text) > -1);
     })
 
     console.log(filteredusers);
-    setStateUsers(filteredusers);
+    setStateMemberships(filteredusers);
   }
 
   console.log(pageUsers);
@@ -349,7 +368,7 @@ const ActiveMemberships = () => {
     <div className="allUsersCtn container">
       <div className="row">
         <div className="col allUsersTable">
-          <h5 className="mb-4">Showing 1 - 25 of {stateUsers.length} Students</h5>
+          <h5 className="mb-4">Showing 1 - 25 of {stateMemberships.length} Students</h5>
           <div className="row">
             <Col sm="5">
               <Form.Control className="my-3 input-md" type="text" placeholder="Find a user" onChange={findUser} />
@@ -374,10 +393,10 @@ const ActiveMemberships = () => {
                     )}
                 </th>
                 <th onClick={() => orderBy("email")}>Email</th>
-                <th onClick={() => orderBy("active")}>Active</th>
-                <th onClick={() => orderBy("purchases")}>Purchases</th>
-                <th onClick={() => orderBy("date")}>Joined</th>
-                <th onClick={() => orderBy("lastLogin")}>Last login</th>
+                <th onClick={() => orderBy("active")}>First Bill</th>
+                <th onClick={() => orderBy("purchases")}>Paid Through</th>
+                <th onClick={() => orderBy("date")}>Valid</th>
+                <th onClick={() => orderBy("lastLogin")}>Status</th>
               </tr>
             </thead>
             <tbody>

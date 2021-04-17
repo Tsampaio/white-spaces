@@ -22,7 +22,10 @@ import {
   ADMIN_GET_COUPON_FAIL,
   ADMIN_GET_COUPONS_REQUEST,
   ADMIN_GET_COUPONS_SUCCESS,
-  ADMIN_GET_COUPONS_FAIL
+  ADMIN_GET_COUPONS_FAIL,
+  ADMIN_MEMBERSHIPS_REQUEST,
+  ADMIN_MEMBERSHIPS_FAIL,
+  ADMIN_MEMBERSHIPS_SUCCESS
 } from '../contants/adminConstants';
 import {
   FIND_USER_PURCHASES_FAIL,
@@ -41,7 +44,8 @@ const initialState = {
   userPurchases: [],
   sales: [],
   coupon: {},
-  coupons: []
+  coupons: [],
+  memberships: []
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -60,6 +64,7 @@ export default function (state = initialState, action) {
     case ADMIN_GET_SALES_REQUEST:
     case ADMIN_GET_COUPON_REQUEST:
     case ADMIN_GET_COUPONS_REQUEST:
+    case ADMIN_MEMBERSHIPS_REQUEST:
       return {
         ...state,
         loading: true
@@ -81,10 +86,17 @@ export default function (state = initialState, action) {
     case ADMIN_GET_SALES_FAIL:
     case ADMIN_GET_COUPON_FAIL:
     case ADMIN_GET_COUPONS_FAIL:
+    case ADMIN_MEMBERSHIPS_FAIL:
       return {
         ...state,
         loading: false,
         message: payload
+      }
+    case ADMIN_MEMBERSHIPS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        memberships: payload
       }
     case FIND_USER_SUCCESS:
       return {
