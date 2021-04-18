@@ -16,6 +16,7 @@ const ActiveMemberships = () => {
   const { users, loading, memberships } = admin;
   // const courses = useSelector(state => state.courses);
 
+  const [number, setNumber] = useState(0);
   const [stateMemberships, setStateMemberships] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [userSelected, setUserSelected] = useState(false);
@@ -94,6 +95,13 @@ const ActiveMemberships = () => {
         lastPage: 1
       });
     }
+
+    const numberActiveMemberships = stateMemberships.reduce((total, num) => {
+      return total + (num.status === 'Active' ? 1 : 0)
+    }, 0);
+  
+    setNumber(numberActiveMemberships);
+
   }, [stateMemberships]);
 
   function paginate(array, page_size, page_number) {
@@ -151,6 +159,10 @@ const ActiveMemberships = () => {
       const newPaidThrough = `${('0' + paidThrough.getDate()).slice(-2)}/${('0' + (paidThrough.getMonth() + 1)).slice(-2)}/${paidThrough.getFullYear()}`;
       // console.log("Inside all Users");
       // console.log(user.selected)
+
+      const firstBill = new Date(user.firstBillDate);
+      console.log(firstBill.getDate())
+      const newfirstBill = `${('0' + firstBill.getDate()).slice(-2)}/${('0' + (firstBill.getMonth() + 1)).slice(-2)}/${firstBill.getFullYear()}`;
       
       const isActive = (active, paidDate) => {
         if(active) return "TRUE"
@@ -196,7 +208,7 @@ const ActiveMemberships = () => {
             <div className="allUsersTableDiv">{user.userEmail}</div>
           </td>
           <td>
-            <div className="allUsersTableDiv">{user.firstBillDate}</div>
+            <div className="allUsersTableDiv">{newfirstBill}</div>
           </td>
           <td>
             <div className="allUsersTableDiv">{newPaidThrough}</div>
@@ -369,6 +381,7 @@ const ActiveMemberships = () => {
       <div className="row">
         <div className="col allUsersTable">
           <h5 className="mb-4">Showing 1 - 25 of {stateMemberships.length} Students</h5>
+          <h5>Active Memberships: {number}</h5>
           <div className="row">
             <Col sm="5">
               <Form.Control className="my-3 input-md" type="text" placeholder="Find a user" onChange={findUser} />
