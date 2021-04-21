@@ -11,6 +11,7 @@ import {
 } from './types';
 
 import { PAY_COURSE_REQUEST, PAY_BUTTON_LOAD_REQUEST, PAY_BUTTON_LOAD_SUCCESS } from '../contants/paymentConstants';
+import { CHECK_MEMBERSHIP, CHECK_MEMBERSHIP_REQUEST } from '../contants/membershipConstants';
 
 export const payAction = (userId, token) => async dispatch => {
   // console.log("pay action");

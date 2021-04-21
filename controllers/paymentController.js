@@ -4,8 +4,7 @@ const Transaction = require('./../models/transactionModel');
 const Coupon = require('./../models/couponModel');
 const braintree = require('braintree');
 const Email = require('../utils/email');
-const { promisify } = require('util');
-const { rest } = require('lodash');
+const Membership = require('./../models/membershipModel');
 require('dotenv').config();
 
 const gateway = new braintree.BraintreeGateway({
@@ -318,6 +317,19 @@ exports.membershipPayment = async (req, res) => {
               ]
             }
 
+            await Membership.create({
+              userId: user._id,
+              userName: user.name,
+              userEmail: user.email,
+              customerId: customerId,
+              paidThrough: result.subscription.paidThroughDate,
+              firstBillDate: result.subscription.firstBillingDate,
+              status: 'Active',
+              subscriptionId: result.subscription.id,
+              transactionId: result.subscription.transactions[0].id,
+              price: result.subscription.price,
+            });
+
             await Transaction.create({
               date: new Date(),
               user: user._id,
@@ -374,7 +386,8 @@ exports.membershipPayment = async (req, res) => {
             paymentMethodToken: token,
             planId: planId
           }, async function (err, result) {
-            // console.log("4444444444");
+            console.log("4444444444");
+            console.log(result.subscription.transactions[0]);
             // console.log(result.subscription.id);
             console.log(result);
             if (result.success) {
@@ -392,6 +405,19 @@ exports.membershipPayment = async (req, res) => {
                   }
                 ]
               }
+
+              await Membership.create({
+                userId: user._id,
+                userName: user.name,
+                userEmail: user.email,
+                customerId: customerId,
+                paidThrough: result.subscription.paidThroughDate,
+                firstBillDate: result.subscription.firstBillingDate,
+                status: 'Active',
+                subscriptionId: result.subscription.id,
+                transactionId: result.subscription.transactions[0].id,
+                price: result.subscription.price,
+              });
 
               await Transaction.create({
                 date: new Date(),

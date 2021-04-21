@@ -1,0 +1,14 @@
+.cardCtn {
+  display: inline-block;
+  text-align: left;
+  padding: 20px 30px;
+}
+
+.cardCtn h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.cardCtn h4 {
+  font-size: 18px;
+}

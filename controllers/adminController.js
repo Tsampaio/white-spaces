@@ -411,6 +411,72 @@ exports.getMemberships = async (req, res) => {
     const memberships = await Membership.find();
     console.log("this is membership")
     console.log(memberships);
+
+    const fetchBillInfo = async (bills) => {
+      const requests = bills.map((bill, i) => {
+  
+        return new Promise((resolve, reject) => {
+          gateway.subscription.find(bill.subscriptionId, async function (err, result) {
+            console.log("This is membership")
+            // console.log(result)
+  
+            for(let i=0; i < result.transactions.length; i++) {
+  
+              const findTransaction = await Membership.find({transactionId: result.transactions[i].id});
+              console.log("findTransaction is:");
+              console.log(findTransaction);
+
+              
+  
+              // if(findTransaction.length < 1) {
+              //   const newTransaction = await Transaction.create({
+              //     date: new Date( result.transactions[i].createdAt),
+              //     user: user._id,
+              //     userName: user.name,
+              //     userEmail: user.email,
+              //     customerId: result.transactions[i].customer.id,
+              //     productName: [result.transactions[i].planId],
+              //     coupon: "",
+              //     price: result.transactions[i].amount,
+              //     transactionId: result.transactions[i].id,
+              //   });
+              // }
+  
+            }
+  
+            if (!err && ((bill.status != result.status) || (bill.paidThroughDate != result.paidThroughDate))) {
+              bill.status = result.status;
+              bill.firstBillingDate = result.firstBillingDate
+              bill.paidThroughDate = result.paidThroughDate
+            }
+            resolve(bill);
+          });
+        });
+      })
+      return Promise.all(requests) // Waiting for all the requests to get resolved.
+    }
+
+    fetchBillInfo(memberships)
+    .then(async (billingUpdated) => {
+
+      const areNotEqual = initialBill.find((obj, i) => {
+        // console.log(checkSame(obj, billingUpdated[i]));
+        return !checkSame(obj, billingUpdated[i]);
+      })
+
+      if (areNotEqual) {
+        console.log("There are changes please update");
+        user.billingHistory = billingUpdated;
+        await user.save({ validateBeforeSave: false });
+      } else {
+        console.log("they are all the same");
+      }
+    }).catch((error) => {
+      console.log("There was an error find the membership history")
+      console.log(error)
+    });
+
+
     res.status(200).json({
       memberships
     })

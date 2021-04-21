@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { activateEmail } from '../../actions/auth';
 import SecondHeader from '../partials/SecondHeader';
 import { RESET_NOTIFICATION } from '../../contants/authConstants';
+import {Card} from 'react-bootstrap';
+import styles from './Activate.module.css';
+
 const Activate = ({ history }) => {
 
   // if (!isAuthenticated) {
@@ -35,15 +38,17 @@ const Activate = ({ history }) => {
   return (
     <>
       <SecondHeader />
-      <div className="container checkoutSuccessCtn">
+      <div className="container-fluid checkoutSuccessCtn">
         <div className="row">
           <div className="col-12 checkoutSuccess">
-            <h1>Please confirm Email Address</h1>
-            <h4>To activate your account</h4>
-            <button className="btn btn-success" onClick={sendEmail}>Resend Email Activation</button>
-            {message && (
-              <h5>{message}</h5>
-            )}
+            <Card className={styles.cardCtn}>
+              <Card.Body>
+              <h1>Please confirm Email Address</h1>
+              <h4>Check your Email inbox, to activate your account</h4>
+              <p>Didn't received your email?</p>
+              <button className="btn btn-success" onClick={sendEmail}>Resend Email Activation</button>
+              </Card.Body>
+            </Card>
           </div>
         </div>
       </div>

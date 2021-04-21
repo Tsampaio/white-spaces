@@ -30,6 +30,7 @@ import {
 } from '../contants/authConstants';
 import {
   CHECK_MEMBERSHIP,
+  CHECK_MEMBERSHIP_REQUEST,
   CANCEL_MEMBERSHIP,
   RESUBSCRIBE_MEMBERSHIP,
   CANCEL_MEMBERSHIP_REQUEST
@@ -160,6 +161,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         courseAcces: payload.courses
+      }
+    case CHECK_MEMBERSHIP_REQUEST:
+      return {
+        ...state,
+        membershipLoaded: false
       }
     case CHECK_MEMBERSHIP:
       return {
