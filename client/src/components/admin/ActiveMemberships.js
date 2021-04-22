@@ -36,7 +36,7 @@ const ActiveMemberships = () => {
   });
 
   const [pageUsers, setPageUsers] = useState({
-    usersPerPage: 3,
+    usersPerPage: 10,
     values: [],
     number: 1,
     firstPage: 0,
@@ -212,6 +212,9 @@ const ActiveMemberships = () => {
           </td>
           <td>
             <div className="allUsersTableDiv">{newPaidThrough}</div>
+          </td>
+          <td>
+            <div className="allUsersTableDiv">{user.transactions}</div>
           </td>
           <td>
             <div className="allUsersTableDiv">{isActive(user.status, user.paidThrough)}</div>
@@ -408,6 +411,7 @@ const ActiveMemberships = () => {
                 <th onClick={() => orderBy("email")}>Email</th>
                 <th onClick={() => orderBy("active")}>First Bill</th>
                 <th onClick={() => orderBy("purchases")}>Paid Through</th>
+                <th onClick={() => orderBy("purchases")}>Cycles</th>
                 <th onClick={() => orderBy("date")}>Valid</th>
                 <th onClick={() => orderBy("lastLogin")}>Status</th>
               </tr>

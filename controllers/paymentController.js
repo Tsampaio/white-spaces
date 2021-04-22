@@ -342,7 +342,6 @@ exports.membershipPayment = async (req, res) => {
               transactionId: result.subscription.id
             });
 
-
             await user.save({ validateBeforeSave: false });
             console.log(result);
             console.log("subscription successful");

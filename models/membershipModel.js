@@ -26,6 +26,9 @@ const membershipSchema = new mongoose.Schema({
   subscriptionId: {
     type: String,
   },
+  transactions: {
+    type: Number
+  },
   transactionId: {
     type: String,
   },

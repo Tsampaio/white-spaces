@@ -4,6 +4,14 @@ const Transactions = require('../models/transactionModel');
 const Coupon = require('../models/couponModel');
 const Membership = require('../models/membershipModel');
 const fs = require('fs');
+const braintree = require('braintree');
+
+const gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY
+})
 
 exports.getUsers = async (req, res) => {
   console.log('Inside GET USERS');
@@ -385,15 +393,15 @@ exports.createMembershipRecord = async (req, res) => {
   try {
     if (req.user.role === 'admin') {
       await Membership.create({
-        userId: '6066fcb666baa71564702d15',
-        userName: 'John Membership',
-        userEmail: 'johnmember@email.com',
-        customerId: '140866606',
-        paidThrough: new Date('05/10/2021'),
-        firstBillDate: new Date('10/11/2020'),
+        userId: '5f3ed1c921c7862bec590e41',
+        userName: 'Telmo Sampaio',
+        userEmail: 'telmoasampaio@gmail.com',
+        customerId: '476293276',
+        paidThrough: new Date(2020,10,17),
+        firstBillDate: new Date(2020,09,18),
         status: 'Active',
-        subscriptionId: '8d63cw',
-        transactionId: '1gh20gkq',
+        subscriptionId: '5wvgdg',
+        transactionId: 'gsgn6r2f',
         price: 14.99,
       });
     }
@@ -410,23 +418,44 @@ exports.getMemberships = async (req, res) => {
   try {
     const memberships = await Membership.find();
     console.log("this is membership")
-    console.log(memberships);
+    // console.log(memberships);
 
+    const allMemberships = [...memberships];
+    let needsUpdate = [];
     const fetchBillInfo = async (bills) => {
+      
       const requests = bills.map((bill, i) => {
   
         return new Promise((resolve, reject) => {
           gateway.subscription.find(bill.subscriptionId, async function (err, result) {
             console.log("This is membership")
             // console.log(result)
+            // console.log(result)
   
-            for(let i=0; i < result.transactions.length; i++) {
-  
-              const findTransaction = await Membership.find({transactionId: result.transactions[i].id});
-              console.log("findTransaction is:");
-              console.log(findTransaction);
+            // const findTransaction = await Membership.find({transactionId: result.transactions[0].id});
+            // console.log("findTransaction is:");
+            // console.log(findTransaction);
 
-              
+            const resPayThroughDate = new Date(result.paidThroughDate);
+            const billPaidThrough = new Date(bill.paidThrough);
+
+            // console.log(resPayThroughDate);
+            // console.log(billPaidThrough);
+            // console.log(resPayThroughDate - billPaidThrough)
+            console.log("NUMBERS:")
+            console.log(result.transactions.length);
+            console.log(bill.transactions);
+
+            if((result.status !== bill.status) || (resPayThroughDate - billPaidThrough) !== 0 || (result.transactions.length !== bill.transactions) ) {
+              bill.paidThrough = result.paidThroughDate;
+              bill.status = result.status
+              bill.transactions = result.transactions.length
+              needsUpdate.push(true);
+              console.log("updating....")
+            }
+
+            // console.log("This is bill");
+            // console.log(bill)
   
               // if(findTransaction.length < 1) {
               //   const newTransaction = await Transaction.create({
@@ -442,13 +471,13 @@ exports.getMemberships = async (req, res) => {
               //   });
               // }
   
-            }
+            
   
-            if (!err && ((bill.status != result.status) || (bill.paidThroughDate != result.paidThroughDate))) {
-              bill.status = result.status;
-              bill.firstBillingDate = result.firstBillingDate
-              bill.paidThroughDate = result.paidThroughDate
-            }
+            // if (!err && ((bill.status != result.status) || (bill.paidThroughDate != result.paidThroughDate))) {
+            //   bill.status = result.status;
+            //   bill.firstBillingDate = result.firstBillingDate
+            //   bill.paidThroughDate = result.paidThroughDate
+            // }
             resolve(bill);
           });
         });
@@ -456,21 +485,49 @@ exports.getMemberships = async (req, res) => {
       return Promise.all(requests) // Waiting for all the requests to get resolved.
     }
 
-    fetchBillInfo(memberships)
-    .then(async (billingUpdated) => {
+    fetchBillInfo(allMemberships)
+    .then(async (membershipsToUpdate) => {
 
-      const areNotEqual = initialBill.find((obj, i) => {
-        // console.log(checkSame(obj, billingUpdated[i]));
-        return !checkSame(obj, billingUpdated[i]);
-      })
+      // const areNotEqual = initialBill.find((obj, i) => {
+      //   // console.log(checkSame(obj, billingUpdated[i]));
+      //   return !checkSame(obj, billingUpdated[i]);
+      // })
 
-      if (areNotEqual) {
-        console.log("There are changes please update");
-        user.billingHistory = billingUpdated;
-        await user.save({ validateBeforeSave: false });
+      // if (areNotEqual) {
+      //   console.log("There are changes please update");
+      //   user.billingHistory = billingUpdated;
+      //   await user.save({ validateBeforeSave: false });
+      // } else {
+      //   console.log("they are all the same");
+      // }
+      console.log("Needs to update is");
+      console.log(needsUpdate)
+      if(needsUpdate.length > 0) {
+        const bulkUpdateOps = membershipsToUpdate.map((membership, i) => {
+          return {
+            updateOne: {
+              "filter": { "_id": membership._id },
+              "update": {
+                $set: {
+                  status: membership.status,
+                  paidThrough: new Date(membership.paidThrough),
+                  transactions: membership.transactions
+                }
+              }
+            }
+          }
+        });
+        console.log("bulkUpdateOps");
+        console.log(membershipsToUpdate)
+
+        await Membership.bulkWrite(bulkUpdateOps, { "ordered": true, "w": 1 });
+        console.log("JUST UPDATED....");
       } else {
-        console.log("they are all the same");
+        console.log("No need for update....")
       }
+
+      console.log("The memberships are updated")
+      // console.log(billingUpdated)
     }).catch((error) => {
       console.log("There was an error find the membership history")
       console.log(error)
@@ -478,7 +535,7 @@ exports.getMemberships = async (req, res) => {
 
 
     res.status(200).json({
-      memberships
+      memberships: allMemberships
     })
   } catch (error) {
     console.log(error)
