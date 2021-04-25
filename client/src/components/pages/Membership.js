@@ -9,8 +9,7 @@ const Membership = ({history}) => {
 
 	const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-  const { active, membership } = auth;
-
+  const { membership } = auth;
 
 	const [formData, setFormData] = useState({
 		name: '',
@@ -68,6 +67,8 @@ const Membership = ({history}) => {
 	// console.log(result);
 	// console.log(randNumber1)
 	// console.log(randNumber2)
+	
+
 	return (
 		<Fragment>
 			<SecondHeader />

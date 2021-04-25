@@ -11,7 +11,7 @@ const MembershipCheckout = ({history}) => {
   
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
-  const { user, token } = auth;
+  const { loading, isAuthenticated, user, token } = auth;
 
   const payment = useSelector((state) => state.payment);
   const { paymentToken, buttonLoading, paymentComplete } = payment;
@@ -25,6 +25,12 @@ const MembershipCheckout = ({history}) => {
   useEffect(() => {
     dispatch(payAction());
   }, []);
+
+  useEffect(() => {
+		if(!loading && !isAuthenticated) {
+			history.push('/register');
+		}
+	}, [history, loading, isAuthenticated])
 
   const buy = (membershipDuration) => {
     let nonce;
