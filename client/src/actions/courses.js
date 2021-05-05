@@ -20,7 +20,9 @@ import { COURSE_LIST_REQUEST,
   DELETE_COURSE_VIDEOCLASS_SUCCESS, 
   SAVE_FEATURED_COURSES_FAIL, 
   SAVE_FEATURED_COURSES_REQUEST, 
-  SAVE_FEATURED_COURSES_SUCCESS 
+  SAVE_FEATURED_COURSES_SUCCESS,
+  CLASS_WATCHED_UPDATED_REQUEST,
+  CLASS_WATCHED_UPDATED_RESET
 } from '../contants/courseConstants';
 // import { RESET_MESSAGE } from '../contants/authConstants';
 
@@ -321,6 +323,10 @@ export const finishLessonAction = (lesson, courseId, token) => async dispatch =>
       payload: res.data
     });
 
+    dispatch({
+      type: CLASS_WATCHED_UPDATED_REQUEST
+    })
+
   } catch (error) {
     console.log("There is an error finishing the class");
     dispatch({
@@ -402,3 +408,12 @@ export const deleteVideoClassAction = (courseId, classId) => async (dispatch, ge
   }
 }
 
+export const classWatchedUpdateReset = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CLASS_WATCHED_UPDATED_RESET
+    })
+  } catch (error) {
+    
+  }
+}

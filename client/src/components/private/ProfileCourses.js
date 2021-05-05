@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCoursesOwned } from '../../actions/courses';
+import { getCoursesOwned, classWatchedUpdateReset } from '../../actions/courses';
 import { checkMembership } from '../../actions/membership';
 import Loader from '../utils/Loader';
 import CourseCard from '../pages/CourseCard';
@@ -11,6 +11,16 @@ function ProfileCourses() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const { loading, coursesOwnedLoaded } = auth;
+
+  const courses = useSelector((state) => state.courses);
+  const { classWatchedUpdated } = courses;
+
+  useEffect(() => {
+    if(classWatchedUpdated) {
+      dispatch(classWatchedUpdateReset())
+      dispatch(getCoursesOwned());
+    }
+  }, [dispatch, classWatchedUpdated])
 
   useEffect(() => {
     if(!loading && !coursesOwnedLoaded) {
@@ -26,7 +36,7 @@ function ProfileCourses() {
     ) {
       dispatch(checkMembership(auth.token));
     }
-  }, [auth && auth.user && auth.user._id]);
+  }, [auth]);
 
   const coursesimage = require.context('../../../../uploads/courses/', true);
 

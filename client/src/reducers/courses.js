@@ -15,7 +15,9 @@ import {
   SAVE_FEATURED_COURSES_FAIL,
   DELETE_COURSE_VIDEOCLASS_SUCCESS,
   DELETE_COURSE_VIDEOCLASS_FAIL,
-  DELETE_COURSE_VIDEOCLASS_REQUEST
+  DELETE_COURSE_VIDEOCLASS_REQUEST,
+  CLASS_WATCHED_UPDATED_REQUEST,
+  CLASS_WATCHED_UPDATED_RESET
 } from '../contants/courseConstants';
 
 const initialState = {
@@ -24,6 +26,7 @@ const initialState = {
   all: [],
   message: "",
   classesWatched: null,
+  classWatchedUpdated: false,
   courseProgress: 0,
   coursesLoaded: false
 }
@@ -33,6 +36,16 @@ export default function (state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
+    case CLASS_WATCHED_UPDATED_REQUEST:
+      return {
+        ...state,
+        classWatchedUpdated: true
+      }
+    case CLASS_WATCHED_UPDATED_RESET:
+      return {
+        ...state,
+        classWatchedUpdated: false
+      }
     case COURSE_LIST_REQUEST:
       return {
         ...state,
