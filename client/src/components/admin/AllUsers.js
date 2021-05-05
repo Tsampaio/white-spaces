@@ -338,6 +338,9 @@ const AllUsers = () => {
       return (user.name.toLowerCase().indexOf(text) > -1 || user.email.toLowerCase().indexOf(text) > -1);
     })
 
+    setChangePages(false);
+    setOrderByState(true);
+
     console.log(filteredusers);
     setStateUsers(filteredusers);
   }
