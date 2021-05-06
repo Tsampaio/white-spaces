@@ -100,12 +100,12 @@ const MembershipCheckout = ({history}) => {
               </Card.Header>
               <div className="paypal membershipCard">
                 
-                <div className="discountCtn">
+                {/* <div className="discountCtn">
                     <Form.Control
                         placeholder="Enter coupon code"
                     />
                     <Button>Apply</Button>
-                </div>
+                </div> */}
                 
                 <div className="MembershipTotal">
                   <span>Total to pay:</span>
