@@ -27,6 +27,8 @@ const MembershipCheckout = ({history}) => {
   }, []);
 
   useEffect(() => {
+    console.log("Loading is: ", !loading);
+    console.log("isAuthenticated is ", !isAuthenticated);
 		if(!loading && !isAuthenticated) {
 			history.push('/register');
 		}
