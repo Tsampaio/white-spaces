@@ -25,6 +25,7 @@ import Activate from './components/pages/Activate';
 import ActivateEmail from './components/pages/ActivateEmail';
 import Admin from './components/admin/AdminCtn';
 import Privacy from './components/pages/Privacy';
+import Terms from './components/pages/Terms';
 // import CourseCreate from './components/admin/CourseCreate';
 // import CourseUpdate from './components/pages/CourseUpdate';
 import ProfileCtn from './components/private/ProfileCtn';
@@ -55,6 +56,7 @@ function App() {
           <Route exact path="/activate" component={Activate} />
           <Route exact path="/activate/:token" component={ActivateEmail} />
           <Route path="/privacy" component={Privacy} />
+          <Route path="/terms" component={Terms} />
           <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
           <Route path="/forgotPassword" component={FGT_PASSWORD} />

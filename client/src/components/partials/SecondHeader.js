@@ -180,6 +180,9 @@ const SecondHeader = () => {
                 <li>
                   <Link to="/membership">MEMBERSHIP</Link>
                 </li>
+                <li>
+                  <a href="https://blog.telmo.academy/" rel="noreferrer" target="_blank">BLOG</a>
+                </li>
                 {isAuthenticated ? (
                   <div
                     ref={dropMenu}
