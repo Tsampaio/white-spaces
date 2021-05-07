@@ -21,11 +21,10 @@ const CourseCard = (props) => {
 
   const images = require.context('../../../../uploads/courses/', true);
 
-
   let img = images(`./${props.tag}.jpg`);
 
   return (
-    <Col md={6} lg={3} className="offset-1 offset-md-0 my-4 col-10">
+    <Col md={6} lg={3} className={props.courseOwned ? "offset-md-0 my-4 col-12" : "offset-1 offset-md-0 my-4 col-10"}>
       <div className="cardBorder">
         <div className="courseThumbnail courseFeatured1">
           <Link className="courseTitle" to={props.courseOwned ? `/courses/${props.tag}/lessons/1` : `/courses/${props.tag}`}>

@@ -349,9 +349,9 @@
         padding: 10px;
     }
 
-    .myCoursesCtn .cardBorder {
+    /* .myCoursesCtn .cardBorder {
         margin-bottom: 30px;
-    }
+    } */
 
     .userBillingCtn th {
         min-width: 100px;
@@ -373,5 +373,14 @@
     .imagePreviewOverlay .ReactCrop {
         width: 300px;
         max-height: 60vh;
+    }
+
+    .myCoursesCtn {
+        max-width: 1200px;
+        padding: 50px 30px;
+    }
+
+    .myCoursesCtn h1 {
+        margin-bottom: 20px;
     }
 }
