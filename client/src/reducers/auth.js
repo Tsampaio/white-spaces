@@ -42,7 +42,7 @@ const initialState = {
   isAuthenticated: null,
   active: null,
   user: null,
-  loading: true,
+  loading: false,
   notification: {},
   coursesOwned: [],
   coursesProgress: [],
