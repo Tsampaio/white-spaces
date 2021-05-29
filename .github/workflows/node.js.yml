@@ -13,6 +13,9 @@ jobs:
   build:
 
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./app
 
     strategy:
       matrix:
@@ -50,7 +53,8 @@ jobs:
         echo BRAINTREE_MERCHANT_ID = ${{ secrets.BRAINTREE_MERCHANT_ID }} >> .env
         echo BRAINTREE_PUBLIC_KEY = ${{ secrets.BRAINTREE_PUBLIC_KEY }} >> .env
         echo BRAINTREE_PRIVATE_KEY = ${{ secrets.BRAINTREE_PRIVATE_KEY }} >> .env
-        pm2 stop 0
-        pm2 start 0
-        pm2 save
-        sudo service nginx restart
+        npm run dev
+      # pm2 stop 0
+      # pm2 start 0
+      # pm2 save
+      # sudo service nginx restart
