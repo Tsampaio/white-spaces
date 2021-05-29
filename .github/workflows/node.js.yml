@@ -50,8 +50,7 @@ jobs:
         echo BRAINTREE_MERCHANT_ID = ${{ secrets.BRAINTREE_MERCHANT_ID }} >> .env
         echo BRAINTREE_PUBLIC_KEY = ${{ secrets.BRAINTREE_PUBLIC_KEY }} >> .env
         echo BRAINTREE_PRIVATE_KEY = ${{ secrets.BRAINTREE_PRIVATE_KEY }} >> .env
-        npm run dev
-      # pm2 stop 0
-      # pm2 start 0
-      # pm2 save
-      # sudo service nginx restart
+        pm2 stop 0
+        pm2 start 0
+        pm2 save
+        sudo service nginx restart
