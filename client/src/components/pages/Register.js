@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SecondHeader from '../partials/SecondHeader';
 import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,10 @@ import { Col } from 'react-bootstrap';
 import MessageDisplay from '../utils/MessageDisplay';
 import * as styles from './Register.module.css';
 import { RESET_NOTIFICATION } from '../../contants/authConstants';
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha
+} from 'react-google-recaptcha-v3';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -60,23 +64,33 @@ const Register = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notification])
 
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  
+
+  // Create an event handler so you can call the verification on button click event or form submit
+  // const handleReCaptchaVerify = useCallback(async () => {
+  //   if (!executeRecaptcha) {
+  //     console.log('Execute recaptcha not yet available');
+  //   }
+
+  //   const token = await executeRecaptcha('submit')
+
+  //   console.log(token)
+  //   // Do whatever you want with the token
+  // }, [executeRecaptcha]);
+
+  // You can use useEffect to trigger the verification as soon as the component being loaded
+  // useEffect(() => {
+  //   handleReCaptchaVerify();
+  // }, [handleReCaptchaVerify]);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     console.log('Inside register');
     if (password !== passwordConfirm) {
-      // setAlert("Passwords do not match", 'danger', 3000);
+     
       console.log('passwords');
       setFormData({ ...formData, formMessage: 'Passwords do not match' });
-    } else if (randNumber1 + randNumber2 !== parseInt(result)) {
-      console.log('results');
-      console.log('Random Number 1', randNumber1);
-      console.log(typeof randNumber1);
-      console.log('Random Number 2', randNumber2);
-      console.log('Result', result);
-      console.log(randNumber1 === result);
-      console.log(randNumber1 !== result);
-      setFormData({ ...formData, formMessage: 'The calculation answer is wrong! Try again' });
-      // dispatch({type:  })
     } else {
       console.log('Inside register action');
       setFormData({
@@ -84,14 +98,23 @@ const Register = () => {
         showError: true,
         formMessage: ''
       });
-      dispatch(register({ name, email, password, passwordConfirm }));
+    //   dispatch(register({ name, email, password, passwordConfirm }));
       
-    }
-  };
+    // }
 
-  const checkResult = (e) => {
-    setFormData({ ...formData, result: e.target.value });
-  };
+      console.log(name);
+      // handleReCaptchaVerify()
+      const token = await executeRecaptcha('submit')
+      console.log(token);
+
+      dispatch(register({ name, email, password, passwordConfirm, token }));
+    
+    }
+  }
+
+  // const checkResult = (e) => {
+  //   setFormData({ ...formData, result: e.target.value });
+  // };
 
   //Redirect if logged in
   if (isAuthenticated) {
@@ -100,6 +123,7 @@ const Register = () => {
   console.log(result);
   console.log(randNumber1);
   console.log(randNumber2);
+  
   return (
     <>
       <SecondHeader />
@@ -155,7 +179,7 @@ const Register = () => {
                     />
                   </div>
 
-                  {randNumber1 && (
+                  {/* {randNumber1 && (
                     <div className={styles.antiBot} id="anti-bot">
                       <h3>Solve the calculation</h3>
                       <span>{randNumber1}</span>
@@ -164,7 +188,7 @@ const Register = () => {
                       <span>=</span>
                       <input className={styles.registerInput} type="number" onChange={checkResult} />
                     </div>
-                  )}
+                  )} */}
 
                   <input
                     type="submit"

@@ -40,7 +40,8 @@ export const getCourses = (courses) => async dispatch => {
 
     const res = await axios.post(`/api/getCourses`, body, {
       headers: {
-        Accept: 'application/json', "Content-Type": "application/json"
+        Accept: 'application/json', 
+        "Content-Type": "application/json"
       }
     });
 

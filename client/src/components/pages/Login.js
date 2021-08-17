@@ -7,6 +7,9 @@ import * as styles from './Login.module.css';
 import { login } from '../../actions/auth';
 import MessageDisplay from '../utils/MessageDisplay';
 import { RESET_NOTIFICATION } from '../../contants/authConstants';
+import {
+  useGoogleReCaptcha
+} from 'react-google-recaptcha-v3';
 
 const Login = () => {
 	
@@ -36,8 +39,13 @@ const Login = () => {
 			...formData,
 			showError: true
 		})
-		dispatch(login({ email, password }));
+		const token = await executeRecaptcha('submit')
+    console.log(token);
+
+		dispatch(login({ email, password, token }));
 	}
+
+	const { executeRecaptcha } = useGoogleReCaptcha();
 
 	//Redirect if logged in
 	if (isAuthenticated && active === "notActive") {

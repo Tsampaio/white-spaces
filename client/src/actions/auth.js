@@ -38,7 +38,7 @@ import {
 } from '../contants/authConstants';
 
 //Register User
-export const register = ({ name, email, password, passwordConfirm }) => async dispatch => {
+export const register = ({ name, email, password, passwordConfirm, token }) => async dispatch => {
   
   try {
     dispatch({
@@ -51,7 +51,7 @@ export const register = ({ name, email, password, passwordConfirm }) => async di
       }
     }
   
-    const body = JSON.stringify({ name, email, password, passwordConfirm });
+    const body = JSON.stringify({ name, email, password, passwordConfirm, token });
 
     const res = await axios.post("/api/users/register", body, config);
     console.log("res.data");
@@ -73,7 +73,7 @@ export const register = ({ name, email, password, passwordConfirm }) => async di
 }
 
 //Login User
-export const login = ({ email, password }) => async dispatch => {
+export const login = ({ email, password, token }) => async dispatch => {
   try {
     dispatch({
       type: LOGIN_REQUEST,
@@ -85,7 +85,7 @@ export const login = ({ email, password }) => async dispatch => {
       }
     }
   
-    const body = JSON.stringify({ email, password });
+    const body = JSON.stringify({ email, password, token });
 
     const { data } = await axios.post("/api/users/login", body, config);
     console.log("res.data");

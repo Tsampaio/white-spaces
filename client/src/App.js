@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { loadUser, lastLoginAction } from './actions/auth';
+import { GoogleReCaptchaProvider} from 'react-google-recaptcha-v3';
 import store from './store';
 import './fontawesome/css/all.min.css';
 import Home from './components/pages/Home';
@@ -38,6 +39,8 @@ function App() {
     store.dispatch(lastLoginAction());
   }, []);
 
+  const publicKey = '6LcM8KgUAAAAAHuKZgPnVJumoCoWA1Go0RlbiYtP'
+
   return (
     <Provider store={store}>
       <BrowserRouter>
@@ -45,8 +48,21 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route exact path="/courses" component={Courses} />
           <Route exact path="/courses/:courseTag" component={Course} />
-          <Route exact path="/courses/:courseTag/lessons/:lesson" component={CourseLessons} />  
-          <Route path="/register" component={Register} />
+          <Route exact path="/courses/:courseTag/lessons/:lesson" component={CourseLessons} />
+          
+          
+          <Route exact path="/register">
+            <GoogleReCaptchaProvider reCaptchaKey={publicKey}>
+              <Register />
+            </GoogleReCaptchaProvider>
+          </Route>
+
+          <Route exact path="/login">
+            <GoogleReCaptchaProvider reCaptchaKey={publicKey}>
+              <Login/>
+            </GoogleReCaptchaProvider>
+          </Route>
+          
           <Route exact path="/cart/checkout" component={Checkout} />
           <Route exact path="/cart/checkout/success" component={CheckoutSuccess} />
           <Route exact path="/membership" component={Membership} />
@@ -57,7 +73,7 @@ function App() {
           <Route exact path="/activate/:token" component={ActivateEmail} />
           <Route path="/privacy" component={Privacy} />
           <Route path="/terms" component={Terms} />
-          <Route path="/login" component={Login} />
+          
           <Route path="/logout" component={Logout} />
           <Route path="/forgotPassword" component={FGT_PASSWORD} />
           <Route path="/resetPassword/:token" component={RST_PASSWORD} />
