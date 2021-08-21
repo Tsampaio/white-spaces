@@ -13,24 +13,41 @@ const gateway = new braintree.BraintreeGateway({
 
 router.post('/', (req, res) => {
   console.log("this is the request")
-  console.log(req);
+  // console.log(req);
 
   // const sampleNotification = gateway.webhookTesting.sampleNotification(
   //   braintree.WebhookNotification.Kind.SubscriptionWentPastDue,
   //   "myId"
   // );
   gateway.webhookNotification.parse(
-    sampleNotification.bt_signature,
-    sampleNotification.bt_payload,
+    req.body.bt_signature,
+    req.body.bt_payload,
   ).then(webhookNotification => {
-    console.log("My id")
-    console.log(webhookNotification.subscription.id)
-    // "myId"
-
-    res.json({
-      message: "received"
-    })
+      console.log("[Webhook Received " + webhookNotification.timestamp + "] | Kind: " + webhookNotification.kind);
+      // braintree.WebhookNotification.Kind.SubscriptionChargedSuccessfully
+      
+      // Example values for webhook notification properties
+      console.log(webhookNotification.kind); // "subscriptionWentPastDue"
+      console.log(webhookNotification.timestamp); // Sun Jan 1 00:00:00 UTC 2012
+      console.log(webhookNotification.subscription.id)
+      res.status(200).json({
+        message: 'received'
+      });
   });
+
+
+  // gateway.webhookNotification.parse(
+  //   sampleNotification.bt_signature,
+  //   sampleNotification.bt_payload,
+  // ).then(webhookNotification => {
+  //   console.log("My id")
+  //   console.log(webhookNotification.subscription.id)
+  //   "myId"
+
+  //   res.json({
+  //     message: "received"
+  //   })
+  // });
 });
 
 
