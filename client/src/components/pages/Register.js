@@ -9,7 +9,6 @@ import MessageDisplay from '../utils/MessageDisplay';
 import * as styles from './Register.module.css';
 import { RESET_NOTIFICATION } from '../../contants/authConstants';
 import {
-  GoogleReCaptchaProvider,
   useGoogleReCaptcha
 } from 'react-google-recaptcha-v3';
 
