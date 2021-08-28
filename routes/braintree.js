@@ -1,18 +1,20 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const { 
-    generateToken, 
-    processPayment, 
-    membershipPayment, 
-    emailThankYou,
-    addCheckout,
-    removeCheckout,
-    loadCheckout,
-    getUserBilling,
-    getCouponId,
-    test,
-    webhookSubscriptionSuccess } = require('../controllers/paymentController');
+const {
+  generateToken,
+  processPayment,
+  membershipPayment,
+  emailThankYou,
+  addCheckout,
+  removeCheckout,
+  loadCheckout,
+  getUserBilling,
+  getCouponId,
+  test,
+  webhookSubscriptionSuccess,
+  webhookSubscriptionActive,
+} = require('../controllers/paymentController');
 
 const { protect } = require('../controllers/authController');
 
@@ -26,7 +28,8 @@ router.post('/loadCheckout', protect, loadCheckout);
 router.post('/braintree/getUserBilling', protect, getUserBilling);
 router.get('/getCouponId/:couponCode', protect, getCouponId);
 router.post('/subscription/success', webhookSubscriptionSuccess);
+router.post('/subscription/active', webhookSubscriptionActive);
 
-router.post('/test', test );
+router.post('/test', test);
 
 module.exports = router;

@@ -11,54 +11,50 @@ const gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
   publicKey: process.env.BRAINTREE_PUBLIC_KEY,
-  privateKey: process.env.BRAINTREE_PRIVATE_KEY
-})
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY,
+});
 
 exports.generateToken = (req, res) => {
-  gateway.clientToken.generate({
-
-  }, function (err, response) {
+  gateway.clientToken.generate({}, function (err, response) {
     if (err) {
-      res.status(500).send(err)
+      res.status(500).send(err);
     } else {
-      res.send(response)
+      res.send(response);
     }
-
   });
-}
+};
 
 exports.processPayment = async (req, res) => {
-
   try {
-    console.log("inside processPayment");
+    console.log('inside processPayment');
     let nonceFromTheClient = req.body.paymentData.paymentMethodNonce;
 
     let user = req.user;
-    let userName = user.name.split(" ");
+    let userName = user.name.split(' ');
 
     console.log(req.body);
     let courses;
-    if(req.body.courses[0].name === "All Courses") {
+    if (req.body.courses[0].name === 'All Courses') {
       courses = await Course.find();
     } else {
-      courses = await Course.find({ '_id': { $in: req.body.courses } });
+      courses = await Course.find({ _id: { $in: req.body.courses } });
     }
 
     console.log(courses);
 
-    const coursesId = courses.map(course => {
+    const coursesId = courses.map((course) => {
       return course._id;
     });
 
-    const coursesName = courses.map(course => {
+    const coursesName = courses.map((course) => {
       return course.name;
     });
 
-    const coursesPrice = courses.map(course => {
+    const coursesPrice = courses.map((course) => {
       return course.price;
-    })
+    });
 
-    const coupon = await Coupon.findOne({ 'code': req.body.code.toUpperCase() });
+    const coupon = await Coupon.findOne({ code: req.body.code.toUpperCase() });
     console.log(coupon);
 
     const couponIsValid = () => {
@@ -71,18 +67,22 @@ exports.processPayment = async (req, res) => {
           }
           return false;
         };
-        console.log("Date in past")
-        console.log(dateInPast(couponDate, today))
+        console.log('Date in past');
+        console.log(dateInPast(couponDate, today));
 
-        return coupon.active && coupon.available > 0 && !dateInPast(couponDate, today)
+        return (
+          coupon.active &&
+          coupon.available > 0 &&
+          !dateInPast(couponDate, today)
+        );
       } else {
-        return false
+        return false;
       }
-    }
+    };
 
     let finalPrice = courses.reduce((total, course) => {
       return parseFloat(total) + parseFloat(course.price);
-    }, 0)
+    }, 0);
 
     if (couponIsValid()) {
       const newArray = [];
@@ -91,33 +91,36 @@ exports.processPayment = async (req, res) => {
         newArray.push(courses[i].price);
         // coursesInCheckout.push(courses[i]._id)
         for (let j = 0; j < coupon.courses.length; j++) {
-          console.log("+++++++++++++++")
+          console.log('+++++++++++++++');
           console.log(courses[i]._id);
           console.log(coupon.courses[j].courseId);
-          console.log("-------------")
-          if (coupon.courses[j].name === "All Courses" || JSON.stringify(courses[i]._id) === JSON.stringify(coupon.courses[j].courseId)) {
-            console.log("Found a course");
-            newArray[i] = coupon.amountType === "percentage" ? (
-              newArray[i] - newArray[i] * parseInt(coupon.amount) / 100
-            ) : newArray[i] - parseInt(coupon.amount)
+          console.log('-------------');
+          if (
+            coupon.courses[j].name === 'All Courses' ||
+            JSON.stringify(courses[i]._id) ===
+              JSON.stringify(coupon.courses[j].courseId)
+          ) {
+            console.log('Found a course');
+            newArray[i] =
+              coupon.amountType === 'percentage'
+                ? newArray[i] - (newArray[i] * parseInt(coupon.amount)) / 100
+                : newArray[i] - parseInt(coupon.amount);
             // course.price = 10
           }
         }
-
       }
-      console.log("New array is");
+      console.log('New array is');
       console.log(newArray);
       finalPrice = newArray.reduce((total, price) => {
-        console.log("Total price is: " + total);
-        console.log("Course price is: " + price);
+        console.log('Total price is: ' + total);
+        console.log('Course price is: ' + price);
         return parseFloat(total) + parseFloat(price);
-      }, 0)
-
+      }, 0);
     }
 
     let amountFromTheClient = finalPrice;
 
-    console.log("finalPrice +++++++++");
+    console.log('finalPrice +++++++++');
     console.log(finalPrice);
 
     // return res.status(200).json({
@@ -127,110 +130,117 @@ exports.processPayment = async (req, res) => {
     // const course = await Course.findOne({ tag: courseTag })
     // console.log(course);
     if (!user.customerId) {
-      gateway.customer.create({
-        firstName: userName[0],
-        lastName: userName[1],
-        email: user.email
-      }, (err, result) => {
-        console.log("The user id is: ");
-        const customerId = result.customer.id;
+      gateway.customer.create(
+        {
+          firstName: userName[0],
+          lastName: userName[1],
+          email: user.email,
+        },
+        (err, result) => {
+          console.log('The user id is: ');
+          const customerId = result.customer.id;
 
-        gateway.transaction.sale({
-          customerId: customerId,
-          amount: amountFromTheClient,
-          paymentMethodNonce: nonceFromTheClient,
-          options: {
-            submitForSettlement: true
-          }
-        }, async (error, transactionResult) => {
-          console.log("result is: ");
-          console.log(transactionResult);
-          console.log(transactionResult.transaction.amount);
+          gateway.transaction.sale(
+            {
+              customerId: customerId,
+              amount: amountFromTheClient,
+              paymentMethodNonce: nonceFromTheClient,
+              options: {
+                submitForSettlement: true,
+              },
+            },
+            async (error, transactionResult) => {
+              console.log('result is: ');
+              console.log(transactionResult);
+              console.log(transactionResult.transaction.amount);
 
-          const newTransaction = await Transaction.create({
-            date: new Date(),
-            user: user._id,
-            userName: user.name,
-            userEmail: user.email,
-            customerId: result.customer.id,
-            productId: coursesId,
-            productName: coursesName,
-            coupon: req.body.code,
-            price: transactionResult.transaction.amount,
-            transactionId: transactionResult.transaction.id,
-            productSalePrice: coursesPrice
-          });
+              const newTransaction = await Transaction.create({
+                date: new Date(),
+                user: user._id,
+                userName: user.name,
+                userEmail: user.email,
+                customerId: result.customer.id,
+                productId: coursesId,
+                productName: coursesName,
+                coupon: req.body.code,
+                price: transactionResult.transaction.amount,
+                transactionId: transactionResult.transaction.id,
+                productSalePrice: coursesPrice,
+              });
 
-          user.customerId = result.customer.id;
+              user.customerId = result.customer.id;
 
-          await user.save({ validateBeforeSave: false });
+              await user.save({ validateBeforeSave: false });
 
-          if (couponIsValid()) {
-            coupon.used = coupon.used + 1;
-            coupon.available = coupon.available - 1;
+              if (couponIsValid()) {
+                coupon.used = coupon.used + 1;
+                coupon.available = coupon.available - 1;
 
-            await coupon.save({ validateBeforeSave: false });
-          }
+                await coupon.save({ validateBeforeSave: false });
+              }
 
-          return res.status(200).json({
-            success: true,
-            transactionId: newTransaction._id
-          })
-        })
-
-      })
+              return res.status(200).json({
+                success: true,
+                transactionId: newTransaction._id,
+              });
+            }
+          );
+        }
+      );
     } else {
       gateway.customer.find(user.customerId, function (err, customer) {
-        console.log("customer is:");
+        console.log('customer is:');
         console.log(customer);
 
-        gateway.transaction.sale({
-          customerId: customer.id,
-          amount: amountFromTheClient,
-          paymentMethodNonce: nonceFromTheClient,
-          options: {
-            submitForSettlement: true
-          }
-        }, async (error, transactionResult) => {
-          console.log("Transaction amount is");
-          console.log(transactionResult) 
-
-          const newTransaction = await Transaction.create({
-            date: new Date(),
-            user: user._id,
-            userName: user.name,
-            userEmail: user.email,
+        gateway.transaction.sale(
+          {
             customerId: customer.id,
-            productId: coursesId,
-            productName: coursesName,
-            coupon: req.body.code,
-            price: transactionResult.transaction.amount,
-            transactionId: transactionResult.transaction.id,
-            productSalePrice: coursesPrice
-          });
+            amount: amountFromTheClient,
+            paymentMethodNonce: nonceFromTheClient,
+            options: {
+              submitForSettlement: true,
+            },
+          },
+          async (error, transactionResult) => {
+            console.log('Transaction amount is');
+            console.log(transactionResult);
 
-          if (couponIsValid()) {
-            coupon.used = coupon.used + 1;
-            coupon.available = coupon.available - 1;
-            await coupon.save({ validateBeforeSave: false });
+            const newTransaction = await Transaction.create({
+              date: new Date(),
+              user: user._id,
+              userName: user.name,
+              userEmail: user.email,
+              customerId: customer.id,
+              productId: coursesId,
+              productName: coursesName,
+              coupon: req.body.code,
+              price: transactionResult.transaction.amount,
+              transactionId: transactionResult.transaction.id,
+              productSalePrice: coursesPrice,
+            });
+
+            if (couponIsValid()) {
+              coupon.used = coupon.used + 1;
+              coupon.available = coupon.available - 1;
+              await coupon.save({ validateBeforeSave: false });
+            }
+
+            return res.status(200).json({
+              success: true,
+              transactionId: newTransaction._id,
+            });
           }
-
-          return res.status(200).json({
-            success: true,
-            transactionId: newTransaction._id
-          })
-        })
+        );
       });
     }
-
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      status: "fail",
-      message: "Error processing payment, try again!"
+      status: 'fail',
+      message: 'Error processing payment, try again!',
     });
   }
-}
+};
 
 exports.membershipPayment = async (req, res) => {
   // console.log("inside memberPayment");
@@ -238,12 +248,15 @@ exports.membershipPayment = async (req, res) => {
   try {
     let nonceFromTheClient = req.body.paymentMethodNonce;
     //console.log(nonceFromTheClient);
-    let planId = req.body.membershipDuration === "monthly" ? "monthly-plan-id" : "yearly-plan-id";
-    let name = req.body.name.split(" ");
+    let planId =
+      req.body.membershipDuration === 'monthly'
+        ? 'monthly-plan-id'
+        : 'yearly-plan-id';
+    let name = req.body.name.split(' ');
     const user = await User.findOne({ email: req.user.email });
 
     if (user.customerId) {
-      let firstBillingDate = "";
+      let firstBillingDate = '';
 
       const dateInPast = function (firstDate, secondDate) {
         if (firstDate.setHours(0, 0, 0, 0) <= secondDate.setHours(0, 0, 0, 0)) {
@@ -260,27 +273,31 @@ exports.membershipPayment = async (req, res) => {
         //console.log(dateInPast(past, today));
         //console.log(bill);
         return !dateInPast(past, today);
-      })
+      });
 
       if (userMembership) {
         let day = new Date(userMembership.paidThroughDate);
-        // console.log(day); 
+        // console.log(day);
 
         let nextDay = new Date(day);
         nextDay.setDate(day.getDate() + 1);
         // console.log(nextDay);
         let index;
-        let userMembershipActivePending = req.user.membership.billingHistory.find((bill, i) => {
-          index = i;
-          return bill.status === "Active" || bill.status === "Pending";
-        });
-        
-        if(userMembershipActivePending) {
-          await gateway.subscription.cancel(userMembershipActivePending.subscriptionId, async function (err, result) {
-            //console.log(result);
-            user.membership.billingHistory[index].status = "Canceled";
-            // await user.save({ validateBeforeSave: false });
-          })
+        let userMembershipActivePending =
+          req.user.membership.billingHistory.find((bill, i) => {
+            index = i;
+            return bill.status === 'Active' || bill.status === 'Pending';
+          });
+
+        if (userMembershipActivePending) {
+          await gateway.subscription.cancel(
+            userMembershipActivePending.subscriptionId,
+            async function (err, result) {
+              //console.log(result);
+              user.membership.billingHistory[index].status = 'Canceled';
+              // await user.save({ validateBeforeSave: false });
+            }
+          );
         }
 
         firstBillingDate = nextDay;
@@ -288,173 +305,199 @@ exports.membershipPayment = async (req, res) => {
         firstBillingDate = new Date();
       }
 
-      gateway.customer.update(user.customerId, {
-        paymentMethodNonce: nonceFromTheClient
-      }, function (err, result) {
-
-        let token = result.customer.paymentMethods[result.customer.paymentMethods.length - 1].token;
-        console.log("this is the payment token");
-        console.log(token);
-        gateway.subscription.create({
-          paymentMethodToken: token,
-          planId: planId,
-          firstBillingDate: firstBillingDate
-        }, async function (err, result) {
-          console.log(result);
-          if (result.success) {
-            user.membership = {
-              billingHistory: [
-                ...user.membership.billingHistory,
-                {
-                  subscriptionId: result.subscription.id,
-                  firstBillingDate: result.subscription.firstBillingDate,
-                  paidThroughDate: result.subscription.paidThroughDate,
-                  planId: result.subscription.planId,
-                  status: result.subscription.status,
-                  paymentToken: result.subscription.paymentMethodToken,
-                  price: result.subscription.price
-                }
-              ]
-            }
-
-            await Membership.create({
-              userId: user._id,
-              userName: user.name,
-              userEmail: user.email,
-              customerId: customerId,
-              paidThrough: result.subscription.paidThroughDate,
-              firstBillDate: result.subscription.firstBillingDate,
-              status: 'Active',
-              subscriptionId: result.subscription.id,
-              transactionId: result.subscription.transactions[0].id,
-              price: result.subscription.price,
-            });
-
-            await Transaction.create({
-              date: new Date(),
-              user: user._id,
-              userName: user.name,
-              userEmail: user.email,
-              customerId: user.customerId,
-              productId: req.body.membershipDuration === "monthly" ? "5f837d1ea687101a7cff8d66" : "60678aeefeeb0055e0bc0ebb",
-              productName: req.body.membershipDuration === "monthly" ? "Monthly Membership" : "Yearly Membership",
-              price: result.subscription.price,
-              transactionId: result.subscription.id
-            });
-
-            await user.save({ validateBeforeSave: false });
-            console.log(result);
-            console.log("subscription successful");
-
-            const url = `${req.protocol}://${req.get('host')}/courses`;
-            //Or http://localhost:3000/dashboard   for HOST
-            // console.log(url);
-            await new Email(user, url).subscriptionWelcome();
-            console.log("email sent, regular client");
-
-            return res.status(200).json({
-              // NOT SURE IF PENDING IS CORRECT
-              active: true,
-              status: result.subscription.status,
-              paymentComplete: true
-            });
-          }
-        });
-      });
-    } else {
-      gateway.customer.create({
-        firstName: name[0],
-        lastName: name[1],
-        email: req.body.email,
-        creditCard: {
-          options: {
-            verifyCard: true,
-            verificationAmount: "1.00"
-          }
+      gateway.customer.update(
+        user.customerId,
+        {
+          paymentMethodNonce: nonceFromTheClient,
         },
-        paymentMethodNonce: nonceFromTheClient
-      }, async function (err, result) {
-        if (result.success) {
-          let customerId = result.customer.id;
-          let token = result.customer.paymentMethods[0].token;
+        function (err, result) {
+          let token =
+            result.customer.paymentMethods[
+              result.customer.paymentMethods.length - 1
+            ].token;
+          console.log('this is the payment token');
+          console.log(token);
+          gateway.subscription.create(
+            {
+              paymentMethodToken: token,
+              planId: planId,
+              firstBillingDate: firstBillingDate,
+            },
+            async function (err, result) {
+              console.log(result);
+              if (result.success) {
+                user.membership = {
+                  billingHistory: [
+                    ...user.membership.billingHistory,
+                    {
+                      subscriptionId: result.subscription.id,
+                      firstBillingDate: result.subscription.firstBillingDate,
+                      paidThroughDate: result.subscription.paidThroughDate,
+                      planId: result.subscription.planId,
+                      status: result.subscription.status,
+                      paymentToken: result.subscription.paymentMethodToken,
+                      price: result.subscription.price,
+                    },
+                  ],
+                };
 
-          const user = await User.findOne({ email: req.body.email });
+                await Membership.create({
+                  userId: user._id,
+                  userName: user.name,
+                  userEmail: user.email,
+                  customerId: customerId,
+                  paidThrough: result.subscription.paidThroughDate,
+                  firstBillDate: result.subscription.firstBillingDate,
+                  status: 'Active',
+                  subscriptionId: result.subscription.id,
+                  transactionId: result.subscription.transactions[0].id,
+                  price: result.subscription.price,
+                });
 
-          gateway.subscription.create({
-            // merchantAccountId: "",
-            paymentMethodToken: token,
-            planId: planId
-          }, async function (err, result) {
-            console.log("4444444444");
-            console.log(result.subscription.transactions[0]);
-            // console.log(result.subscription.id);
-            console.log(result);
-            if (result.success) {
-              user.membership = {
-                billingHistory: [
-                  ...user.membership.billingHistory,
-                  {
-                    subscriptionId: result.subscription.id,
-                    firstBillingDate: result.subscription.firstBillingDate,
-                    paidThroughDate: result.subscription.paidThroughDate,
-                    planId: result.subscription.planId,
-                    status: result.subscription.status,
-                    paymentToken: result.subscription.paymentMethodToken,
-                    price: result.subscription.price
-                  }
-                ]
+                await Transaction.create({
+                  date: new Date(),
+                  user: user._id,
+                  userName: user.name,
+                  userEmail: user.email,
+                  customerId: user.customerId,
+                  productId:
+                    req.body.membershipDuration === 'monthly'
+                      ? '5f837d1ea687101a7cff8d66'
+                      : '60678aeefeeb0055e0bc0ebb',
+                  productName:
+                    req.body.membershipDuration === 'monthly'
+                      ? 'Monthly Membership'
+                      : 'Yearly Membership',
+                  price: result.subscription.price,
+                  transactionId: result.subscription.id,
+                });
+
+                await user.save({ validateBeforeSave: false });
+                console.log(result);
+                console.log('subscription successful');
+
+                const url = `${req.protocol}://${req.get('host')}/courses`;
+                //Or http://localhost:3000/dashboard   for HOST
+                // console.log(url);
+                await new Email(user, url).subscriptionWelcome();
+                console.log('email sent, regular client');
+
+                return res.status(200).json({
+                  // NOT SURE IF PENDING IS CORRECT
+                  active: true,
+                  status: result.subscription.status,
+                  paymentComplete: true,
+                });
               }
-
-              await Membership.create({
-                userId: user._id,
-                userName: user.name,
-                userEmail: user.email,
-                customerId: customerId,
-                paidThrough: result.subscription.paidThroughDate,
-                firstBillDate: result.subscription.firstBillingDate,
-                status: 'Active',
-                subscriptionId: result.subscription.id,
-                transactionId: result.subscription.transactions[0].id,
-                price: result.subscription.price,
-              });
-
-              await Transaction.create({
-                date: new Date(),
-                user: user._id,
-                userName: user.name,
-                userEmail: user.email,
-                customerId: customerId,
-                productId: req.body.membershipDuration === "monthly" ? "5f837d1ea687101a7cff8d66" : "",
-                productName: req.body.membershipDuration === "monthly" ? "Monthly Membership" : "Annual Membership",
-                price: result.subscription.price,
-                transactionId: result.subscription.id
-              });
-
-              user.customerId = customerId;
-              await user.save({ validateBeforeSave: false });
-              // console.log("Subscription created successfully");
-
-              const url = `${req.protocol}://${req.get('host')}/courses`;
-              //Or http://localhost:3000/dashboard   for HOST
-              // console.log(url);
-              await new Email(user, url).subscriptionWelcome();
-              console.log("email sent, new client")
-              return res.status(200).json({
-                // NOT SURE IF PENDING IS CORRECT
-                active: true,
-                status: result.subscription.status,
-                paymentComplete: true
-              });
             }
-          });
+          );
         }
-      });
-    }
+      );
+    } else {
+      gateway.customer.create(
+        {
+          firstName: name[0],
+          lastName: name[1],
+          email: req.body.email,
+          creditCard: {
+            options: {
+              verifyCard: true,
+              verificationAmount: '1.00',
+            },
+          },
+          paymentMethodNonce: nonceFromTheClient,
+        },
+        async function (err, result) {
+          if (result.success) {
+            let customerId = result.customer.id;
+            let token = result.customer.paymentMethods[0].token;
 
+            const user = await User.findOne({ email: req.body.email });
+
+            gateway.subscription.create(
+              {
+                // merchantAccountId: "",
+                paymentMethodToken: token,
+                planId: planId,
+              },
+              async function (err, result) {
+                console.log('4444444444');
+                console.log(result.subscription.transactions[0]);
+                // console.log(result.subscription.id);
+                console.log(result);
+                if (result.success) {
+                  user.membership = {
+                    billingHistory: [
+                      ...user.membership.billingHistory,
+                      {
+                        subscriptionId: result.subscription.id,
+                        firstBillingDate: result.subscription.firstBillingDate,
+                        paidThroughDate: result.subscription.paidThroughDate,
+                        planId: result.subscription.planId,
+                        status: result.subscription.status,
+                        paymentToken: result.subscription.paymentMethodToken,
+                        price: result.subscription.price,
+                      },
+                    ],
+                  };
+
+                  await Membership.create({
+                    userId: user._id,
+                    userName: user.name,
+                    userEmail: user.email,
+                    customerId: customerId,
+                    paidThrough: result.subscription.paidThroughDate,
+                    firstBillDate: result.subscription.firstBillingDate,
+                    status: 'Active',
+                    subscriptionId: result.subscription.id,
+                    transactionId: result.subscription.transactions[0].id,
+                    price: result.subscription.price,
+                  });
+
+                  await Transaction.create({
+                    date: new Date(),
+                    user: user._id,
+                    userName: user.name,
+                    userEmail: user.email,
+                    customerId: customerId,
+                    productId:
+                      req.body.membershipDuration === 'monthly'
+                        ? '5f837d1ea687101a7cff8d66'
+                        : '',
+                    productName:
+                      req.body.membershipDuration === 'monthly'
+                        ? 'Monthly Membership'
+                        : 'Annual Membership',
+                    price: result.subscription.price,
+                    transactionId: result.subscription.id,
+                  });
+
+                  user.customerId = customerId;
+                  await user.save({ validateBeforeSave: false });
+                  // console.log("Subscription created successfully");
+
+                  const url = `${req.protocol}://${req.get('host')}/courses`;
+                  //Or http://localhost:3000/dashboard   for HOST
+                  // console.log(url);
+                  await new Email(user, url).subscriptionWelcome();
+                  console.log('email sent, new client');
+                  return res.status(200).json({
+                    // NOT SURE IF PENDING IS CORRECT
+                    active: true,
+                    status: result.subscription.status,
+                    paymentComplete: true,
+                  });
+                }
+              }
+            );
+          }
+        }
+      );
+    }
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.emailThankYou = async (req, res) => {
   try {
@@ -464,9 +507,9 @@ exports.emailThankYou = async (req, res) => {
     const { transactionId } = req.body;
 
     const transaction = await Transaction.findById(transactionId);
-    console.log("THE TRANSACTION IS");
+    console.log('THE TRANSACTION IS');
 
-    const courses = await Course.find({ '_id': { $in: transaction.productId } });
+    const courses = await Course.find({ _id: { $in: transaction.productId } });
 
     console.log(transaction);
     const user = await User.findById(transaction.user);
@@ -476,32 +519,34 @@ exports.emailThankYou = async (req, res) => {
     const bulkUpdateOps = courses.map((course, i) => {
       return {
         updateOne: {
-          "filter": { "_id": course._id },
-          "update": {
+          filter: { _id: course._id },
+          update: {
             $set: {
               users: [...course.users, user._id],
               sold: course.sold + 1,
-              revenue: course.revenue + transaction.productSalePrice[i]
-            }
-          }
-        }
-      }
+              revenue: course.revenue + transaction.productSalePrice[i],
+            },
+          },
+        },
+      };
     });
 
     if (JSON.stringify(user._id) === JSON.stringify(transaction.user)) {
-      console.log("WE HAVE THE RIGHT USER");
+      console.log('WE HAVE THE RIGHT USER');
     } else {
-      console.log("WE HAVE THE WRONG USER")
+      console.log('WE HAVE THE WRONG USER');
     }
 
     await User.findByIdAndUpdate(user._id, {
       courses: [...user.courses, ...transaction.productId],
       checkout: [],
-      purchases: user.purchases + transaction.price
+      purchases: user.purchases + transaction.price,
     });
 
-
-    const updateCourses = await Course.bulkWrite(bulkUpdateOps, { "ordered": true, "w": 1 });
+    const updateCourses = await Course.bulkWrite(bulkUpdateOps, {
+      ordered: true,
+      w: 1,
+    });
 
     // await Course.updateMany({ '_id': { $in: transaction.productId } }, {
     //   $set: {
@@ -520,13 +565,12 @@ exports.emailThankYou = async (req, res) => {
 
     res.status(200).json({
       status: 'success',
-      message: 'Thank you for your purchase'
-    })
-
+      message: 'Thank you for your purchase',
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.addCheckout = async (req, res) => {
   try {
@@ -542,11 +586,10 @@ exports.addCheckout = async (req, res) => {
     // console.log("--------------------------" );
     // console.log( inCart );
 
-
     if (inCart.length < 1) {
       // console.log( req.body.selectedCourse );
       await User.findByIdAndUpdate(user._id, {
-        checkout: [...user.checkout, req.body.selectedCourse]
+        checkout: [...user.checkout, req.body.selectedCourse],
         // checkout: []
       });
 
@@ -554,16 +597,14 @@ exports.addCheckout = async (req, res) => {
       // console.log( user.checkout );
     }
 
-
-
     res.status(200).json({
       status: 'success',
-      checkout: user.checkout
-    })
+      checkout: user.checkout,
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.removeCheckout = async (req, res) => {
   try {
@@ -574,7 +615,7 @@ exports.removeCheckout = async (req, res) => {
     // console.log( user._id );
 
     const inCart = user.checkout.filter((course) => {
-      return course._id != req.body.courseId
+      return course._id != req.body.courseId;
     });
 
     console.log(inCart);
@@ -583,21 +624,21 @@ exports.removeCheckout = async (req, res) => {
     //   checkout: [...inCart]
     //   // checkout: []
     // });
-    user.checkout = [...inCart]
+    user.checkout = [...inCart];
     await user.save({ validateBeforeSave: false });
 
     res.status(200).json({
       status: 'success',
-      checkout: user.checkout
-    })
+      checkout: user.checkout,
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.loadCheckout = async (req, res) => {
   try {
-    console.log("inside loadCheckout");
+    console.log('inside loadCheckout');
 
     const user = await User.findById(req.user._id);
 
@@ -608,22 +649,22 @@ exports.loadCheckout = async (req, res) => {
 
     if (user && user.checkout) {
       for (let i = 0; i < user.checkout.length; i++) {
-        checkoutPrice += parseInt(user.checkout[i].price)
+        checkoutPrice += parseInt(user.checkout[i].price);
       }
 
-      console.log("This is checkout price");
+      console.log('This is checkout price');
 
       res.status(200).json({
         status: 'success',
         checkout: user.checkout,
-        checkoutPrice
-      })
+        checkoutPrice,
+      });
     } else {
       res.status(200).json({
         status: 'success',
         checkout: [],
-        checkoutPrice
-      })
+        checkoutPrice,
+      });
     }
 
     // const newArray = [ { price: 25 }, { price: 25}];
@@ -646,7 +687,7 @@ exports.loadCheckout = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.checkMembership = async (req, res) => {
   // 1) Get user based on the token
@@ -675,7 +716,7 @@ exports.checkMembership = async (req, res) => {
 
   let pendingMembership = req.user.membership.billingHistory.find((bill, i) => {
     index = i;
-    return bill.status === "Pending";
+    return bill.status === 'Pending';
   });
 
   let user = await User.findOne({ email: req.user.email });
@@ -684,102 +725,112 @@ exports.checkMembership = async (req, res) => {
 
   const fetchBillInfo = async (bills) => {
     const requests = bills.map((bill, i) => {
-
       return new Promise((resolve, reject) => {
-        gateway.subscription.find(bill.subscriptionId, async function (err, result) {
-          console.log("This is membership")
-          // console.log(result)
+        gateway.subscription.find(
+          bill.subscriptionId,
+          async function (err, result) {
+            console.log('This is membership');
+            // console.log(result)
 
-          for(let i=0; i < result.transactions.length; i++) {
-
-            const findTransaction = await Transaction.find({transactionId: result.transactions[i].id});
-            console.log("findTransaction is:");
-            console.log(findTransaction);
-
-            if(findTransaction.length < 1) {
-              const newTransaction = await Transaction.create({
-                date: new Date( result.transactions[i].createdAt),
-                user: user._id,
-                userName: user.name,
-                userEmail: user.email,
-                customerId: result.transactions[i].customer.id,
-                productName: [result.transactions[i].planId],
-                coupon: "",
-                price: result.transactions[i].amount,
+            for (let i = 0; i < result.transactions.length; i++) {
+              const findTransaction = await Transaction.find({
                 transactionId: result.transactions[i].id,
               });
+              console.log('findTransaction is:');
+              console.log(findTransaction);
+
+              if (findTransaction.length < 1) {
+                const newTransaction = await Transaction.create({
+                  date: new Date(result.transactions[i].createdAt),
+                  user: user._id,
+                  userName: user.name,
+                  userEmail: user.email,
+                  customerId: result.transactions[i].customer.id,
+                  productName: [result.transactions[i].planId],
+                  coupon: '',
+                  price: result.transactions[i].amount,
+                  transactionId: result.transactions[i].id,
+                });
+              }
             }
 
+            if (
+              !err &&
+              (bill.status != result.status ||
+                bill.paidThroughDate != result.paidThroughDate)
+            ) {
+              bill.status = result.status;
+              bill.firstBillingDate = result.firstBillingDate;
+              bill.paidThroughDate = result.paidThroughDate;
+            }
+            resolve(bill);
           }
-
-          if (!err && ((bill.status != result.status) || (bill.paidThroughDate != result.paidThroughDate))) {
-            bill.status = result.status;
-            bill.firstBillingDate = result.firstBillingDate
-            bill.paidThroughDate = result.paidThroughDate
-          }
-          resolve(bill);
-        });
+        );
       });
-    })
-    return Promise.all(requests) // Waiting for all the requests to get resolved.
-  }
+    });
+    return Promise.all(requests); // Waiting for all the requests to get resolved.
+  };
 
   const checkSame = (x, y) => {
     return JSON.stringify(x) === JSON.stringify(y);
-  }
+  };
 
   fetchBillInfo(user.membership.billingHistory)
     .then(async (billingUpdated) => {
-
       const areNotEqual = initialBill.find((obj, i) => {
         // console.log(checkSame(obj, billingUpdated[i]));
         return !checkSame(obj, billingUpdated[i]);
-      })
+      });
 
       if (areNotEqual) {
-        console.log("There are changes please update");
+        console.log('There are changes please update');
         user.billingHistory = billingUpdated;
         await user.save({ validateBeforeSave: false });
       } else {
-        console.log("they are all the same");
+        console.log('they are all the same');
       }
-    }).catch((error) => {
-      console.log("There was an error find the membership history")
-      console.log(error)
+    })
+    .catch((error) => {
+      console.log('There was an error find the membership history');
+      console.log(error);
     });
-
 
   if (pendingMembership && userMembership) {
-    gateway.subscription.find(pendingMembership.subscriptionId, function (err, result) {
-      console.log()
-      res.status(200).json({
-        active: Boolean(userMembership),
-        planId: result.planId,
-        status: result.status === "Pending" ? "Active" : result.status,
-        nextBillingDate: result.nextBillingDate,
-        paidThroughDate: userMembership.paidThroughDate,
-        price: result.price
-      });
-    });
+    gateway.subscription.find(
+      pendingMembership.subscriptionId,
+      function (err, result) {
+        console.log();
+        res.status(200).json({
+          active: Boolean(userMembership),
+          planId: result.planId,
+          status: result.status === 'Pending' ? 'Active' : result.status,
+          nextBillingDate: result.nextBillingDate,
+          paidThroughDate: userMembership.paidThroughDate,
+          price: result.price,
+        });
+      }
+    );
   } else if (userMembership) {
-    gateway.subscription.find(userMembership.subscriptionId, function (err, result) {
-      res.status(200).json({
-        active: Boolean(userMembership),
-        planId: result.planId,
-        status: result.status === "Pending" ? "Active" : result.status,
-        nextBillingDate: result.nextBillingDate,
-        paidThroughDate: result.paidThroughDate,
-        price: result.price
-      });
-    });
+    gateway.subscription.find(
+      userMembership.subscriptionId,
+      function (err, result) {
+        res.status(200).json({
+          active: Boolean(userMembership),
+          planId: result.planId,
+          status: result.status === 'Pending' ? 'Active' : result.status,
+          nextBillingDate: result.nextBillingDate,
+          paidThroughDate: result.paidThroughDate,
+          price: result.price,
+        });
+      }
+    );
   } else {
     res.status(200).json({
       active: false,
-      status: "Canceled"
+      status: 'Canceled',
     });
   }
-
-}
+};
 
 exports.cancelMembership = async (req, res) => {
   const subscriptionId = req.user.membership.subscriptionId;
@@ -789,42 +840,45 @@ exports.cancelMembership = async (req, res) => {
 
   let userMembership = req.user.membership.billingHistory.find((bill, i) => {
     index = i;
-    return bill.status === "Active" || bill.status === "Pending";
+    return bill.status === 'Active' || bill.status === 'Pending';
   });
 
   try {
-    await gateway.subscription.cancel(userMembership.subscriptionId, async function (err, result) {
-      //console.log(result);
-      const user = await User.findOne({ email: req.user.email });
-      user.membership.billingHistory[index].status = "Canceled";
-      await user.save({ validateBeforeSave: false });
+    await gateway.subscription.cancel(
+      userMembership.subscriptionId,
+      async function (err, result) {
+        //console.log(result);
+        const user = await User.findOne({ email: req.user.email });
+        user.membership.billingHistory[index].status = 'Canceled';
+        await user.save({ validateBeforeSave: false });
 
-      const url = `${req.protocol}://${req.get('host')}/membership`;
-      //Or http://localhost:3000/dashboard   for HOST
-      // console.log(url);
-      await new Email(user, url).subscriptionCancellation();
-      console.log("email sent");
+        const url = `${req.protocol}://${req.get('host')}/membership`;
+        //Or http://localhost:3000/dashboard   for HOST
+        // console.log(url);
+        await new Email(user, url).subscriptionCancellation();
+        console.log('email sent');
 
-      res.status(200).json({
-        active: true,
-        status: 'Canceled'
-      });
+        res.status(200).json({
+          active: true,
+          status: 'Canceled',
+        });
 
-      console.log("Membership cancelled");
-    });
+        console.log('Membership cancelled');
+      }
+    );
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.resubscribeMembership = async (req, res) => {
-  console.log("inside resubscribeMembership");
+  console.log('inside resubscribeMembership');
 
   const customerId = req.user.customerId;
   // console.log(customerId);
   // console.log(typeof customerId);
   try {
-    let firstBillingDate = "";
+    let firstBillingDate = '';
     const user = await User.findOne({ email: req.user.email });
 
     const dateInPast = function (firstDate, secondDate) {
@@ -842,11 +896,11 @@ exports.resubscribeMembership = async (req, res) => {
       //console.log(dateInPast(past, today));
       //console.log(bill);
       return !dateInPast(past, today);
-    })
+    });
 
     if (userMembership) {
       let day = new Date(userMembership.paidThroughDate);
-      // console.log(day); 
+      // console.log(day);
 
       let nextDay = new Date(day);
       nextDay.setDate(day.getDate() + 1);
@@ -860,68 +914,75 @@ exports.resubscribeMembership = async (req, res) => {
     gateway.customer.find(customerId, function (err, customer) {
       //console.log(customer);
 
-      gateway.subscription.create({
-        paymentMethodToken: user.membership.billingHistory[user.membership.billingHistory.length - 1].paymentToken,
-        planId: "monthly-plan-id",
-        firstBillingDate: firstBillingDate
-      }, async function (err, result) {
+      gateway.subscription.create(
+        {
+          paymentMethodToken:
+            user.membership.billingHistory[
+              user.membership.billingHistory.length - 1
+            ].paymentToken,
+          planId: 'monthly-plan-id',
+          firstBillingDate: firstBillingDate,
+        },
+        async function (err, result) {
+          if (result.success) {
+            user.membership = {
+              billingHistory: [
+                ...user.membership.billingHistory,
+                {
+                  subscriptionId: result.subscription.id,
+                  firstBillingDate: result.subscription.firstBillingDate,
+                  paidThroughDate: result.subscription.paidThroughDate,
+                  planId: result.subscription.planId,
+                  status: result.subscription.status,
+                  paymentToken: result.subscription.paymentMethodToken,
+                  price: result.subscription.price,
+                },
+              ],
+            };
+            await user.save({ validateBeforeSave: false });
+            console.log(result);
+            console.log('subscription successful');
 
-        if (result.success) {
-          user.membership = {
-            billingHistory: [
-              ...user.membership.billingHistory,
-              {
-                subscriptionId: result.subscription.id,
-                firstBillingDate: result.subscription.firstBillingDate,
-                paidThroughDate: result.subscription.paidThroughDate,
-                planId: result.subscription.planId,
-                status: result.subscription.status,
-                paymentToken: result.subscription.paymentMethodToken,
-                price: result.subscription.price
-              }
-            ]
+            const url = `${req.protocol}://${req.get('host')}/courses`;
+            //Or http://localhost:3000/dashboard   for HOST
+            // console.log(url);
+            await new Email(user, url).subscriptionWelcome();
+            console.log('email sent');
+
+            return res.status(200).json({
+              // NOT SURE IF PENDING IS CORRECT
+              active:
+                result.subscription.status === 'Active' ||
+                (userMembership && result.subscription.status === 'Pending')
+                  ? true
+                  : false,
+              status: 'Active',
+            });
           }
-          await user.save({ validateBeforeSave: false });
-          console.log(result);
-          console.log("subscription successful");
-
-          const url = `${req.protocol}://${req.get('host')}/courses`;
-          //Or http://localhost:3000/dashboard   for HOST
-          // console.log(url);
-          await new Email(user, url).subscriptionWelcome();
-          console.log("email sent");
-
           return res.status(200).json({
             // NOT SURE IF PENDING IS CORRECT
-            active: (result.subscription.status === 'Active' || (userMembership && result.subscription.status === 'Pending')) ? true : false,
-            status: 'Active'
+            active: false,
+            status: 'Failed',
           });
         }
-        return res.status(200).json({
-          // NOT SURE IF PENDING IS CORRECT
-          active: false,
-          status: 'Failed'
-        });
-
-      });
+      );
     });
     // console.log("check the first");
     // console.log(firstBillingDate)
-
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.getUserBilling = async (req, res) => {
   try {
     const { user } = req;
-    console.log(user._id)
+    console.log(user._id);
     const allTransactions = await Transaction.find();
     console.log(allTransactions);
 
     const userTransactions = allTransactions.filter((transaction) => {
-      console.log("this true or false");
+      console.log('this true or false');
 
       console.log(JSON.stringify(transaction.user) == JSON.stringify(user._id));
 
@@ -937,13 +998,12 @@ exports.getUserBilling = async (req, res) => {
     console.log(userTransactions);
 
     res.status(200).json({
-      billing: userTransactions
-    })
-
+      billing: userTransactions,
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.test = async (req, res) => {
   try {
@@ -958,55 +1018,82 @@ exports.test = async (req, res) => {
 
     const user = await Transaction.deleteMany();
 
-    res.send("courses deleted");
-
+    res.send('courses deleted');
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 exports.getCouponId = async (req, res) => {
   try {
     const { couponCode } = req.params;
 
     const coupon = await Coupon.findOne({ code: couponCode.toUpperCase() });
-    console.log(coupon)
+    console.log(coupon);
     if (coupon) {
       res.status(200).json({
-        status: "success",
-        coupon: coupon
-      })
+        status: 'success',
+        coupon: coupon,
+      });
     } else {
       throw new Error('Coupon not valid');
     }
-
   } catch (error) {
     console.log(error.message);
     res.status(401).json({
-      status: "fail",
-      message: error.message
+      status: 'fail',
+      message: error.message,
     });
   }
-}
+};
 
 exports.webhookSubscriptionSuccess = (req, res) => {
   try {
-    gateway.webhookNotification.parse(
-      req.body.bt_signature,
-      req.body.bt_payload,
-    ).then(webhookNotification => {
-        console.log("[Webhook Received " + webhookNotification.timestamp + "] | Kind: " + webhookNotification.kind);
+    gateway.webhookNotification
+      .parse(req.body.bt_signature, req.body.bt_payload)
+      .then((webhookNotification) => {
+        console.log(
+          '[Webhook Received ' +
+            webhookNotification.timestamp +
+            '] | Kind: ' +
+            webhookNotification.kind
+        );
         // braintree.WebhookNotification.Kind.SubscriptionChargedSuccessfully
-        
+
         // Example values for webhook notification properties
         console.log(webhookNotification.kind); // "subscriptionWentPastDue"
         console.log(webhookNotification.timestamp); // Sun Jan 1 00:00:00 UTC 2012
-        console.log(webhookNotification.subscription.id)
+        console.log(webhookNotification.subscription.id);
         res.status(200).json({
-          message: 'received'
+          message: 'received',
         });
-    });
-  } catch (error) {
-    
-  }
-}
+      });
+  } catch (error) {}
+};
+
+exports.webhookSubscriptionActive = (req, res) => {
+  try {
+    console.log('inside webhook active');
+    gateway.webhookNotification
+      .parse(req.body.bt_signature, req.body.bt_payload)
+      .then((webhookNotification) => {
+        console.log(
+          '[Webhook Received ' +
+            webhookNotification.timestamp +
+            '] | Kind: ' +
+            webhookNotification.kind
+        );
+        // braintree.WebhookNotification.Kind.SubscriptionChargedSuccessfully
+
+        // Example values for webhook notification properties
+        console.log(webhookNotification);
+        console.log(webhookNotification.subscription.transactions);
+        console.log(webhookNotification.kind); // "subscriptionWentPastDue"
+        console.log(webhookNotification.timestamp); // Sun Jan 1 00:00:00 UTC 2012
+        console.log(webhookNotification.subscription.id);
+        res.status(200).json({
+          message: 'received',
+        });
+      });
+  } catch (error) {}
+};
