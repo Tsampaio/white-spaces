@@ -11,7 +11,8 @@ const {
     loadCheckout,
     getUserBilling,
     getCouponId,
-    test } = require('../controllers/paymentController');
+    test,
+    webhookSubscriptionSuccess } = require('../controllers/paymentController');
 
 const { protect } = require('../controllers/authController');
 
@@ -24,6 +25,7 @@ router.post('/removeCheckout', protect, removeCheckout);
 router.post('/loadCheckout', protect, loadCheckout);
 router.post('/braintree/getUserBilling', protect, getUserBilling);
 router.get('/getCouponId/:couponCode', protect, getCouponId);
+router.post('/subscription/success', webhookSubscriptionSuccess);
 
 router.post('/test', test );
 

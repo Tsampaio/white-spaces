@@ -22,17 +22,17 @@ connectDB();
 
 //test middleware
 app.use((req, res, next) => {
-    console.log("Middleware");
-    next();
+  console.log('Middleware');
+  next();
 });
 
 app.use(express.static(path.join(__dirname, '/client/build')));
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.get('/test', (req, res) => {
-    res.send({
-        name: 'Telmo'     
-    });
+  res.send({
+    name: 'Telmo',
+  });
 });
 
 //Define Routes
@@ -45,8 +45,8 @@ app.use('/webhook', require('./routes/webhook'));
 // app.use('/api/uploadCourseImage', require('./routes/uploadRoutes'));
 
 app.get('/*', function (req, res) {
-   res.sendFile(path.join(__dirname, './client/build/index.html'));
- });
+  res.sendFile(path.join(__dirname, './client/build/index.html'));
+});
 
 const PORT = process.env.PORT || 5000;
 

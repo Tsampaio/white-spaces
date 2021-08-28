@@ -988,3 +988,25 @@ exports.getCouponId = async (req, res) => {
     });
   }
 }
+
+exports.webhookSubscriptionSuccess = (req, res) => {
+  try {
+    gateway.webhookNotification.parse(
+      req.body.bt_signature,
+      req.body.bt_payload,
+    ).then(webhookNotification => {
+        console.log("[Webhook Received " + webhookNotification.timestamp + "] | Kind: " + webhookNotification.kind);
+        // braintree.WebhookNotification.Kind.SubscriptionChargedSuccessfully
+        
+        // Example values for webhook notification properties
+        console.log(webhookNotification.kind); // "subscriptionWentPastDue"
+        console.log(webhookNotification.timestamp); // Sun Jan 1 00:00:00 UTC 2012
+        console.log(webhookNotification.subscription.id)
+        res.status(200).json({
+          message: 'received'
+        });
+    });
+  } catch (error) {
+    
+  }
+}

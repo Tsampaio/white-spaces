@@ -62,7 +62,7 @@ function ProfileCourses() {
         <div className="row">
           {loading ? (
             <Loader />
-          ) : allCourses.length > 0 ? (
+          ) : allCourses.length > 0 ? ( //bug here on load undefined allCourses
             allCourses
           ) : (
             <div className="col-12">
