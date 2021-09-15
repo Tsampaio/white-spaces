@@ -1064,6 +1064,12 @@ exports.webhookSubscriptionSuccess = (req, res) => {
         console.log(webhookNotification.kind); // "subscriptionWentPastDue"
         console.log(webhookNotification.timestamp); // Sun Jan 1 00:00:00 UTC 2012
         console.log(webhookNotification.subscription.id);
+        console.log(webhookNotification.subscription.transactions);
+        console.log(
+          webhookNotification.subscription.transactions[0].customer.id,
+          webhookNotification.subscription.billingPeriodStartDate,
+          webhookNotification.subscription.billingPeriodEndDate
+        );
         res.status(200).json({
           message: 'received',
         });
