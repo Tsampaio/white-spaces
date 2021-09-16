@@ -1051,7 +1051,7 @@ exports.webhookSubscriptionSuccess = (req, res) => {
   try {
     gateway.webhookNotification
       .parse(req.body.bt_signature, req.body.bt_payload)
-      .then((webhookNotification) => {
+      .then(async (webhookNotification) => {
         console.log(
           '[Webhook Received ' +
             webhookNotification.timestamp +
@@ -1061,15 +1061,18 @@ exports.webhookSubscriptionSuccess = (req, res) => {
         // braintree.WebhookNotification.Kind.SubscriptionChargedSuccessfully
 
         // Example values for webhook notification properties
-        console.log(webhookNotification.kind); // "subscriptionWentPastDue"
-        console.log(webhookNotification.timestamp); // Sun Jan 1 00:00:00 UTC 2012
-        console.log(webhookNotification.subscription.id);
-        console.log(webhookNotification.subscription.transactions);
-        console.log(
-          webhookNotification.subscription.transactions[0].customer.id,
-          webhookNotification.subscription.billingPeriodStartDate,
-          webhookNotification.subscription.billingPeriodEndDate
-        );
+        // console.log(webhookNotification.kind); // "subscriptionWentPastDue"
+        // console.log(webhookNotification.timestamp); // Sun Jan 1 00:00:00 UTC 2012
+        // console.log(webhookNotification.subscription.id);
+        // console.log(webhookNotification.subscription.transactions);
+        // console.log(
+        //   webhookNotification.subscription.transactions[0].customer.id,
+        //   webhookNotification.subscription.billingPeriodStartDate,
+        //   webhookNotification.subscription.billingPeriodEndDate
+        // );
+
+        console.log(userMembership);
+
         res.status(200).json({
           message: 'received',
         });
