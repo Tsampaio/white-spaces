@@ -13,7 +13,7 @@ const {
   getCouponId,
   test,
   webhookSubscriptionSuccess,
-  webhookSubscriptionActive,
+  webhookSubscriptionPastDue,
 } = require('../controllers/paymentController');
 
 const { protect } = require('../controllers/authController');
@@ -28,7 +28,7 @@ router.post('/loadCheckout', protect, loadCheckout);
 router.post('/braintree/getUserBilling', protect, getUserBilling);
 router.get('/getCouponId/:couponCode', protect, getCouponId);
 router.post('/subscription/success', webhookSubscriptionSuccess);
-router.post('/subscription/active', webhookSubscriptionActive);
+router.post('/subscription/pastdue', webhookSubscriptionPastDue);
 
 router.post('/test', test);
 

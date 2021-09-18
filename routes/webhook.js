@@ -89,12 +89,6 @@ router.post('/', async (req, res) => {
 
             await user.save({ validateBeforeSave: false });
             await userMembershipDb.save();
-            // console.log('Braintree values for membership');
-            // console.log(result.billingPeriodStartDate);
-            // console.log(result.daysPastDue);
-            // console.log(result.firstBillingDate);
-            // console.log(result.paidThroughDate);
-            // console.log(result.status);
           }
         );
       }
@@ -102,6 +96,82 @@ router.post('/', async (req, res) => {
       res.status(200).json({
         message: 'received',
       });
+    });
+});
+
+router.post('/pastdue', async (req, res) => {
+  console.log('this is the request');
+
+  const sampleNotification = gateway.webhookTesting.sampleNotification(
+    // braintree.WebhookNotification.Kind.SubscriptionChargedSuccessfully,
+    braintree.WebhookNotification.Kind.SubscriptionWentPastDue,
+    'kkqpb'
+  );
+  gateway.webhookNotification
+    .parse(
+      // req.body.bt_signature,
+      sampleNotification.bt_signature,
+      sampleNotification.bt_payload
+      // req.body.bt_payload
+    )
+    .then(async (webhookNotification) => {
+      if (webhookNotification.kind === 'subscription_went_past_due') {
+        gateway.subscription.find(
+          webhookNotification.subscription.id,
+          async (err, result) => {
+            try {
+              const userMembershipDb = await Membership.findOne({
+                subscriptionId: webhookNotification.subscription.id,
+              });
+
+              if (err) {
+                throw new Error('Error setting the subscription to past Due');
+              }
+
+              console.log('subscription status is ');
+              console.log(webhookNotification.subscription.status);
+
+              userMembershipDb.status = result.status;
+              // userMembershipDb.firstBillDate = new Date(result.firstBillingDate);
+
+              const user = await User.findById(userMembershipDb.userId);
+
+              const updateUserBillingHistory = [
+                ...user.membership.billingHistory,
+              ];
+
+              const newBilling = updateUserBillingHistory.map((bill) => {
+                if (
+                  bill.subscriptionId === userMembershipDb.subscriptionId &&
+                  bill.status === 'Active'
+                ) {
+                  bill.status = 'PastDue';
+                }
+                return bill;
+              });
+
+              user.membership = {
+                billingHistory: [...newBilling],
+              };
+
+              await user.save({ validateBeforeSave: false });
+              await userMembershipDb.save();
+
+              res.status(200).json({
+                message: 'received',
+              });
+            } catch (error) {
+              res.status(500).json({
+                message: error.message,
+              });
+            }
+          }
+        );
+      } else {
+        res.status(500).json({
+          message: 'this is error 2',
+        });
+      }
     });
 });
 
